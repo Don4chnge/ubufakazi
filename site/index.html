@@ -9,32 +9,77 @@
 <meta name="description" content="Ubufakazi turns a scam victim's chats and proof of payment into a tamper-evident case file, and privately links victims of the same scammer. A CyberThreat prototype for HackSecure 2026.">
 <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
 <link rel="stylesheet" href="assets/app.css">
+<link rel="stylesheet" href="assets/hero.css">
 </head>
 <body>
 
 <a class="skip" href="#report">Skip to the report form</a>
 
-<header class="top">
-  <div class="wrap top-in">
+<section class="h-frame" aria-labelledby="h-title">
+  <canvas class="h-bg" aria-label="A fingerprint being scanned, with ridge points marked and a match readout"></canvas>
+  <div class="h-tint"></div>
+
+  <header class="h-bar">
     <a class="brand" href="#" aria-label="Ubufakazi home">
       <svg class="brand-mark" viewBox="0 0 32 32" aria-hidden="true"><rect x="7" y="4" width="18" height="24" rx="2"/><path d="M11 10h10M11 14h10M11 18h6"/><circle cx="22" cy="23" r="5"/><path d="M19.8 23l1.6 1.6 2.8-3.2"/></svg>
       <span class="brand-name">Ubufakazi</span>
       <span class="brand-by">by CyberThreat</span>
     </a>
-    <nav class="nav" aria-label="Page sections">
+    <nav class="h-nav" aria-label="Page sections">
+      <a href="#report">Build a case</a>
       <a href="#how">How it works</a>
       <a href="#privacy">Privacy</a>
     </nav>
-    <span class="pill pill-demo">Demo · fictional data only</span>
+    <span class="pill pill-demo">Demo · fictional data</span>
+  </header>
+
+  <div class="h-stage">
+    <p class="h-eyebrow"><span>Digital forensics for scam victims</span></p>
+    <h1 class="h-headline" id="h-title">
+      <span class="hl1">Evidence</span>
+      <span class="hl2">that holds</span>
+      <span class="hl3">up when it</span>
+      <span class="hl4">matters.</span>
+    </h1>
+
+    <svg class="h-mark" viewBox="0 0 52 52" fill="none" aria-hidden="true">
+      <circle cx="26" cy="26" r="23" stroke="#5CF2D6" stroke-width="1.6" stroke-dasharray="98.3 46.3" transform="rotate(2.5 26 26)"/>
+      <g stroke="#5CF2D6" stroke-width="1.6" stroke-linecap="round"><path d="M26 9v6M26 37v6M9 26h6M37 26h6"/><circle cx="26" cy="26" r="2.3"/></g>
+    </svg>
+
+    <a class="h-cta" href="#report">Build a case file
+      <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+    <a class="h-sub" href="scam-demo/" target="_blank" rel="noopener">or investigate a demo scammer</a>
+
+    <section class="h-feat h-left" aria-labelledby="hl-h">
+      <svg class="h-icon" viewBox="0 0 40 40" fill="none" aria-hidden="true">
+        <circle cx="20" cy="20" r="18.5" stroke="#F9F9F9" stroke-width="1.8" stroke-dasharray="3.6 3"/>
+        <g stroke="#F9F9F9" stroke-width="1.6" stroke-linecap="round">
+          <path d="M13.5 22.5c0-5 2.9-8.5 6.5-8.5s6.5 3.5 6.5 8.5"/>
+          <path d="M16.5 26c-.3-1.2-.4-2.4-.4-3.6 0-3 1.7-5.1 3.9-5.1s3.9 2.1 3.9 5.1c0 2-.3 3.8-1 5.4"/>
+          <path d="M20 21v7.5"/><path d="M11 18.5c1.4-4.6 4.9-7.6 9-7.6s7.6 3 9 7.6"/>
+        </g>
+      </svg>
+      <h2 id="hl-h">Tamper-proof<br>evidence</h2>
+      <p>Every chat, screenshot and proof of payment is locked with a SHA-256 fingerprint the moment you report it.</p>
+      <span class="h-tag">SHA-256 · TIMESTAMPED</span>
+    </section>
+
+    <section class="h-feat h-right" aria-labelledby="hr-h">
+      <svg class="h-icon" viewBox="0 0 40 40" fill="none" aria-hidden="true">
+        <g stroke="#F9F9F9" stroke-width="1.6"><path d="M20 12 9 28M20 12l11 16M9 28h22"/></g>
+        <circle cx="20" cy="10" r="4.6" fill="#F9F9F9"/><circle cx="8" cy="29.5" r="4.6" fill="#F9F9F9"/><circle cx="32" cy="29.5" r="4.6" fill="#FF8F72"/>
+      </svg>
+      <h2 id="hr-h">Scammers<br>linked</h2>
+      <p>One report gets ignored. Seven is a syndicate. We link victims privately by account, number, link and message script.</p>
+      <span class="h-tag">HMAC-SHA256 · NO PERSONAL DATA</span>
+    </section>
   </div>
-</header>
+</section>
 
 <main>
 
-  <section class="hero wrap">
-    <p class="kicker">HackSecure 2026 · Team CyberThreat</p>
-    <h1>From scam victim to <span class="hl">case file</span> in 60 seconds.</h1>
-    <p class="hero-sub">Forward the scam chat and proof of payment. Ubufakazi locks every file with a digital fingerprint, pulls out the scammer's details, writes your statement in your language, and checks whether the same scammer has hit anyone else.</p>
+  <section class="wrap band" aria-label="Why it matters">
     <dl class="stats">
       <div><dt>R2.4bn</dt><dd>lost to digital banking crime in SA in 2025 (SABRIC)</dd></div>
       <div><dt>6%</dt><dd>of scam victims report it to authorities (GASA 2026)</dd></div>
@@ -242,5 +287,6 @@
 <script src="assets/vendor/jspdf.umd.min.js"></script>
 <script src="assets/seed.js"></script>
 <script src="assets/app.js"></script>
+<script src="assets/hero.js"></script>
 </body>
 </html>
