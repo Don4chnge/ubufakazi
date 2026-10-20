@@ -246,6 +246,9 @@
     for (const [k, re] of Object.entries(SCAM_WORDS)) { const n = (text.match(re) || []).length; if (n > top) { top = n; best = k; } }
     return best;
   }
+  // Demo only: fictional scam sites we host a safe copy of. Real scam links are never opened.
+  const DEMO_SNAPSHOTS = { 'mzansi-careers-onboard.site': 'scam-demo/mzansi-careers/' };
+
   const TYPE_LABEL = { job: 'Fake job offer', marketplace: 'Online seller / Marketplace', romance: 'Romance scam', investment: 'Investment / crypto scam', parcel: 'Courier / parcel fee', sars: 'Fake SARS refund', other: 'Scam' };
 
   // ---------------------------------------------------------------- 3. timeline
@@ -658,7 +661,11 @@ If WhatsApp is slow call me on 071 482 0937
       h('dt', { text: 'Name used' }), h('dd', null, chips(c.scammer ? [c.scammer] : [])),
       h('dt', { text: 'Bank accounts' }), h('dd', null, chips(ex.accounts.map((a) => (a.bank ? a.bank + ' · ' : '') + showAcc(a.value)), 'warn')),
       h('dt', { text: 'Phone numbers' }), h('dd', null, chips(ex.phones.map((p) => showPhone(p.value)), 'warn')),
-      h('dt', { text: 'Links' }), h('dd', null, chips(ex.links.map((l) => l.url), 'warn')),
+      h('dt', { text: 'Links' }), h('dd', null, ex.links.length ? ex.links.map((l) => {
+        const snap = DEMO_SNAPSHOTS[l.domain];
+        return h('span', { class: 'link-item' }, h('span', { class: 'chip warn', text: l.url }),
+          snap ? h('a', { class: 'snap', href: snap, target: '_blank', rel: 'noopener noreferrer', text: 'Open demo copy of this site' }) : null);
+      }) : chips([])),
       ...(ex.emails.length ? [h('dt', { text: 'Emails' }), h('dd', null, chips(ex.emails.map((e) => e.value), 'warn'))] : []),
       h('dt', { text: 'Scam type' }), h('dd', null, chips([TYPE_LABEL[c.type]])),
       h('dt', { text: 'Amount paid' }), h('dd', null, ex.totalPaid != null ? h('span', { class: 'total', text: money(ex.totalPaid) }) : h('span', { class: 'none', text: 'Not found in the chat. Add it to your statement.' })),

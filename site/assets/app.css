@@ -101,7 +101,10 @@ a:hover { color: #B9FFF1; }
 /* demo row */
 .demo-row { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; padding: 12px 14px; border: 1px dashed var(--line-2); margin-bottom: 20px; }
 .demo-label { font-family: var(--mono); font-size: 12px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); margin-right: 4px; }
-.kit-link { flex-basis: 100%; font-size: 14px; padding: 4px 0; }
+.kit-links { flex-basis: 100%; font-size: 14px; margin: 2px 0 0; color: var(--muted); }
+.link-item { display: inline-flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+.snap { font-size: 13px; padding: 3px 8px; border: 1px solid var(--accent); border-radius: var(--r); text-decoration: none; }
+.snap:hover { background: var(--accent-dim); }
 
 /* form */
 .form { display: grid; grid-template-columns: minmax(0, 1fr); gap: 18px; }

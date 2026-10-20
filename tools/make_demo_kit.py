@@ -130,7 +130,9 @@ def guide_pdf(path):
         text(s)
     y -= 10
     cases = [
-        ("Case 1  |  Lerato  |  Fake job offer", ["case1-lerato-whatsapp-chat.txt", "case1-lerato-proof-of-payment-1.pdf", "case1-lerato-proof-of-payment-2.pdf"],
+        ("Case 1  |  Lerato  |  Fake job offer", ["case1-lerato-whatsapp-chat.txt", "case1-lerato-proof-of-payment-1.pdf, -2.pdf",
+                                                   "case1-scam-website-screenshot.png, case1-recruiter-profile-screenshot.png",
+                                                   "case1-bank-confirmation-letter.pdf (the scammer's \"proof we are legit\")"],
          "Expect: \"You are victim #7\". 6 earlier reports, R84 000. Linked by the same bank account,", "even though the phone number is new."),
         ("Case 2  |  Sipho  |  Same scammers, new number and new account", ["case2-sipho-whatsapp-chat.txt", "case2-sipho-proof-of-payment.pdf"],
          "Expect: still linked to the same group, through the website link and the copied message", "script. This is the Scam Fingerprint: dumping a number or account doesn't hide them."),
@@ -146,7 +148,8 @@ def guide_pdf(path):
         text(e2, 10.5, gap=24)
     text("Tip", 12.5, True, gap=17)
     text("Do case 1, click \"Add my report\", then do case 2: it becomes victim #8.", gap=14)
-    text("Use \"Reset demo data\" at the bottom of the site to start again at #7.", gap=26)
+    text("Use \"Reset demo data\" at the bottom of the site to start again at #7.", gap=14)
+    text("The scammer's fake website and profile are on the site: ubufakazi.netlify.app/scam-demo/", gap=26)
     c.setFillColor(HexColor("#FBEDE7")); c.rect(45, y - 30, W - 90, 44, fill=1, stroke=0)
     c.setFillColor(RED); c.setFont("Helvetica-Bold", 10.5)
     c.drawString(55, y - 2, "Everything in this kit is fictional.")
@@ -157,13 +160,78 @@ def guide_pdf(path):
     c.save()
 
 
+def bank_letter_pdf(path):
+    W, H = A4
+    c = canvas.Canvas(str(path), pagesize=A4)
+    c.setTitle("DemoBank confirmation of banking details (SAMPLE)")
+    c.setFillColor(NAVY); c.rect(0, H - 110, W, 110, fill=1, stroke=0)
+    c.setFillColor(HexColor("#FFFFFF")); c.setFont("Helvetica-Bold", 30); c.drawString(50, H - 62, "DemoBank")
+    c.setFont("Helvetica", 11); c.drawString(50, H - 84, "Fictional bank for demonstrations")
+    c.setFillColor(INK); c.setFont("Helvetica-Bold", 20); c.drawString(50, H - 160, "Confirmation of banking details")
+    c.setFont("Helvetica", 11); c.setFillColor(GREY); c.drawString(50, H - 180, "To whom it may concern")
+    rows = [("Account holder", "MZ Placements"), ("Account number", "1047 2283 59"), ("Account type", "Business cheque"),
+            ("Branch", "Demo Central"), ("Date opened", "22 July 2026"), ("Date issued", "1 October 2026")]
+    y = H - 230
+    for k, v in rows:
+        c.setFillColor(GREY); c.setFont("Helvetica", 12); c.drawString(50, y, k)
+        c.setFillColor(INK); c.setFont("Helvetica-Bold", 13); c.drawString(240, y, v)
+        c.setStrokeColor(LINE); c.setLineWidth(0.8); c.line(50, y - 12, W - 50, y - 12)
+        y -= 38
+    c.setFillColor(INK); c.setFont("Helvetica", 11)
+    c.drawString(50, y - 10, "We confirm that the above account is held with DemoBank and is in good standing.")
+    c.drawString(50, y - 60, "______________________")
+    c.drawString(50, y - 76, "Branch Manager (fictional)")
+    c.saveState(); c.translate(W / 2, H / 2 - 40); c.rotate(32)
+    c.setFillColor(Color(0.84, 0.19, 0.12, alpha=0.18)); c.setFont("Helvetica-Bold", 120)
+    c.drawCentredString(0, 0, "SAMPLE"); c.restoreState()
+    c.setFillColor(RED); c.setFont("Helvetica-Bold", 11)
+    c.drawString(50, 90, "RED FLAGS: account opened 3 months ago, not in the company's name, letter sent by a")
+    c.drawString(50, 75, "recruiter on WhatsApp. Real employers never ask for fees.")
+    c.setFont("Helvetica-Bold", 12)
+    c.drawString(50, 52, "DEMO DOCUMENT  |  FICTIONAL BANK  |  Ubufakazi demo kit, Team CyberThreat")
+    c.save()
+
+
+def screenshots():
+    """Screenshots of the fictional scam pages, as a victim would capture them."""
+    try:
+        import subprocess, sys, time
+        from playwright.sync_api import sync_playwright
+    except ImportError:
+        print("playwright not installed: skipping screenshots")
+        return []
+    site = OUT.parent
+    srv = subprocess.Popen([sys.executable, "-m", "http.server", "8799", "--bind", "127.0.0.1"], cwd=site,
+                           stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+    time.sleep(1)
+    shots = [("scam-demo/mzansi-careers/", "case1-scam-website-screenshot.png"),
+             ("scam-demo/recruiter-profile/", "case1-recruiter-profile-screenshot.png")]
+    try:
+        with sync_playwright() as p:
+            b = p.chromium.launch()
+            pg = b.new_page(viewport={"width": 430, "height": 900}, device_scale_factor=2)
+            for url, name in shots:
+                pg.goto("http://127.0.0.1:8799/" + url); pg.wait_for_load_state("networkidle")
+                pg.screenshot(path=str(OUT / name), full_page=True)
+            b.close()
+    finally:
+        srv.terminate()
+    return [n for _, n in shots]
+
+
+FILES = OUT.parent / "scam-demo" / "files"
+FILES.mkdir(parents=True, exist_ok=True)
+bank_letter_pdf(FILES / "demobank-confirmation-letter-mz-placements.pdf")
+bank_letter_pdf(OUT / "case1-bank-confirmation-letter.pdf")
+SHOTS = screenshots()
+
 for name, body in CHATS.items():
     (OUT / name).write_text(body, encoding="utf-8")
 for name, p in POPS:
     pop_pdf(OUT / name, p)
 guide_pdf(OUT / "READ-ME-FIRST-how-to-use.pdf")
 
-files = ["READ-ME-FIRST-how-to-use.pdf", *CHATS.keys(), *(n for n, _ in POPS)]
+files = ["READ-ME-FIRST-how-to-use.pdf", "case1-bank-confirmation-letter.pdf", *SHOTS, *CHATS.keys(), *(n for n, _ in POPS)]
 zpath = OUT / "ubufakazi-demo-evidence-kit.zip"
 with zipfile.ZipFile(zpath, "w", zipfile.ZIP_DEFLATED) as z:
     for f in sorted(files):
