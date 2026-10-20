@@ -92,7 +92,7 @@
     raf = 0;
     var g = geo;
     if (!g) return;
-    var t = reduce ? PERIOD - 1 : (now - t0) % PERIOD;
+    var t = reduce ? SCAN + 1 : (now - t0) % PERIOD;
     var p = Math.min(1, t / SCAN);
     var ease = p < 0.5 ? 2 * p * p : 1 - Math.pow(-2 * p + 2, 2) / 2;
     var scanY = g.top + (g.bottom - g.top) * ease;
