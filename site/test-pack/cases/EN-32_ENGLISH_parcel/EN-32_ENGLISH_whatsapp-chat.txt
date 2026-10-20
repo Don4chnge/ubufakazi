@@ -1,0 +1,8 @@
+[07/10/2026, 10:12:57] SwiftParcel: SwiftParcel: your parcel is held at our depot because customs duty is unpaid. Pay the clearance fee within 24 hours or the parcel will be returned. Pay securely on our clearance page and send proof of payment.
+[07/10/2026, 10:19:20] SwiftParcel: Clearance page: https://swiftparcel-clearance.online/pay
+Fee: R1 000
+DemoBank acc 5530 1990 12
+[07/10/2026, 10:32:45] Anele: I have paid R1,000. When will it be delivered?
+[07/10/2026, 10:56:46] SwiftParcel: Thank you. A redelivery fee of R200 is now due today
+[07/10/2026, 10:59:44] Anele: I sent R200
+[07/10/2026, 11:14:49] Anele: No parcel arrived. Please answer

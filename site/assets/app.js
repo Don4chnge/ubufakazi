@@ -102,17 +102,17 @@
   // ---------------------------------------------------------------- 2. extraction
   const BANKS = ['DemoBank', 'Capitec', 'First National Bank', 'FNB', 'Absa', 'Nedbank', 'Standard Bank', 'TymeBank', 'Discovery Bank', 'African Bank', 'Investec', 'Bidvest Bank', 'Old Mutual', 'Access Bank', 'Postbank'];
   const RE_BANK = new RegExp('\\b(' + BANKS.map((b) => b.replace(/ /g, '\\s+')).join('|') + ')\\b', 'i');
-  const RE_ACC_CTX = /(acc(ount)?\.?\s*(no|number|nr|#)?|a\/c|rekening|bank(ing)? details|deposit (in)?to|pay (in)?to|eft (in)?to)\s*[:\-]?\s*$/i;
+  const RE_ACC_CTX = /(acc(ount)?\.?\s*(no|number|nr|#)?|a\/c|rekening(nommer)?|akhawunti|akhaonto|bank(ing)? details|deposit (in)?to|pay (in)?to|eft (in)?to)\s*[:\-]?\s*$/i;
   const RE_DIGITS = /(?<![\d+])\d(?:[ \-]?\d){7,11}(?!\d)/g;
   const RE_PHONE = /(?<![\d])(?:\+27|0027|0)(?:[ \-]?\(?\d\)?){9}(?![\d])/g;
   const RE_AMOUNT = /\bR\s?(\d{1,3}(?:[ , ]\d{3})+|\d+)(?:[.,](\d{2}))?(?!\d)|\b(\d{1,3}(?:[ ,]\d{3})+|\d+)\s?(?:rand|zar)\b/gi;
   const RE_URL = /\bhttps?:\/\/[^\s<>"')\]]+/gi;
   const RE_DOMAIN = /(?<![@\w.-])((?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\.)+(?:co\.za|org\.za|net\.za|gov\.za|com|net|org|info|xyz|online|site|top|shop|store|club|live|link|click|ly|io|app|me|biz|icu|vip))(\/[^\s<>"')\]]*)?/gi;
   const RE_EMAIL = /\b[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}\b/gi;
-  const RE_PAID = /\b(i('ve| have)? (just )?(paid|sent|transferred|deposited|made (the )?payment)|paid|sent the|transferred|deposited|eft (done|made)|pop|proof of payment|payment (done|made|sent))\b/i;
-  const RE_ASK = /\b(pay|fee|deposit|transfer|send|eft|payment|charge|release)\b/i;
-  const RE_PRESSURE = /\b(today|urgent(ly)?|immediately|asap|limited|last chance|before (monday|tomorrow|friday|\d)|lose (the|your)|within \d+|right now|expires?)\b/i;
-  const RE_GONE = /\b(blocked|not going through|not answering|no answer|unreachable|ignor(ing|ed)|please answer|switched off|deleted)\b/i;
+  const RE_PAID = /\b(i('ve| have)? (just )?(paid|sent|transferred|deposited|made (the )?payment)|paid|sent the|transferred|deposited|eft (done|made)|pop|proof of payment|payment (done|made|sent)|(seng|ng)ikhokhile|(send|nd)ihlawulile|ek het[^.!?\n]{0,30}betaal|ke lefile|ke se ke lefile)\b/i;
+  const RE_ASK = /\b(pay|fee|deposit|transfer|send|eft|payment|charge|release|khokh[aei]|ukhokhe|hlawul[aei]|uhlawule|betaal|fooi|deposito|lef[ae]|tefo|imali|geld|tjhelete)\b/i;
+  const RE_PRESSURE = /\b(today|urgent(ly)?|immediately|asap|limited|last chance|before (monday|tomorrow|friday|\d)|lose (the|your)|within \d+|right now|expires?|namhlanje|ngokushesha|ngoku|ngokukhawuleza|vandag|dadelik|kajeno|hona jwale|kapele)\b/i;
+  const RE_GONE = /\b(blocked|not going through|not answering|no answer|unreachable|ignor(ing|ed)|please answer|switched off|deleted|awuphenduli|akaphenduli|antwoord (jy )?nie|geblokkeer|ha o arabe|ha a arabe)\b/i;
 
   function normPhone(s) {
     let d = s.replace(/\D/g, '');
@@ -159,7 +159,7 @@
         const lineStart = t.lastIndexOf('\n', d.index) + 1;
         const lineBefore = t.slice(lineStart, d.index);
         const bank = findBank(t, d.index);
-        const ctx = RE_ACC_CTX.test(before) || /acc|a\/c|account/i.test(lineBefore);
+        const ctx = RE_ACC_CTX.test(before) || /^\s*(acc(ount)?|a\/c|akhawunti|akhaonto|rekening)[^\d\n]{0,25}$/i.test(lineBefore);
         if (ctx || (bank && !/^0[6-8]/.test(digits))) {
           out.accounts.push({ value: digits, bank, msg: m.i });
           taken.push([d.index, d.index + d[0].length]);
@@ -188,7 +188,7 @@
         if (v > 0 && v < 10000000) amounts.push(v);
       }
       if (amounts.length) {
-        const salaryish = /\b(salary|per month|p\/m|pm|monthly|earn|stipend|profit|returns?|win|won)\b/i;
+        const salaryish = /\b(salary|per month|p\/m|pm|monthly|earn|stipend|profit|returns?|win|won|umholo|umvuzo|ngenyanga|salaris|per maand|moputso|ka kgwedi|refund|terugbetaling|ebuyiselwayo|e busetswang|loan|lening|prize)\b/i;
         if ((byVictim(m) || !scammerName) && RE_PAID.test(t)) out.paid.push({ amounts: [amounts[0]], msg: m.i });
         else if (byScammer(m) && RE_ASK.test(t)) {
           const hasAmount = new RegExp(RE_AMOUNT.source, 'i');
@@ -223,7 +223,7 @@
     const score = Object.fromEntries(senders.map((s) => [s, 0]));
     for (const m of msgs) {
       if (!m.sender) continue;
-      if (/acc(ount)?|a\/c|bank/i.test(m.text) && /\d{7,}/.test(m.text.replace(/[ -]/g, ''))) score[m.sender] += 3;
+      if (/acc(ount)?|a\/c|bank|akhawunti|akhaonto|rekening/i.test(m.text) && /\d{7,}/.test(m.text.replace(/[ -]/g, ''))) score[m.sender] += 3;
       if (RE_ASK.test(m.text) && /\bR\s?\d/i.test(m.text)) score[m.sender] += 2;
       if (RE_URL.test(m.text)) score[m.sender] += 1;
       RE_URL.lastIndex = 0;
@@ -234,12 +234,12 @@
   }
 
   const SCAM_WORDS = {
-    job: /\b(cv|position|vacanc(y|ies)|salary|recruit(er|ment)?|interview|job|employ(ed|ment)|hr|onboarding|uniform)\b/gi,
-    marketplace: /\b(item|selling|seller|buyer|marketplace|gumtree|facebook|still available|collect(ion)?|for sale)\b/gi,
-    romance: /\b(love|darling|baby|honey|miss you|sweetheart|my dear|marry|relationship)\b/gi,
-    investment: /\b(invest(ment)?|returns?|profit|crypto|bitcoin|forex|trading|double your)\b/gi,
-    parcel: /\b(parcel|courier|delivery|customs|clearance|tracking|shipment)\b/gi,
-    sars: /\b(sars|tax refund|efiling|refund)\b/gi,
+    job: /\b(cv|position|vacanc(y|ies)|salary|recruit(er|ment)?|interview|job|employ(ed|ment)|hr|onboarding|uniform|learnership|umsebenzi|isikhundla|esikhundleni|kwisikhundla|mosebetsi|pos|salaris|werk|yunifomu|iyunifomu|uniformfooi)\b/gi,
+    marketplace: /\b(item|selling|seller|buyer|marketplace|gumtree|facebook|still available|collect(ion)?|for sale|beskikbaar|oyithengisayo|isekhona|e rekisang|ad)\b/gi,
+    romance: /\b(love|darling|baby|honey|miss you|sweetheart|my dear|marry|relationship|ndiyakuthanda|ngiyakuthanda|sithandwa|moratuwa|ke a o rata|liefie|skat)\b/gi,
+    investment: /\b(invest(ment)?|returns?|profit|crypto|bitcoin|forex|trading|double your|belegging|wins|peeletso|phaello)\b/gi,
+    parcel: /\b(parcel|package|courier|delivery|customs|clearance|tracking|shipment|iphasela|ipasile|pakkie|phasela|doeane)\b/gi,
+    sars: /\b(sars|tax refund|efiling|refund|terugbetaling|ebuyiselwayo|e busetswang)\b/gi,
   };
   function detectType(text) {
     let best = 'other', top = 1;
@@ -266,7 +266,7 @@
       if (idx === 0) add('start', `First contact${m.sender ? ' from ' + m.sender : ''}`);
       if (isScam(m)) {
         lastScam = m;
-        if (idx > 0 && /\b(congratulations|selected|shortlisted|offer|approved|qualif(y|ied)|winner|won|refund (is )?due|guaranteed)\b/i.test(m.text)) add('offer', 'Promise or offer made');
+        if (idx > 0 && /\b(congratulations|selected|shortlisted|offer|approved|qualif(y|ied)|winner|won|refund (is )?due|guaranteed|halala|ukhethiwe|siyakuvuyisana|o kgethilwe|gekies|baie geluk|goedgekeur)\b/i.test(m.text)) add('offer', 'Promise or offer made');
         if (askMsgs.has(m.i)) add('ask', 'Payment of ' + listText(askMsgs.get(m.i).amounts.map(money)) + ' requested');
         if (accMsgs.has(m.i)) add('details', 'Banking details sent: ' + ex.accounts.filter((a) => a.msg === m.i).map((a) => (a.bank ? a.bank + ' ' : '') + showAcc(a.value)).join(', '));
         if (linkMsgs.has(m.i)) add('link', 'Link sent: ' + ex.links.filter((l) => l.msg === m.i).map((l) => l.domain).join(', '));

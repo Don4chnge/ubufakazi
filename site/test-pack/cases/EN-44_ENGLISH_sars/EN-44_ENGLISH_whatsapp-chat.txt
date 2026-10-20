@@ -1,0 +1,6 @@
+[06/10/2026, 16:29:42] SARS Refunds: Good day, I am calling from SARS. You have an outstanding penalty of R5,650. Pay today or a warrant will be issued for your arrest.
+[06/10/2026, 16:50:33] SARS Refunds: Pay to DemoBank acc 3274 3156 27 and send proof. Call me on 088 986 7964
+[06/10/2026, 16:58:58] Sizwe: I paid R5,650. Please cancel the warrant
+[06/10/2026, 17:10:51] SARS Refunds: Received. There is also an interest amount of R1 600
+[06/10/2026, 17:27:40] Sizwe: I sent R1,600
+[06/10/2026, 17:29:14] Sizwe: SARS says they never called me. You are not answering

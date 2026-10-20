@@ -1,0 +1,6 @@
+[06/10/2026, 08:20:23] SARS Refunds: Good day, I am calling from SARS. You have an outstanding penalty of R1 850. Pay today or a warrant will be issued for your arrest.
+[06/10/2026, 08:41:14] SARS Refunds: Pay to DemoBank acc 8892 9298 50 and send proof. Call me on 076 594 7014
+[06/10/2026, 08:58:29] Naledi: I paid R1 850. Please cancel the warrant
+[06/10/2026, 09:15:21] SARS Refunds: Received. There is also an interest amount of R1 950
+[06/10/2026, 09:30:41] Naledi: I sent R1 950
+[06/10/2026, 09:32:47] Naledi: SARS says they never called me. You are not answering

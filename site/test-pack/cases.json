@@ -1,0 +1,1024 @@
+[
+ {
+  "id": "EN-01",
+  "lang": "English",
+  "type": "job",
+  "type_label": "Fake job offer",
+  "victim": "Refilwe Pillay",
+  "folder": "EN-01_ENGLISH_job",
+  "chat": "EN-01_ENGLISH_whatsapp-chat.txt",
+  "pops": [
+   "EN-01_ENGLISH_proof-of-payment-1.pdf",
+   "EN-01_ENGLISH_proof-of-payment-2.pdf"
+  ],
+  "paid_total": 3450,
+  "note": "s1"
+ },
+ {
+  "id": "EN-02",
+  "lang": "English",
+  "type": "job",
+  "type_label": "Fake job offer",
+  "victim": "Khanyisile Tau",
+  "folder": "EN-02_ENGLISH_job",
+  "chat": "EN-02_ENGLISH_whatsapp-chat.txt",
+  "pops": [
+   "EN-02_ENGLISH_proof-of-payment-1.pdf",
+   "EN-02_ENGLISH_proof-of-payment-2.pdf"
+  ],
+  "paid_total": 2800,
+  "note": "s1-new-acc"
+ },
+ {
+  "id": "EN-03",
+  "lang": "English",
+  "type": "job",
+  "type_label": "Fake job offer",
+  "victim": "Anele Mthembu",
+  "folder": "EN-03_ENGLISH_job",
+  "chat": "EN-03_ENGLISH_whatsapp-chat.txt",
+  "pops": [
+   "EN-03_ENGLISH_proof-of-payment-1.pdf",
+   "EN-03_ENGLISH_proof-of-payment-2.pdf"
+  ],
+  "paid_total": 3800,
+  "note": "s1-script-only"
+ },
+ {
+  "id": "EN-04",
+  "lang": "English",
+  "type": "job",
+  "type_label": "Fake job offer",
+  "victim": "Mpho Mthembu",
+  "folder": "EN-04_ENGLISH_job",
+  "chat": "EN-04_ENGLISH_whatsapp-chat.txt",
+  "pops": [
+   "EN-04_ENGLISH_proof-of-payment-1.pdf"
+  ],
+  "paid_total": 800,
+  "note": ""
+ },
+ {
+  "id": "EN-05",
+  "lang": "English",
+  "type": "job",
+  "type_label": "Fake job offer",
+  "victim": "Nandi Mahlangu",
+  "folder": "EN-05_ENGLISH_job",
+  "chat": "EN-05_ENGLISH_whatsapp-chat.txt",
+  "pops": [
+   "EN-05_ENGLISH_proof-of-payment-1.pdf"
+  ],
+  "paid_total": 1150,
+  "note": ""
+ },
+ {
+  "id": "EN-06",
+  "lang": "English",
+  "type": "job",
+  "type_label": "Fake job offer",
+  "victim": "Sizwe Mthembu",
+  "folder": "EN-06_ENGLISH_job",
+  "chat": "EN-06_ENGLISH_whatsapp-chat.txt",
+  "pops": [
+   "EN-06_ENGLISH_proof-of-payment-1.pdf"
+  ],
+  "paid_total": 650,
+  "note": ""
+ },
+ {
+  "id": "EN-07",
+  "lang": "English",
+  "type": "job",
+  "type_label": "Fake job offer",
+  "victim": "Tshepo Mabaso",
+  "folder": "EN-07_ENGLISH_job",
+  "chat": "EN-07_ENGLISH_whatsapp-chat.txt",
+  "pops": [
+   "EN-07_ENGLISH_proof-of-payment-1.pdf",
+   "EN-07_ENGLISH_proof-of-payment-2.pdf"
+  ],
+  "paid_total": 2850,
+  "note": ""
+ },
+ {
+  "id": "EN-08",
+  "lang": "English",
+  "type": "job",
+  "type_label": "Fake job offer",
+  "victim": "Andile Coetzee",
+  "folder": "EN-08_ENGLISH_job",
+  "chat": "EN-08_ENGLISH_whatsapp-chat.txt",
+  "pops": [
+   "EN-08_ENGLISH_proof-of-payment-1.pdf",
+   "EN-08_ENGLISH_proof-of-payment-2.pdf"
+  ],
+  "paid_total": 2700,
+  "note": ""
+ },
+ {
+  "id": "EN-09",
+  "lang": "English",
+  "type": "job",
+  "type_label": "Fake job offer",
+  "victim": "Siyabonga Mthembu",
+  "folder": "EN-09_ENGLISH_job",
+  "chat": "EN-09_ENGLISH_whatsapp-chat.txt",
+  "pops": [
+   "EN-09_ENGLISH_proof-of-payment-1.pdf",
+   "EN-09_ENGLISH_proof-of-payment-2.pdf"
+  ],
+  "paid_total": 3950,
+  "note": ""
+ },
+ {
+  "id": "EN-10",
+  "lang": "English",
+  "type": "marketplace",
+  "type_label": "Online seller / Marketplace",
+  "victim": "Precious Naidoo",
+  "folder": "EN-10_ENGLISH_marketplace",
+  "chat": "EN-10_ENGLISH_whatsapp-chat.txt",
+  "pops": [
+   "EN-10_ENGLISH_proof-of-payment-1.pdf"
+  ],
+  "paid_total": 5800,
+  "note": "cluster-m"
+ },
+ {
+  "id": "EN-11",
+  "lang": "English",
+  "type": "marketplace",
+  "type_label": "Online seller / Marketplace",
+  "victim": "Vusi Mahlangu",
+  "folder": "EN-11_ENGLISH_marketplace",
+  "chat": "EN-11_ENGLISH_whatsapp-chat.txt",
+  "pops": [
+   "EN-11_ENGLISH_proof-of-payment-1.pdf",
+   "EN-11_ENGLISH_proof-of-payment-2.pdf"
+  ],
+  "paid_total": 3800,
+  "note": "cluster-m"
+ },
+ {
+  "id": "EN-12",
+  "lang": "English",
+  "type": "marketplace",
+  "type_label": "Online seller / Marketplace",
+  "victim": "Refilwe Mahlangu",
+  "folder": "EN-12_ENGLISH_marketplace",
+  "chat": "EN-12_ENGLISH_whatsapp-chat.txt",
+  "pops": [
+   "EN-12_ENGLISH_proof-of-payment-1.pdf"
+  ],
+  "paid_total": 2050,
+  "note": "cluster-m"
+ },
+ {
+  "id": "EN-13",
+  "lang": "English",
+  "type": "marketplace",
+  "type_label": "Online seller / Marketplace",
+  "victim": "Kagiso Coetzee",
+  "folder": "EN-13_ENGLISH_marketplace",
+  "chat": "EN-13_ENGLISH_whatsapp-chat.txt",
+  "pops": [
+   "EN-13_ENGLISH_proof-of-payment-1.pdf"
+  ],
+  "paid_total": 7700,
+  "note": ""
+ },
+ {
+  "id": "EN-14",
+  "lang": "English",
+  "type": "marketplace",
+  "type_label": "Online seller / Marketplace",
+  "victim": "Sibusiso Molefe",
+  "folder": "EN-14_ENGLISH_marketplace",
+  "chat": "EN-14_ENGLISH_whatsapp-chat.txt",
+  "pops": [
+   "EN-14_ENGLISH_proof-of-payment-1.pdf"
+  ],
+  "paid_total": 6100,
+  "note": ""
+ },
+ {
+  "id": "EN-15",
+  "lang": "English",
+  "type": "marketplace",
+  "type_label": "Online seller / Marketplace",
+  "victim": "Busisiwe Ndlovu",
+  "folder": "EN-15_ENGLISH_marketplace",
+  "chat": "EN-15_ENGLISH_whatsapp-chat.txt",
+  "pops": [
+   "EN-15_ENGLISH_proof-of-payment-1.pdf"
+  ],
+  "paid_total": 3200,
+  "note": ""
+ },
+ {
+  "id": "EN-16",
+  "lang": "English",
+  "type": "marketplace",
+  "type_label": "Online seller / Marketplace",
+  "victim": "Anele Mahlangu",
+  "folder": "EN-16_ENGLISH_marketplace",
+  "chat": "EN-16_ENGLISH_whatsapp-chat.txt",
+  "pops": [
+   "EN-16_ENGLISH_proof-of-payment-1.pdf",
+   "EN-16_ENGLISH_proof-of-payment-2.pdf"
+  ],
+  "paid_total": 4750,
+  "note": ""
+ },
+ {
+  "id": "EN-17",
+  "lang": "English",
+  "type": "marketplace",
+  "type_label": "Online seller / Marketplace",
+  "victim": "Busisiwe Khumalo",
+  "folder": "EN-17_ENGLISH_marketplace",
+  "chat": "EN-17_ENGLISH_whatsapp-chat.txt",
+  "pops": [
+   "EN-17_ENGLISH_proof-of-payment-1.pdf",
+   "EN-17_ENGLISH_proof-of-payment-2.pdf"
+  ],
+  "paid_total": 6250,
+  "note": ""
+ },
+ {
+  "id": "EN-18",
+  "lang": "English",
+  "type": "marketplace",
+  "type_label": "Online seller / Marketplace",
+  "victim": "Lindiwe Ndlovu",
+  "folder": "EN-18_ENGLISH_marketplace",
+  "chat": "EN-18_ENGLISH_whatsapp-chat.txt",
+  "pops": [
+   "EN-18_ENGLISH_proof-of-payment-1.pdf",
+   "EN-18_ENGLISH_proof-of-payment-2.pdf"
+  ],
+  "paid_total": 2500,
+  "note": ""
+ },
+ {
+  "id": "EN-19",
+  "lang": "English",
+  "type": "romance",
+  "type_label": "Romance",
+  "victim": "Lindiwe Nkosi",
+  "folder": "EN-19_ENGLISH_romance",
+  "chat": "EN-19_ENGLISH_whatsapp-chat.txt",
+  "pops": [
+   "EN-19_ENGLISH_proof-of-payment-1.pdf",
+   "EN-19_ENGLISH_proof-of-payment-2.pdf"
+  ],
+  "paid_total": 15900,
+  "note": "cluster-r"
+ },
+ {
+  "id": "EN-20",
+  "lang": "English",
+  "type": "romance",
+  "type_label": "Romance",
+  "victim": "Tshepo Coetzee",
+  "folder": "EN-20_ENGLISH_romance",
+  "chat": "EN-20_ENGLISH_whatsapp-chat.txt",
+  "pops": [
+   "EN-20_ENGLISH_proof-of-payment-1.pdf",
+   "EN-20_ENGLISH_proof-of-payment-2.pdf"
+  ],
+  "paid_total": 12450,
+  "note": "cluster-r"
+ },
+ {
+  "id": "EN-21",
+  "lang": "English",
+  "type": "romance",
+  "type_label": "Romance",
+  "victim": "Themba Van Wyk",
+  "folder": "EN-21_ENGLISH_romance",
+  "chat": "EN-21_ENGLISH_whatsapp-chat.txt",
+  "pops": [
+   "EN-21_ENGLISH_proof-of-payment-1.pdf",
+   "EN-21_ENGLISH_proof-of-payment-2.pdf"
+  ],
+  "paid_total": 16450,
+  "note": ""
+ },
+ {
+  "id": "EN-22",
+  "lang": "English",
+  "type": "romance",
+  "type_label": "Romance",
+  "victim": "Naledi Mahlangu",
+  "folder": "EN-22_ENGLISH_romance",
+  "chat": "EN-22_ENGLISH_whatsapp-chat.txt",
+  "pops": [
+   "EN-22_ENGLISH_proof-of-payment-1.pdf",
+   "EN-22_ENGLISH_proof-of-payment-2.pdf"
+  ],
+  "paid_total": 9000,
+  "note": ""
+ },
+ {
+  "id": "EN-23",
+  "lang": "English",
+  "type": "romance",
+  "type_label": "Romance",
+  "victim": "Siyabonga Khumalo",
+  "folder": "EN-23_ENGLISH_romance",
+  "chat": "EN-23_ENGLISH_whatsapp-chat.txt",
+  "pops": [
+   "EN-23_ENGLISH_proof-of-payment-1.pdf",
+   "EN-23_ENGLISH_proof-of-payment-2.pdf"
+  ],
+  "paid_total": 6150,
+  "note": ""
+ },
+ {
+  "id": "EN-24",
+  "lang": "English",
+  "type": "romance",
+  "type_label": "Romance",
+  "victim": "Nandi Mabaso",
+  "folder": "EN-24_ENGLISH_romance",
+  "chat": "EN-24_ENGLISH_whatsapp-chat.txt",
+  "pops": [
+   "EN-24_ENGLISH_proof-of-payment-1.pdf",
+   "EN-24_ENGLISH_proof-of-payment-2.pdf"
+  ],
+  "paid_total": 19200,
+  "note": ""
+ },
+ {
+  "id": "EN-25",
+  "lang": "English",
+  "type": "investment",
+  "type_label": "Investment / crypto",
+  "victim": "Ayanda Mokoena",
+  "folder": "EN-25_ENGLISH_investment",
+  "chat": "EN-25_ENGLISH_whatsapp-chat.txt",
+  "pops": [
+   "EN-25_ENGLISH_proof-of-payment-1.pdf",
+   "EN-25_ENGLISH_proof-of-payment-2.pdf"
+  ],
+  "paid_total": 8250,
+  "note": "s3"
+ },
+ {
+  "id": "EN-26",
+  "lang": "English",
+  "type": "investment",
+  "type_label": "Investment / crypto",
+  "victim": "Vusi Mthembu",
+  "folder": "EN-26_ENGLISH_investment",
+  "chat": "EN-26_ENGLISH_whatsapp-chat.txt",
+  "pops": [
+   "EN-26_ENGLISH_proof-of-payment-1.pdf",
+   "EN-26_ENGLISH_proof-of-payment-2.pdf"
+  ],
+  "paid_total": 11550,
+  "note": "s3-new-acc"
+ },
+ {
+  "id": "EN-27",
+  "lang": "English",
+  "type": "investment",
+  "type_label": "Investment / crypto",
+  "victim": "Ayanda Ndlovu",
+  "folder": "EN-27_ENGLISH_investment",
+  "chat": "EN-27_ENGLISH_whatsapp-chat.txt",
+  "pops": [
+   "EN-27_ENGLISH_proof-of-payment-1.pdf",
+   "EN-27_ENGLISH_proof-of-payment-2.pdf"
+  ],
+  "paid_total": 15200,
+  "note": ""
+ },
+ {
+  "id": "EN-28",
+  "lang": "English",
+  "type": "investment",
+  "type_label": "Investment / crypto",
+  "victim": "Pieter Nkosi",
+  "folder": "EN-28_ENGLISH_investment",
+  "chat": "EN-28_ENGLISH_whatsapp-chat.txt",
+  "pops": [
+   "EN-28_ENGLISH_proof-of-payment-1.pdf",
+   "EN-28_ENGLISH_proof-of-payment-2.pdf"
+  ],
+  "paid_total": 4000,
+  "note": ""
+ },
+ {
+  "id": "EN-29",
+  "lang": "English",
+  "type": "investment",
+  "type_label": "Investment / crypto",
+  "victim": "Johan Botha",
+  "folder": "EN-29_ENGLISH_investment",
+  "chat": "EN-29_ENGLISH_whatsapp-chat.txt",
+  "pops": [
+   "EN-29_ENGLISH_proof-of-payment-1.pdf",
+   "EN-29_ENGLISH_proof-of-payment-2.pdf"
+  ],
+  "paid_total": 8950,
+  "note": ""
+ },
+ {
+  "id": "EN-30",
+  "lang": "English",
+  "type": "investment",
+  "type_label": "Investment / crypto",
+  "victim": "Lerato Botha",
+  "folder": "EN-30_ENGLISH_investment",
+  "chat": "EN-30_ENGLISH_whatsapp-chat.txt",
+  "pops": [
+   "EN-30_ENGLISH_proof-of-payment-1.pdf",
+   "EN-30_ENGLISH_proof-of-payment-2.pdf"
+  ],
+  "paid_total": 18100,
+  "note": ""
+ },
+ {
+  "id": "EN-31",
+  "lang": "English",
+  "type": "investment",
+  "type_label": "Investment / crypto",
+  "victim": "Karabo Molefe",
+  "folder": "EN-31_ENGLISH_investment",
+  "chat": "EN-31_ENGLISH_whatsapp-chat.txt",
+  "pops": [
+   "EN-31_ENGLISH_proof-of-payment-1.pdf",
+   "EN-31_ENGLISH_proof-of-payment-2.pdf"
+  ],
+  "paid_total": 19600,
+  "note": ""
+ },
+ {
+  "id": "EN-32",
+  "lang": "English",
+  "type": "parcel",
+  "type_label": "Courier / parcel fee",
+  "victim": "Anele Tau",
+  "folder": "EN-32_ENGLISH_parcel",
+  "chat": "EN-32_ENGLISH_whatsapp-chat.txt",
+  "pops": [
+   "EN-32_ENGLISH_proof-of-payment-1.pdf",
+   "EN-32_ENGLISH_proof-of-payment-2.pdf"
+  ],
+  "paid_total": 1200,
+  "note": "s2"
+ },
+ {
+  "id": "EN-33",
+  "lang": "English",
+  "type": "parcel",
+  "type_label": "Courier / parcel fee",
+  "victim": "Nandi Mahlangu",
+  "folder": "EN-33_ENGLISH_parcel",
+  "chat": "EN-33_ENGLISH_whatsapp-chat.txt",
+  "pops": [
+   "EN-33_ENGLISH_proof-of-payment-1.pdf",
+   "EN-33_ENGLISH_proof-of-payment-2.pdf"
+  ],
+  "paid_total": 1150,
+  "note": "s2"
+ },
+ {
+  "id": "EN-34",
+  "lang": "English",
+  "type": "parcel",
+  "type_label": "Courier / parcel fee",
+  "victim": "Naledi Tau",
+  "folder": "EN-34_ENGLISH_parcel",
+  "chat": "EN-34_ENGLISH_whatsapp-chat.txt",
+  "pops": [
+   "EN-34_ENGLISH_proof-of-payment-1.pdf",
+   "EN-34_ENGLISH_proof-of-payment-2.pdf"
+  ],
+  "paid_total": 1050,
+  "note": "s2-new-acc"
+ },
+ {
+  "id": "EN-35",
+  "lang": "English",
+  "type": "parcel",
+  "type_label": "Courier / parcel fee",
+  "victim": "Busisiwe Van Wyk",
+  "folder": "EN-35_ENGLISH_parcel",
+  "chat": "EN-35_ENGLISH_whatsapp-chat.txt",
+  "pops": [
+   "EN-35_ENGLISH_proof-of-payment-1.pdf"
+  ],
+  "paid_total": 700,
+  "note": ""
+ },
+ {
+  "id": "EN-36",
+  "lang": "English",
+  "type": "parcel",
+  "type_label": "Courier / parcel fee",
+  "victim": "Vusi Sithole",
+  "folder": "EN-36_ENGLISH_parcel",
+  "chat": "EN-36_ENGLISH_whatsapp-chat.txt",
+  "pops": [
+   "EN-36_ENGLISH_proof-of-payment-1.pdf"
+  ],
+  "paid_total": 550,
+  "note": ""
+ },
+ {
+  "id": "EN-37",
+  "lang": "English",
+  "type": "parcel",
+  "type_label": "Courier / parcel fee",
+  "victim": "Refilwe Mokoena",
+  "folder": "EN-37_ENGLISH_parcel",
+  "chat": "EN-37_ENGLISH_whatsapp-chat.txt",
+  "pops": [
+   "EN-37_ENGLISH_proof-of-payment-1.pdf"
+  ],
+  "paid_total": 300,
+  "note": ""
+ },
+ {
+  "id": "EN-38",
+  "lang": "English",
+  "type": "parcel",
+  "type_label": "Courier / parcel fee",
+  "victim": "Kagiso Pillay",
+  "folder": "EN-38_ENGLISH_parcel",
+  "chat": "EN-38_ENGLISH_whatsapp-chat.txt",
+  "pops": [
+   "EN-38_ENGLISH_proof-of-payment-1.pdf"
+  ],
+  "paid_total": 850,
+  "note": ""
+ },
+ {
+  "id": "EN-39",
+  "lang": "English",
+  "type": "parcel",
+  "type_label": "Courier / parcel fee",
+  "victim": "Naledi Molefe",
+  "folder": "EN-39_ENGLISH_parcel",
+  "chat": "EN-39_ENGLISH_whatsapp-chat.txt",
+  "pops": [
+   "EN-39_ENGLISH_proof-of-payment-1.pdf"
+  ],
+  "paid_total": 500,
+  "note": ""
+ },
+ {
+  "id": "EN-40",
+  "lang": "English",
+  "type": "sars",
+  "type_label": "Fake SARS refund",
+  "victim": "Palesa Mthembu",
+  "folder": "EN-40_ENGLISH_sars",
+  "chat": "EN-40_ENGLISH_whatsapp-chat.txt",
+  "pops": [
+   "EN-40_ENGLISH_proof-of-payment-1.pdf"
+  ],
+  "paid_total": 850,
+  "note": ""
+ },
+ {
+  "id": "EN-41",
+  "lang": "English",
+  "type": "sars",
+  "type_label": "Fake SARS refund",
+  "victim": "Busisiwe Mokoena",
+  "folder": "EN-41_ENGLISH_sars",
+  "chat": "EN-41_ENGLISH_whatsapp-chat.txt",
+  "pops": [
+   "EN-41_ENGLISH_proof-of-payment-1.pdf"
+  ],
+  "paid_total": 900,
+  "note": ""
+ },
+ {
+  "id": "EN-42",
+  "lang": "English",
+  "type": "sars",
+  "type_label": "Fake SARS refund",
+  "victim": "Ntombi Ndlovu",
+  "folder": "EN-42_ENGLISH_sars",
+  "chat": "EN-42_ENGLISH_whatsapp-chat.txt",
+  "pops": [
+   "EN-42_ENGLISH_proof-of-payment-1.pdf"
+  ],
+  "paid_total": 1400,
+  "note": ""
+ },
+ {
+  "id": "EN-43",
+  "lang": "English",
+  "type": "sars",
+  "type_label": "Fake SARS refund",
+  "victim": "Busisiwe Ndlovu",
+  "folder": "EN-43_ENGLISH_sars",
+  "chat": "EN-43_ENGLISH_whatsapp-chat.txt",
+  "pops": [
+   "EN-43_ENGLISH_proof-of-payment-1.pdf",
+   "EN-43_ENGLISH_proof-of-payment-2.pdf"
+  ],
+  "paid_total": 2350,
+  "note": ""
+ },
+ {
+  "id": "EN-44",
+  "lang": "English",
+  "type": "sars",
+  "type_label": "Fake SARS refund",
+  "victim": "Sizwe Coetzee",
+  "folder": "EN-44_ENGLISH_sars",
+  "chat": "EN-44_ENGLISH_whatsapp-chat.txt",
+  "pops": [
+   "EN-44_ENGLISH_proof-of-payment-1.pdf",
+   "EN-44_ENGLISH_proof-of-payment-2.pdf"
+  ],
+  "paid_total": 7250,
+  "note": ""
+ },
+ {
+  "id": "EN-45",
+  "lang": "English",
+  "type": "sars",
+  "type_label": "Fake SARS refund",
+  "victim": "Naledi Radebe",
+  "folder": "EN-45_ENGLISH_sars",
+  "chat": "EN-45_ENGLISH_whatsapp-chat.txt",
+  "pops": [
+   "EN-45_ENGLISH_proof-of-payment-1.pdf",
+   "EN-45_ENGLISH_proof-of-payment-2.pdf"
+  ],
+  "paid_total": 3800,
+  "note": ""
+ },
+ {
+  "id": "EN-46",
+  "lang": "English",
+  "type": "other",
+  "type_label": "Something else",
+  "victim": "Mpho Mabena",
+  "folder": "EN-46_ENGLISH_other",
+  "chat": "EN-46_ENGLISH_whatsapp-chat.txt",
+  "pops": [
+   "EN-46_ENGLISH_proof-of-payment-1.pdf",
+   "EN-46_ENGLISH_proof-of-payment-2.pdf"
+  ],
+  "paid_total": 2200,
+  "note": ""
+ },
+ {
+  "id": "EN-47",
+  "lang": "English",
+  "type": "other",
+  "type_label": "Something else",
+  "victim": "Precious Ndlovu",
+  "folder": "EN-47_ENGLISH_other",
+  "chat": "EN-47_ENGLISH_whatsapp-chat.txt",
+  "pops": [
+   "EN-47_ENGLISH_proof-of-payment-1.pdf",
+   "EN-47_ENGLISH_proof-of-payment-2.pdf"
+  ],
+  "paid_total": 2750,
+  "note": ""
+ },
+ {
+  "id": "EN-48",
+  "lang": "English",
+  "type": "other",
+  "type_label": "Something else",
+  "victim": "Andile Tau",
+  "folder": "EN-48_ENGLISH_other",
+  "chat": "EN-48_ENGLISH_whatsapp-chat.txt",
+  "pops": [
+   "EN-48_ENGLISH_proof-of-payment-1.pdf",
+   "EN-48_ENGLISH_proof-of-payment-2.pdf"
+  ],
+  "paid_total": 5050,
+  "note": ""
+ },
+ {
+  "id": "EN-49",
+  "lang": "English",
+  "type": "other",
+  "type_label": "Something else",
+  "victim": "Vusi Zulu",
+  "folder": "EN-49_ENGLISH_other",
+  "chat": "EN-49_ENGLISH_whatsapp-chat.txt",
+  "pops": [
+   "EN-49_ENGLISH_proof-of-payment-1.pdf",
+   "EN-49_ENGLISH_proof-of-payment-2.pdf"
+  ],
+  "paid_total": 3600,
+  "note": ""
+ },
+ {
+  "id": "EN-50",
+  "lang": "English",
+  "type": "other",
+  "type_label": "Something else",
+  "victim": "Ntombi Mabena",
+  "folder": "EN-50_ENGLISH_other",
+  "chat": "EN-50_ENGLISH_whatsapp-chat.txt",
+  "pops": [
+   "EN-50_ENGLISH_proof-of-payment-1.pdf",
+   "EN-50_ENGLISH_proof-of-payment-2.pdf"
+  ],
+  "paid_total": 3400,
+  "note": ""
+ },
+ {
+  "id": "ZU-01",
+  "lang": "isiZulu",
+  "type": "job",
+  "type_label": "Fake job offer",
+  "victim": "Zanele Khumalo",
+  "folder": "ZU-01_ISIZULU_job",
+  "chat": "ZU-01_ISIZULU_whatsapp-chat.txt",
+  "pops": [
+   "ZU-01_ISIZULU_proof-of-payment-1.pdf"
+  ],
+  "paid_total": 2400,
+  "note": "s1"
+ },
+ {
+  "id": "ZU-02",
+  "lang": "isiZulu",
+  "type": "marketplace",
+  "type_label": "Online seller / Marketplace",
+  "victim": "Mpho Mokoena",
+  "folder": "ZU-02_ISIZULU_marketplace",
+  "chat": "ZU-02_ISIZULU_whatsapp-chat.txt",
+  "pops": [
+   "ZU-02_ISIZULU_proof-of-payment-1.pdf"
+  ],
+  "paid_total": 3500,
+  "note": ""
+ },
+ {
+  "id": "ZU-03",
+  "lang": "isiZulu",
+  "type": "parcel",
+  "type_label": "Courier / parcel fee",
+  "victim": "Themba Mokoena",
+  "folder": "ZU-03_ISIZULU_parcel",
+  "chat": "ZU-03_ISIZULU_whatsapp-chat.txt",
+  "pops": [
+   "ZU-03_ISIZULU_proof-of-payment-1.pdf",
+   "ZU-03_ISIZULU_proof-of-payment-2.pdf"
+  ],
+  "paid_total": 800,
+  "note": ""
+ },
+ {
+  "id": "ZU-04",
+  "lang": "isiZulu",
+  "type": "sars",
+  "type_label": "Fake SARS refund",
+  "victim": "Ntombi Mokoena",
+  "folder": "ZU-04_ISIZULU_sars",
+  "chat": "ZU-04_ISIZULU_whatsapp-chat.txt",
+  "pops": [
+   "ZU-04_ISIZULU_proof-of-payment-1.pdf"
+  ],
+  "paid_total": 800,
+  "note": ""
+ },
+ {
+  "id": "ZU-05",
+  "lang": "isiZulu",
+  "type": "other",
+  "type_label": "Something else",
+  "victim": "Vusi Radebe",
+  "folder": "ZU-05_ISIZULU_other",
+  "chat": "ZU-05_ISIZULU_whatsapp-chat.txt",
+  "pops": [
+   "ZU-05_ISIZULU_proof-of-payment-1.pdf",
+   "ZU-05_ISIZULU_proof-of-payment-2.pdf"
+  ],
+  "paid_total": 4950,
+  "note": ""
+ },
+ {
+  "id": "XH-01",
+  "lang": "isiXhosa",
+  "type": "job",
+  "type_label": "Fake job offer",
+  "victim": "Andile Botha",
+  "folder": "XH-01_ISIXHOSA_job",
+  "chat": "XH-01_ISIXHOSA_whatsapp-chat.txt",
+  "pops": [
+   "XH-01_ISIXHOSA_proof-of-payment-1.pdf"
+  ],
+  "paid_total": 2300,
+  "note": "s1"
+ },
+ {
+  "id": "XH-02",
+  "lang": "isiXhosa",
+  "type": "marketplace",
+  "type_label": "Online seller / Marketplace",
+  "victim": "Karabo Radebe",
+  "folder": "XH-02_ISIXHOSA_marketplace",
+  "chat": "XH-02_ISIXHOSA_whatsapp-chat.txt",
+  "pops": [
+   "XH-02_ISIXHOSA_proof-of-payment-1.pdf"
+  ],
+  "paid_total": 4150,
+  "note": ""
+ },
+ {
+  "id": "XH-03",
+  "lang": "isiXhosa",
+  "type": "parcel",
+  "type_label": "Courier / parcel fee",
+  "victim": "Nandi Ndlovu",
+  "folder": "XH-03_ISIXHOSA_parcel",
+  "chat": "XH-03_ISIXHOSA_whatsapp-chat.txt",
+  "pops": [
+   "XH-03_ISIXHOSA_proof-of-payment-1.pdf",
+   "XH-03_ISIXHOSA_proof-of-payment-2.pdf"
+  ],
+  "paid_total": 500,
+  "note": ""
+ },
+ {
+  "id": "XH-04",
+  "lang": "isiXhosa",
+  "type": "sars",
+  "type_label": "Fake SARS refund",
+  "victim": "Vusi Ndlovu",
+  "folder": "XH-04_ISIXHOSA_sars",
+  "chat": "XH-04_ISIXHOSA_whatsapp-chat.txt",
+  "pops": [
+   "XH-04_ISIXHOSA_proof-of-payment-1.pdf"
+  ],
+  "paid_total": 550,
+  "note": ""
+ },
+ {
+  "id": "XH-05",
+  "lang": "isiXhosa",
+  "type": "romance",
+  "type_label": "Romance",
+  "victim": "Kagiso Zulu",
+  "folder": "XH-05_ISIXHOSA_romance",
+  "chat": "XH-05_ISIXHOSA_whatsapp-chat.txt",
+  "pops": [
+   "XH-05_ISIXHOSA_proof-of-payment-1.pdf",
+   "XH-05_ISIXHOSA_proof-of-payment-2.pdf"
+  ],
+  "paid_total": 11650,
+  "note": ""
+ },
+ {
+  "id": "AF-01",
+  "lang": "Afrikaans",
+  "type": "job",
+  "type_label": "Fake job offer",
+  "victim": "Johan Tau",
+  "folder": "AF-01_AFRIKAANS_job",
+  "chat": "AF-01_AFRIKAANS_whatsapp-chat.txt",
+  "pops": [
+   "AF-01_AFRIKAANS_proof-of-payment-1.pdf"
+  ],
+  "paid_total": 2050,
+  "note": "s1"
+ },
+ {
+  "id": "AF-02",
+  "lang": "Afrikaans",
+  "type": "marketplace",
+  "type_label": "Online seller / Marketplace",
+  "victim": "Lindiwe Mthembu",
+  "folder": "AF-02_AFRIKAANS_marketplace",
+  "chat": "AF-02_AFRIKAANS_whatsapp-chat.txt",
+  "pops": [
+   "AF-02_AFRIKAANS_proof-of-payment-1.pdf"
+  ],
+  "paid_total": 3550,
+  "note": ""
+ },
+ {
+  "id": "AF-03",
+  "lang": "Afrikaans",
+  "type": "parcel",
+  "type_label": "Courier / parcel fee",
+  "victim": "Vusi Tau",
+  "folder": "AF-03_AFRIKAANS_parcel",
+  "chat": "AF-03_AFRIKAANS_whatsapp-chat.txt",
+  "pops": [
+   "AF-03_AFRIKAANS_proof-of-payment-1.pdf",
+   "AF-03_AFRIKAANS_proof-of-payment-2.pdf"
+  ],
+  "paid_total": 600,
+  "note": ""
+ },
+ {
+  "id": "AF-04",
+  "lang": "Afrikaans",
+  "type": "sars",
+  "type_label": "Fake SARS refund",
+  "victim": "Mpho Mabaso",
+  "folder": "AF-04_AFRIKAANS_sars",
+  "chat": "AF-04_AFRIKAANS_whatsapp-chat.txt",
+  "pops": [
+   "AF-04_AFRIKAANS_proof-of-payment-1.pdf"
+  ],
+  "paid_total": 550,
+  "note": ""
+ },
+ {
+  "id": "AF-05",
+  "lang": "Afrikaans",
+  "type": "other",
+  "type_label": "Something else",
+  "victim": "Tshepo Khumalo",
+  "folder": "AF-05_AFRIKAANS_other",
+  "chat": "AF-05_AFRIKAANS_whatsapp-chat.txt",
+  "pops": [
+   "AF-05_AFRIKAANS_proof-of-payment-1.pdf",
+   "AF-05_AFRIKAANS_proof-of-payment-2.pdf"
+  ],
+  "paid_total": 2000,
+  "note": ""
+ },
+ {
+  "id": "ST-01",
+  "lang": "Sesotho",
+  "type": "job",
+  "type_label": "Fake job offer",
+  "victim": "Pieter Nkosi",
+  "folder": "ST-01_SESOTHO_job",
+  "chat": "ST-01_SESOTHO_whatsapp-chat.txt",
+  "pops": [
+   "ST-01_SESOTHO_proof-of-payment-1.pdf"
+  ],
+  "paid_total": 2000,
+  "note": "s1"
+ },
+ {
+  "id": "ST-02",
+  "lang": "Sesotho",
+  "type": "marketplace",
+  "type_label": "Online seller / Marketplace",
+  "victim": "Nandi Khumalo",
+  "folder": "ST-02_SESOTHO_marketplace",
+  "chat": "ST-02_SESOTHO_whatsapp-chat.txt",
+  "pops": [
+   "ST-02_SESOTHO_proof-of-payment-1.pdf"
+  ],
+  "paid_total": 3700,
+  "note": ""
+ },
+ {
+  "id": "ST-03",
+  "lang": "Sesotho",
+  "type": "parcel",
+  "type_label": "Courier / parcel fee",
+  "victim": "Marelize Coetzee",
+  "folder": "ST-03_SESOTHO_parcel",
+  "chat": "ST-03_SESOTHO_whatsapp-chat.txt",
+  "pops": [
+   "ST-03_SESOTHO_proof-of-payment-1.pdf",
+   "ST-03_SESOTHO_proof-of-payment-2.pdf"
+  ],
+  "paid_total": 450,
+  "note": ""
+ },
+ {
+  "id": "ST-04",
+  "lang": "Sesotho",
+  "type": "sars",
+  "type_label": "Fake SARS refund",
+  "victim": "Andile Mthembu",
+  "folder": "ST-04_SESOTHO_sars",
+  "chat": "ST-04_SESOTHO_whatsapp-chat.txt",
+  "pops": [
+   "ST-04_SESOTHO_proof-of-payment-1.pdf"
+  ],
+  "paid_total": 1000,
+  "note": ""
+ },
+ {
+  "id": "ST-05",
+  "lang": "Sesotho",
+  "type": "romance",
+  "type_label": "Romance",
+  "victim": "Bongani Mahlangu",
+  "folder": "ST-05_SESOTHO_romance",
+  "chat": "ST-05_SESOTHO_whatsapp-chat.txt",
+  "pops": [
+   "ST-05_SESOTHO_proof-of-payment-1.pdf",
+   "ST-05_SESOTHO_proof-of-payment-2.pdf"
+  ],
+  "paid_total": 7900,
+  "note": ""
+ }
+]

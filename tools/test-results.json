@@ -1,0 +1,1163 @@
+{
+ "EN-01": {
+  "head": "THIS SCAMMER HAS BEEN REPORTED BY 6 OTHER PEOPLE. COMBINED LOSSES: R84 000.",
+  "victim": "#7",
+  "facts": {
+   "NAME USED": "Thandi (HR Recruiter)",
+   "BANK ACCOUNTS": "DemoBank \u00b7 1047 2283 59",
+   "PHONE NUMBERS": "073 126 5348",
+   "LINKS": "https://mzansi-careers-onboard.site/apply\nOpen demo copy of this site",
+   "SCAM TYPE": "Fake job offer",
+   "AMOUNT PAID": "R3 450"
+  },
+  "signals": [
+   "Bank account",
+   "Link",
+   "Message script"
+  ],
+  "statement_ok": true,
+  "evidence_rows": 3,
+  "summary": "Victim #7: linked to 6 earlier reports (R84 000 lost). Linked by bank account, link, message script. Found: account, 1 phone number, link, R3 450 paid, Fake job offer."
+ },
+ "EN-02": {
+  "head": "THIS SCAMMER HAS BEEN REPORTED BY 6 OTHER PEOPLE. COMBINED LOSSES: R84 000.",
+  "victim": "#7",
+  "facts": {
+   "NAME USED": "Thandi (HR Recruiter)",
+   "BANK ACCOUNTS": "DemoBank \u00b7 3844 2650 44",
+   "PHONE NUMBERS": "086 949 2498",
+   "LINKS": "https://mzansi-careers-onboard.site/apply\nOpen demo copy of this site",
+   "SCAM TYPE": "Fake job offer",
+   "AMOUNT PAID": "R2 800"
+  },
+  "signals": [
+   "Link",
+   "Message script"
+  ],
+  "statement_ok": true,
+  "evidence_rows": 3,
+  "summary": "Victim #7: linked to 6 earlier reports (R84 000 lost). Linked by link, message script. Found: account, 1 phone number, link, R2 800 paid, Fake job offer."
+ },
+ "EN-03": {
+  "head": "THIS SCAMMER HAS BEEN REPORTED BY 6 OTHER PEOPLE. COMBINED LOSSES: R84 000.",
+  "victim": "#7",
+  "facts": {
+   "NAME USED": "Thandi (HR Recruiter)",
+   "BANK ACCOUNTS": "DemoBank \u00b7 2940 2281 95",
+   "PHONE NUMBERS": "087 446 5256",
+   "LINKS": "None found",
+   "SCAM TYPE": "Fake job offer",
+   "AMOUNT PAID": "R3 800"
+  },
+  "signals": [
+   "Message script"
+  ],
+  "statement_ok": true,
+  "evidence_rows": 3,
+  "summary": "Victim #7: linked to 6 earlier reports (R84 000 lost). Linked by message script. Found: account, 1 phone number, R3 800 paid, Fake job offer."
+ },
+ "EN-04": {
+  "head": "NO EARLIER REPORTS MATCH THIS SCAMMER YET.",
+  "victim": "",
+  "facts": {
+   "NAME USED": "HR Nomsa",
+   "BANK ACCOUNTS": "DemoBank \u00b7 8978 9591 74",
+   "PHONE NUMBERS": "None found",
+   "LINKS": "None found",
+   "SCAM TYPE": "Fake job offer",
+   "AMOUNT PAID": "R800"
+  },
+  "signals": [],
+  "statement_ok": true,
+  "evidence_rows": 2,
+  "summary": "No earlier reports match. Found: account, R800 paid, Fake job offer."
+ },
+ "EN-05": {
+  "head": "NO EARLIER REPORTS MATCH THIS SCAMMER YET.",
+  "victim": "",
+  "facts": {
+   "NAME USED": "Thandi (HR Recruiter)",
+   "BANK ACCOUNTS": "DemoBank \u00b7 2771 2086 75",
+   "PHONE NUMBERS": "None found",
+   "LINKS": "None found",
+   "SCAM TYPE": "Fake job offer",
+   "AMOUNT PAID": "R1 150"
+  },
+  "signals": [],
+  "statement_ok": true,
+  "evidence_rows": 2,
+  "summary": "No earlier reports match. Found: account, R1 150 paid, Fake job offer."
+ },
+ "EN-06": {
+  "head": "NO EARLIER REPORTS MATCH THIS SCAMMER YET.",
+  "victim": "",
+  "facts": {
+   "NAME USED": "Mr Dube HR",
+   "BANK ACCOUNTS": "DemoBank \u00b7 3622 5893 35",
+   "PHONE NUMBERS": "None found",
+   "LINKS": "None found",
+   "SCAM TYPE": "Fake job offer",
+   "AMOUNT PAID": "R650"
+  },
+  "signals": [],
+  "statement_ok": true,
+  "evidence_rows": 2,
+  "summary": "No earlier reports match. Found: account, R650 paid, Fake job offer."
+ },
+ "EN-07": {
+  "head": "NO EARLIER REPORTS MATCH THIS SCAMMER YET.",
+  "victim": "",
+  "facts": {
+   "NAME USED": "Mr Dube HR",
+   "BANK ACCOUNTS": "DemoBank \u00b7 2275 5490 54",
+   "PHONE NUMBERS": "077 304 9546",
+   "LINKS": "None found",
+   "SCAM TYPE": "Fake job offer",
+   "AMOUNT PAID": "R2 850"
+  },
+  "signals": [],
+  "statement_ok": true,
+  "evidence_rows": 3,
+  "summary": "No earlier reports match. Found: account, 1 phone number, R2 850 paid, Fake job offer."
+ },
+ "EN-08": {
+  "head": "NO EARLIER REPORTS MATCH THIS SCAMMER YET.",
+  "victim": "",
+  "facts": {
+   "NAME USED": "Thandi (HR Recruiter)",
+   "BANK ACCOUNTS": "DemoBank \u00b7 2596 7975 27",
+   "PHONE NUMBERS": "082 583 4135",
+   "LINKS": "None found",
+   "SCAM TYPE": "Fake job offer",
+   "AMOUNT PAID": "R2 700"
+  },
+  "signals": [],
+  "statement_ok": true,
+  "evidence_rows": 3,
+  "summary": "No earlier reports match. Found: account, 1 phone number, R2 700 paid, Fake job offer."
+ },
+ "EN-09": {
+  "head": "NO EARLIER REPORTS MATCH THIS SCAMMER YET.",
+  "victim": "",
+  "facts": {
+   "NAME USED": "Learnership Desk",
+   "BANK ACCOUNTS": "DemoBank \u00b7 3118 7442 83",
+   "PHONE NUMBERS": "061 895 4657",
+   "LINKS": "None found",
+   "SCAM TYPE": "Fake job offer",
+   "AMOUNT PAID": "R3 950"
+  },
+  "signals": [],
+  "statement_ok": true,
+  "evidence_rows": 3,
+  "summary": "No earlier reports match. Found: account, 1 phone number, R3 950 paid, Fake job offer."
+ },
+ "EN-10": {
+  "head": "NO EARLIER REPORTS MATCH THIS SCAMMER YET.",
+  "victim": "",
+  "facts": {
+   "NAME USED": "Zinhle Store",
+   "BANK ACCOUNTS": "DemoBank \u00b7 2401 8527 67",
+   "PHONE NUMBERS": "066 209 3533",
+   "LINKS": "None found",
+   "SCAM TYPE": "Online seller / Marketplace",
+   "AMOUNT PAID": "R5 800"
+  },
+  "signals": [],
+  "statement_ok": true,
+  "evidence_rows": 2,
+  "summary": "No earlier reports match. Found: account, 1 phone number, R5 800 paid, Online seller / Marketplace."
+ },
+ "EN-11": {
+  "head": "NO EARLIER REPORTS MATCH THIS SCAMMER YET.",
+  "victim": "",
+  "facts": {
+   "NAME USED": "Bargain Ben",
+   "BANK ACCOUNTS": "DemoBank \u00b7 2401 8527 67",
+   "PHONE NUMBERS": "084 831 7726",
+   "LINKS": "None found",
+   "SCAM TYPE": "Online seller / Marketplace",
+   "AMOUNT PAID": "R3 800"
+  },
+  "signals": [],
+  "statement_ok": true,
+  "evidence_rows": 3,
+  "summary": "No earlier reports match. Found: account, 1 phone number, R3 800 paid, Online seller / Marketplace."
+ },
+ "EN-12": {
+  "head": "NO EARLIER REPORTS MATCH THIS SCAMMER YET.",
+  "victim": "",
+  "facts": {
+   "NAME USED": "Sipho Sells",
+   "BANK ACCOUNTS": "DemoBank \u00b7 2401 8527 67",
+   "PHONE NUMBERS": "074 509 2188",
+   "LINKS": "None found",
+   "SCAM TYPE": "Online seller / Marketplace",
+   "AMOUNT PAID": "R2 050"
+  },
+  "signals": [],
+  "statement_ok": true,
+  "evidence_rows": 2,
+  "summary": "No earlier reports match. Found: account, 1 phone number, R2 050 paid, Online seller / Marketplace."
+ },
+ "EN-13": {
+  "head": "NO EARLIER REPORTS MATCH THIS SCAMMER YET.",
+  "victim": "",
+  "facts": {
+   "NAME USED": "Bargain Ben",
+   "BANK ACCOUNTS": "DemoBank \u00b7 6376 4801 63",
+   "PHONE NUMBERS": "087 137 4937",
+   "LINKS": "None found",
+   "SCAM TYPE": "Online seller / Marketplace",
+   "AMOUNT PAID": "R7 700"
+  },
+  "signals": [],
+  "statement_ok": true,
+  "evidence_rows": 2,
+  "summary": "No earlier reports match. Found: account, 1 phone number, R7 700 paid, Online seller / Marketplace."
+ },
+ "EN-14": {
+  "head": "NO EARLIER REPORTS MATCH THIS SCAMMER YET.",
+  "victim": "",
+  "facts": {
+   "NAME USED": "Sipho Sells",
+   "BANK ACCOUNTS": "DemoBank \u00b7 7208 7150 27",
+   "PHONE NUMBERS": "088 123 2828",
+   "LINKS": "None found",
+   "SCAM TYPE": "Online seller / Marketplace",
+   "AMOUNT PAID": "R6 100"
+  },
+  "signals": [],
+  "statement_ok": true,
+  "evidence_rows": 2,
+  "summary": "No earlier reports match. Found: account, 1 phone number, R6 100 paid, Online seller / Marketplace."
+ },
+ "EN-15": {
+  "head": "NO EARLIER REPORTS MATCH THIS SCAMMER YET.",
+  "victim": "",
+  "facts": {
+   "NAME USED": "Kagiso Deals",
+   "BANK ACCOUNTS": "DemoBank \u00b7 8968 5592 16",
+   "PHONE NUMBERS": "071 679 1791",
+   "LINKS": "None found",
+   "SCAM TYPE": "Online seller / Marketplace",
+   "AMOUNT PAID": "R3 200"
+  },
+  "signals": [],
+  "statement_ok": true,
+  "evidence_rows": 2,
+  "summary": "No earlier reports match. Found: account, 1 phone number, R3 200 paid, Online seller / Marketplace."
+ },
+ "EN-16": {
+  "head": "NO EARLIER REPORTS MATCH THIS SCAMMER YET.",
+  "victim": "",
+  "facts": {
+   "NAME USED": "Marketplace Seller",
+   "BANK ACCOUNTS": "DemoBank \u00b7 3972 8285 71",
+   "PHONE NUMBERS": "078 539 1952",
+   "LINKS": "None found",
+   "SCAM TYPE": "Online seller / Marketplace",
+   "AMOUNT PAID": "R4 750"
+  },
+  "signals": [],
+  "statement_ok": true,
+  "evidence_rows": 3,
+  "summary": "No earlier reports match. Found: account, 1 phone number, R4 750 paid, Online seller / Marketplace."
+ },
+ "EN-17": {
+  "head": "NO EARLIER REPORTS MATCH THIS SCAMMER YET.",
+  "victim": "",
+  "facts": {
+   "NAME USED": "Kagiso Deals",
+   "BANK ACCOUNTS": "DemoBank \u00b7 2206 9821 44",
+   "PHONE NUMBERS": "065 715 1943",
+   "LINKS": "None found",
+   "SCAM TYPE": "Online seller / Marketplace",
+   "AMOUNT PAID": "R6 250"
+  },
+  "signals": [],
+  "statement_ok": true,
+  "evidence_rows": 3,
+  "summary": "No earlier reports match. Found: account, 1 phone number, R6 250 paid, Online seller / Marketplace."
+ },
+ "EN-18": {
+  "head": "NO EARLIER REPORTS MATCH THIS SCAMMER YET.",
+  "victim": "",
+  "facts": {
+   "NAME USED": "Zinhle Store",
+   "BANK ACCOUNTS": "DemoBank \u00b7 7113 2285 61",
+   "PHONE NUMBERS": "064 996 6504",
+   "LINKS": "None found",
+   "SCAM TYPE": "Online seller / Marketplace",
+   "AMOUNT PAID": "R2 500"
+  },
+  "signals": [],
+  "statement_ok": true,
+  "evidence_rows": 3,
+  "summary": "No earlier reports match. Found: account, 1 phone number, R2 500 paid, Online seller / Marketplace."
+ },
+ "EN-19": {
+  "head": "NO EARLIER REPORTS MATCH THIS SCAMMER YET.",
+  "victim": "",
+  "facts": {
+   "NAME USED": "Michael Adams",
+   "BANK ACCOUNTS": "DemoBank \u00b7 3850 4590 89",
+   "PHONE NUMBERS": "086 890 5519",
+   "LINKS": "None found",
+   "SCAM TYPE": "Romance scam",
+   "AMOUNT PAID": "R15 900"
+  },
+  "signals": [],
+  "statement_ok": true,
+  "evidence_rows": 3,
+  "summary": "No earlier reports match. Found: account, 1 phone number, R15 900 paid, Romance scam."
+ },
+ "EN-20": {
+  "head": "NO EARLIER REPORTS MATCH THIS SCAMMER YET.",
+  "victim": "",
+  "facts": {
+   "NAME USED": "Daniel Morgan",
+   "BANK ACCOUNTS": "DemoBank \u00b7 1659 7430 68",
+   "PHONE NUMBERS": "086 890 5519",
+   "LINKS": "None found",
+   "SCAM TYPE": "Romance scam",
+   "AMOUNT PAID": "R12 450"
+  },
+  "signals": [],
+  "statement_ok": true,
+  "evidence_rows": 3,
+  "summary": "No earlier reports match. Found: account, 1 phone number, R12 450 paid, Romance scam."
+ },
+ "EN-21": {
+  "head": "NO EARLIER REPORTS MATCH THIS SCAMMER YET.",
+  "victim": "",
+  "facts": {
+   "NAME USED": "Michael Adams",
+   "BANK ACCOUNTS": "DemoBank \u00b7 1500 1580 97",
+   "PHONE NUMBERS": "063 344 6487",
+   "LINKS": "None found",
+   "SCAM TYPE": "Romance scam",
+   "AMOUNT PAID": "R16 450"
+  },
+  "signals": [],
+  "statement_ok": true,
+  "evidence_rows": 3,
+  "summary": "No earlier reports match. Found: account, 1 phone number, R16 450 paid, Romance scam."
+ },
+ "EN-22": {
+  "head": "NO EARLIER REPORTS MATCH THIS SCAMMER YET.",
+  "victim": "",
+  "facts": {
+   "NAME USED": "Michael Adams",
+   "BANK ACCOUNTS": "DemoBank \u00b7 9358 4525 73",
+   "PHONE NUMBERS": "085 960 1974",
+   "LINKS": "None found",
+   "SCAM TYPE": "Romance scam",
+   "AMOUNT PAID": "R9 000"
+  },
+  "signals": [],
+  "statement_ok": true,
+  "evidence_rows": 3,
+  "summary": "No earlier reports match. Found: account, 1 phone number, R9 000 paid, Romance scam."
+ },
+ "EN-23": {
+  "head": "NO EARLIER REPORTS MATCH THIS SCAMMER YET.",
+  "victim": "",
+  "facts": {
+   "NAME USED": "Lisa Brown",
+   "BANK ACCOUNTS": "DemoBank \u00b7 8803 9105 73",
+   "PHONE NUMBERS": "081 392 1232",
+   "LINKS": "None found",
+   "SCAM TYPE": "Romance scam",
+   "AMOUNT PAID": "R6 150"
+  },
+  "signals": [],
+  "statement_ok": true,
+  "evidence_rows": 3,
+  "summary": "No earlier reports match. Found: account, 1 phone number, R6 150 paid, Romance scam."
+ },
+ "EN-24": {
+  "head": "NO EARLIER REPORTS MATCH THIS SCAMMER YET.",
+  "victim": "",
+  "facts": {
+   "NAME USED": "Daniel Morgan",
+   "BANK ACCOUNTS": "DemoBank \u00b7 9598 6121 24",
+   "PHONE NUMBERS": "075 662 6047",
+   "LINKS": "None found",
+   "SCAM TYPE": "Romance scam",
+   "AMOUNT PAID": "R19 200"
+  },
+  "signals": [],
+  "statement_ok": true,
+  "evidence_rows": 3,
+  "summary": "No earlier reports match. Found: account, 1 phone number, R19 200 paid, Romance scam."
+ },
+ "EN-25": {
+  "head": "THIS SCAMMER HAS BEEN REPORTED BY 5 OTHER PEOPLE. COMBINED LOSSES: R91 500.",
+  "victim": "#6",
+  "facts": {
+   "NAME USED": "FX Mentor Tumi",
+   "BANK ACCOUNTS": "DemoBank \u00b7 7718 2033 45",
+   "PHONE NUMBERS": "None found",
+   "LINKS": "https://doublemyrands-invest.site/register",
+   "SCAM TYPE": "Investment / crypto scam",
+   "AMOUNT PAID": "R8 250"
+  },
+  "signals": [
+   "Bank account",
+   "Link",
+   "Message script"
+  ],
+  "statement_ok": true,
+  "evidence_rows": 3,
+  "summary": "Victim #6: linked to 5 earlier reports (R91 500 lost). Linked by bank account, link, message script. Found: account, link, R8 250 paid, Investment / crypto scam."
+ },
+ "EN-26": {
+  "head": "THIS SCAMMER HAS BEEN REPORTED BY 5 OTHER PEOPLE. COMBINED LOSSES: R91 500.",
+  "victim": "#6",
+  "facts": {
+   "NAME USED": "FX Mentor Tumi",
+   "BANK ACCOUNTS": "DemoBank \u00b7 1902 5360 48",
+   "PHONE NUMBERS": "None found",
+   "LINKS": "https://doublemyrands-invest.site/register",
+   "SCAM TYPE": "Investment / crypto scam",
+   "AMOUNT PAID": "R11 550"
+  },
+  "signals": [
+   "Link",
+   "Message script"
+  ],
+  "statement_ok": true,
+  "evidence_rows": 3,
+  "summary": "Victim #6: linked to 5 earlier reports (R91 500 lost). Linked by link, message script. Found: account, link, R11 550 paid, Investment / crypto scam."
+ },
+ "EN-27": {
+  "head": "NO EARLIER REPORTS MATCH THIS SCAMMER YET.",
+  "victim": "",
+  "facts": {
+   "NAME USED": "Trader Lwazi",
+   "BANK ACCOUNTS": "DemoBank \u00b7 3416 9009 42",
+   "PHONE NUMBERS": "None found",
+   "LINKS": "https://besttrade-pro-82.top/join",
+   "SCAM TYPE": "Investment / crypto scam",
+   "AMOUNT PAID": "R15 200"
+  },
+  "signals": [],
+  "statement_ok": true,
+  "evidence_rows": 3,
+  "summary": "No earlier reports match. Found: account, link, R15 200 paid, Investment / crypto scam."
+ },
+ "EN-28": {
+  "head": "NO EARLIER REPORTS MATCH THIS SCAMMER YET.",
+  "victim": "",
+  "facts": {
+   "NAME USED": "FX Mentor Tumi",
+   "BANK ACCOUNTS": "DemoBank \u00b7 9937 9365 37",
+   "PHONE NUMBERS": "None found",
+   "LINKS": "https://bestfx-profits-14.online/join",
+   "SCAM TYPE": "Investment / crypto scam",
+   "AMOUNT PAID": "R4 000"
+  },
+  "signals": [],
+  "statement_ok": true,
+  "evidence_rows": 3,
+  "summary": "No earlier reports match. Found: account, link, R4 000 paid, Investment / crypto scam."
+ },
+ "EN-29": {
+  "head": "NO EARLIER REPORTS MATCH THIS SCAMMER YET.",
+  "victim": "",
+  "facts": {
+   "NAME USED": "FX Mentor Tumi",
+   "BANK ACCOUNTS": "DemoBank \u00b7 2569 8812 58",
+   "PHONE NUMBERS": "None found",
+   "LINKS": "https://besttrade-pro-69.online/join",
+   "SCAM TYPE": "Investment / crypto scam",
+   "AMOUNT PAID": "R8 950"
+  },
+  "signals": [],
+  "statement_ok": true,
+  "evidence_rows": 3,
+  "summary": "No earlier reports match. Found: account, link, R8 950 paid, Investment / crypto scam."
+ },
+ "EN-30": {
+  "head": "NO EARLIER REPORTS MATCH THIS SCAMMER YET.",
+  "victim": "",
+  "facts": {
+   "NAME USED": "Wealth Manager",
+   "BANK ACCOUNTS": "DemoBank \u00b7 4869 9829 71",
+   "PHONE NUMBERS": "None found",
+   "LINKS": "https://securetrade-pro-80.online/join",
+   "SCAM TYPE": "Investment / crypto scam",
+   "AMOUNT PAID": "R18 100"
+  },
+  "signals": [],
+  "statement_ok": true,
+  "evidence_rows": 3,
+  "summary": "No earlier reports match. Found: account, link, R18 100 paid, Investment / crypto scam."
+ },
+ "EN-31": {
+  "head": "NO EARLIER REPORTS MATCH THIS SCAMMER YET.",
+  "victim": "",
+  "facts": {
+   "NAME USED": "FX Mentor Tumi",
+   "BANK ACCOUNTS": "DemoBank \u00b7 4172 8821 64",
+   "PHONE NUMBERS": "None found",
+   "LINKS": "https://quickfx-profits-69.xyz/join",
+   "SCAM TYPE": "Investment / crypto scam",
+   "AMOUNT PAID": "R19 600"
+  },
+  "signals": [],
+  "statement_ok": true,
+  "evidence_rows": 3,
+  "summary": "No earlier reports match. Found: account, link, R19 600 paid, Investment / crypto scam."
+ },
+ "EN-32": {
+  "head": "THIS SCAMMER HAS BEEN REPORTED BY 9 OTHER PEOPLE. COMBINED LOSSES: R8 900.",
+  "victim": "#10",
+  "facts": {
+   "NAME USED": "SwiftParcel",
+   "BANK ACCOUNTS": "DemoBank \u00b7 5530 1990 12",
+   "PHONE NUMBERS": "None found",
+   "LINKS": "https://swiftparcel-clearance.online/pay",
+   "SCAM TYPE": "Courier / parcel fee",
+   "AMOUNT PAID": "R1 200"
+  },
+  "signals": [
+   "Bank account",
+   "Link",
+   "Message script"
+  ],
+  "statement_ok": true,
+  "evidence_rows": 3,
+  "summary": "Victim #10: linked to 9 earlier reports (R8 900 lost). Linked by bank account, link, message script. Found: account, link, R1 200 paid, Courier / parcel fee."
+ },
+ "EN-33": {
+  "head": "THIS SCAMMER HAS BEEN REPORTED BY 9 OTHER PEOPLE. COMBINED LOSSES: R8 900.",
+  "victim": "#10",
+  "facts": {
+   "NAME USED": "SwiftParcel",
+   "BANK ACCOUNTS": "DemoBank \u00b7 5530 1990 12",
+   "PHONE NUMBERS": "None found",
+   "LINKS": "https://swiftparcel-clearance.online/pay",
+   "SCAM TYPE": "Courier / parcel fee",
+   "AMOUNT PAID": "R1 150"
+  },
+  "signals": [
+   "Bank account",
+   "Link",
+   "Message script"
+  ],
+  "statement_ok": true,
+  "evidence_rows": 3,
+  "summary": "Victim #10: linked to 9 earlier reports (R8 900 lost). Linked by bank account, link, message script. Found: account, link, R1 150 paid, Courier / parcel fee."
+ },
+ "EN-34": {
+  "head": "THIS SCAMMER HAS BEEN REPORTED BY 9 OTHER PEOPLE. COMBINED LOSSES: R8 900.",
+  "victim": "#10",
+  "facts": {
+   "NAME USED": "SwiftParcel",
+   "BANK ACCOUNTS": "DemoBank \u00b7 8892 1903 62",
+   "PHONE NUMBERS": "None found",
+   "LINKS": "https://swiftparcel-clearance.online/pay",
+   "SCAM TYPE": "Courier / parcel fee",
+   "AMOUNT PAID": "R1 050"
+  },
+  "signals": [
+   "Link",
+   "Message script"
+  ],
+  "statement_ok": true,
+  "evidence_rows": 3,
+  "summary": "Victim #10: linked to 9 earlier reports (R8 900 lost). Linked by link, message script. Found: account, link, R1 050 paid, Courier / parcel fee."
+ },
+ "EN-35": {
+  "head": "NO EARLIER REPORTS MATCH THIS SCAMMER YET.",
+  "victim": "",
+  "facts": {
+   "NAME USED": "Courier Desk",
+   "BANK ACCOUNTS": "DemoBank \u00b7 7986 6170 69",
+   "PHONE NUMBERS": "None found",
+   "LINKS": "https://truecourier-redeliver-69.online/track",
+   "SCAM TYPE": "Courier / parcel fee",
+   "AMOUNT PAID": "R700"
+  },
+  "signals": [],
+  "statement_ok": true,
+  "evidence_rows": 2,
+  "summary": "No earlier reports match. Found: account, link, R700 paid, Courier / parcel fee."
+ },
+ "EN-36": {
+  "head": "NO EARLIER REPORTS MATCH THIS SCAMMER YET.",
+  "victim": "",
+  "facts": {
+   "NAME USED": "SwiftParcel",
+   "BANK ACCOUNTS": "DemoBank \u00b7 9573 6290 69",
+   "PHONE NUMBERS": "None found",
+   "LINKS": "https://secureparcel-track-16.site/track",
+   "SCAM TYPE": "Courier / parcel fee",
+   "AMOUNT PAID": "R550"
+  },
+  "signals": [],
+  "statement_ok": true,
+  "evidence_rows": 2,
+  "summary": "No earlier reports match. Found: account, link, R550 paid, Courier / parcel fee."
+ },
+ "EN-37": {
+  "head": "NO EARLIER REPORTS MATCH THIS SCAMMER YET.",
+  "victim": "",
+  "facts": {
+   "NAME USED": "Delivery Notice",
+   "BANK ACCOUNTS": "DemoBank \u00b7 7471 1817 84",
+   "PHONE NUMBERS": "None found",
+   "LINKS": "https://bestcourier-redeliver-21.xyz/track",
+   "SCAM TYPE": "Courier / parcel fee",
+   "AMOUNT PAID": "R300"
+  },
+  "signals": [],
+  "statement_ok": true,
+  "evidence_rows": 2,
+  "summary": "No earlier reports match. Found: account, link, R300 paid, Courier / parcel fee."
+ },
+ "EN-38": {
+  "head": "NO EARLIER REPORTS MATCH THIS SCAMMER YET.",
+  "victim": "",
+  "facts": {
+   "NAME USED": "Delivery Notice",
+   "BANK ACCOUNTS": "DemoBank \u00b7 9848 1310 58",
+   "PHONE NUMBERS": "None found",
+   "LINKS": "https://quickcourier-redeliver-17.top/track",
+   "SCAM TYPE": "Courier / parcel fee",
+   "AMOUNT PAID": "R850"
+  },
+  "signals": [],
+  "statement_ok": true,
+  "evidence_rows": 2,
+  "summary": "No earlier reports match. Found: account, link, R850 paid, Courier / parcel fee."
+ },
+ "EN-39": {
+  "head": "NO EARLIER REPORTS MATCH THIS SCAMMER YET.",
+  "victim": "",
+  "facts": {
+   "NAME USED": "SwiftParcel",
+   "BANK ACCOUNTS": "DemoBank \u00b7 6244 4278 92",
+   "PHONE NUMBERS": "None found",
+   "LINKS": "https://goparcel-track-26.site/track",
+   "SCAM TYPE": "Courier / parcel fee",
+   "AMOUNT PAID": "R500"
+  },
+  "signals": [],
+  "statement_ok": true,
+  "evidence_rows": 2,
+  "summary": "No earlier reports match. Found: account, link, R500 paid, Courier / parcel fee."
+ },
+ "EN-40": {
+  "head": "THIS SCAMMER HAS BEEN REPORTED BY 3 OTHER PEOPLE. COMBINED LOSSES: R12 760.",
+  "victim": "#4",
+  "facts": {
+   "NAME USED": "Tax Office",
+   "BANK ACCOUNTS": "DemoBank \u00b7 5891 2705 55",
+   "PHONE NUMBERS": "None found",
+   "LINKS": "https://secureefund-portal-65.top/verify",
+   "SCAM TYPE": "Fake SARS refund",
+   "AMOUNT PAID": "R850"
+  },
+  "signals": [
+   "Message script"
+  ],
+  "statement_ok": true,
+  "evidence_rows": 2,
+  "summary": "Victim #4: linked to 3 earlier reports (R12 760 lost). Linked by message script. Found: account, link, R850 paid, Fake SARS refund."
+ },
+ "EN-41": {
+  "head": "THIS SCAMMER HAS BEEN REPORTED BY 3 OTHER PEOPLE. COMBINED LOSSES: R12 760.",
+  "victim": "#4",
+  "facts": {
+   "NAME USED": "SARS Official",
+   "BANK ACCOUNTS": "DemoBank \u00b7 8673 8875 47",
+   "PHONE NUMBERS": "None found",
+   "LINKS": "https://fastrefund-verify-10.xyz/verify",
+   "SCAM TYPE": "Fake SARS refund",
+   "AMOUNT PAID": "R900"
+  },
+  "signals": [
+   "Message script"
+  ],
+  "statement_ok": true,
+  "evidence_rows": 2,
+  "summary": "Victim #4: linked to 3 earlier reports (R12 760 lost). Linked by message script. Found: account, link, R900 paid, Fake SARS refund."
+ },
+ "EN-42": {
+  "head": "THIS SCAMMER HAS BEEN REPORTED BY 3 OTHER PEOPLE. COMBINED LOSSES: R12 760.",
+  "victim": "#4",
+  "facts": {
+   "NAME USED": "SARS Official",
+   "BANK ACCOUNTS": "DemoBank \u00b7 7795 4811 85",
+   "PHONE NUMBERS": "None found",
+   "LINKS": "https://myefund-portal-14.top/verify",
+   "SCAM TYPE": "Fake SARS refund",
+   "AMOUNT PAID": "R1 400"
+  },
+  "signals": [
+   "Message script"
+  ],
+  "statement_ok": true,
+  "evidence_rows": 2,
+  "summary": "Victim #4: linked to 3 earlier reports (R12 760 lost). Linked by message script. Found: account, link, R1 400 paid, Fake SARS refund."
+ },
+ "EN-43": {
+  "head": "NO EARLIER REPORTS MATCH THIS SCAMMER YET.",
+  "victim": "",
+  "facts": {
+   "NAME USED": "SARS Refunds",
+   "BANK ACCOUNTS": "DemoBank \u00b7 4744 1848 55",
+   "PHONE NUMBERS": "065 849 7296",
+   "LINKS": "None found",
+   "SCAM TYPE": "Fake SARS refund",
+   "AMOUNT PAID": "R2 350"
+  },
+  "signals": [],
+  "statement_ok": true,
+  "evidence_rows": 3,
+  "summary": "No earlier reports match. Found: account, 1 phone number, R2 350 paid, Fake SARS refund."
+ },
+ "EN-44": {
+  "head": "NO EARLIER REPORTS MATCH THIS SCAMMER YET.",
+  "victim": "",
+  "facts": {
+   "NAME USED": "SARS Refunds",
+   "BANK ACCOUNTS": "DemoBank \u00b7 3274 3156 27",
+   "PHONE NUMBERS": "088 986 7964",
+   "LINKS": "None found",
+   "SCAM TYPE": "Fake SARS refund",
+   "AMOUNT PAID": "R7 250"
+  },
+  "signals": [],
+  "statement_ok": true,
+  "evidence_rows": 3,
+  "summary": "No earlier reports match. Found: account, 1 phone number, R7 250 paid, Fake SARS refund."
+ },
+ "EN-45": {
+  "head": "NO EARLIER REPORTS MATCH THIS SCAMMER YET.",
+  "victim": "",
+  "facts": {
+   "NAME USED": "SARS Refunds",
+   "BANK ACCOUNTS": "DemoBank \u00b7 8892 9298 50",
+   "PHONE NUMBERS": "076 594 7014",
+   "LINKS": "None found",
+   "SCAM TYPE": "Fake SARS refund",
+   "AMOUNT PAID": "R3 800"
+  },
+  "signals": [],
+  "statement_ok": true,
+  "evidence_rows": 3,
+  "summary": "No earlier reports match. Found: account, 1 phone number, R3 800 paid, Fake SARS refund."
+ },
+ "EN-46": {
+  "head": "NO EARLIER REPORTS MATCH THIS SCAMMER YET.",
+  "victim": "",
+  "facts": {
+   "NAME USED": "Lucky Draw SA",
+   "BANK ACCOUNTS": "DemoBank \u00b7 6352 8981 55",
+   "PHONE NUMBERS": "075 604 5247",
+   "LINKS": "None found",
+   "SCAM TYPE": "Scam",
+   "AMOUNT PAID": "R2 200"
+  },
+  "signals": [],
+  "statement_ok": true,
+  "evidence_rows": 3,
+  "summary": "No earlier reports match. Found: account, 1 phone number, R2 200 paid, Scam."
+ },
+ "EN-47": {
+  "head": "NO EARLIER REPORTS MATCH THIS SCAMMER YET.",
+  "victim": "",
+  "facts": {
+   "NAME USED": "Quick Loans",
+   "BANK ACCOUNTS": "DemoBank \u00b7 3330 1540 80",
+   "PHONE NUMBERS": "069 546 8386",
+   "LINKS": "None found",
+   "SCAM TYPE": "Scam",
+   "AMOUNT PAID": "R2 750"
+  },
+  "signals": [],
+  "statement_ok": true,
+  "evidence_rows": 3,
+  "summary": "No earlier reports match. Found: account, 1 phone number, R2 750 paid, Scam."
+ },
+ "EN-48": {
+  "head": "NO EARLIER REPORTS MATCH THIS SCAMMER YET.",
+  "victim": "",
+  "facts": {
+   "NAME USED": "New Number",
+   "BANK ACCOUNTS": "DemoBank \u00b7 9190 7136 89",
+   "PHONE NUMBERS": "None found",
+   "LINKS": "None found",
+   "SCAM TYPE": "Scam",
+   "AMOUNT PAID": "R5 050"
+  },
+  "signals": [],
+  "statement_ok": true,
+  "evidence_rows": 3,
+  "summary": "No earlier reports match. Found: account, R5 050 paid, Scam."
+ },
+ "EN-49": {
+  "head": "NO EARLIER REPORTS MATCH THIS SCAMMER YET.",
+  "victim": "",
+  "facts": {
+   "NAME USED": "New Number",
+   "BANK ACCOUNTS": "DemoBank \u00b7 7521 3036 45",
+   "PHONE NUMBERS": "None found",
+   "LINKS": "None found",
+   "SCAM TYPE": "Scam",
+   "AMOUNT PAID": "R3 600"
+  },
+  "signals": [],
+  "statement_ok": true,
+  "evidence_rows": 3,
+  "summary": "No earlier reports match. Found: account, R3 600 paid, Scam."
+ },
+ "EN-50": {
+  "head": "NO EARLIER REPORTS MATCH THIS SCAMMER YET.",
+  "victim": "",
+  "facts": {
+   "NAME USED": "Lucky Draw SA",
+   "BANK ACCOUNTS": "DemoBank \u00b7 9492 2821 89",
+   "PHONE NUMBERS": "074 909 5134",
+   "LINKS": "None found",
+   "SCAM TYPE": "Scam",
+   "AMOUNT PAID": "R3 400"
+  },
+  "signals": [],
+  "statement_ok": true,
+  "evidence_rows": 3,
+  "summary": "No earlier reports match. Found: account, 1 phone number, R3 400 paid, Scam."
+ },
+ "ZU-01": {
+  "head": "THIS SCAMMER HAS BEEN REPORTED BY 6 OTHER PEOPLE. COMBINED LOSSES: R84 000.",
+  "victim": "#7",
+  "facts": {
+   "NAME USED": "Thandi (HR Recruiter)",
+   "BANK ACCOUNTS": "DemoBank \u00b7 1047 2283 59",
+   "PHONE NUMBERS": "082 600 6393",
+   "LINKS": "None found",
+   "SCAM TYPE": "Fake job offer",
+   "AMOUNT PAID": "R2 400"
+  },
+  "signals": [
+   "Bank account"
+  ],
+  "statement_ok": true,
+  "evidence_rows": 2,
+  "summary": "Victim #7: linked to 6 earlier reports (R84 000 lost). Linked by bank account. Found: account, 1 phone number, R2 400 paid, Fake job offer."
+ },
+ "ZU-02": {
+  "head": "NO EARLIER REPORTS MATCH THIS SCAMMER YET.",
+  "victim": "",
+  "facts": {
+   "NAME USED": "Zinhle Store",
+   "BANK ACCOUNTS": "DemoBank \u00b7 4680 4366 90",
+   "PHONE NUMBERS": "072 346 4824",
+   "LINKS": "None found",
+   "SCAM TYPE": "Online seller / Marketplace",
+   "AMOUNT PAID": "R3 500"
+  },
+  "signals": [],
+  "statement_ok": true,
+  "evidence_rows": 2,
+  "summary": "No earlier reports match. Found: account, 1 phone number, R3 500 paid, Online seller / Marketplace."
+ },
+ "ZU-03": {
+  "head": "NO EARLIER REPORTS MATCH THIS SCAMMER YET.",
+  "victim": "",
+  "facts": {
+   "NAME USED": "SwiftParcel",
+   "BANK ACCOUNTS": "DemoBank \u00b7 8171 8782 91",
+   "PHONE NUMBERS": "None found",
+   "LINKS": "https://smartdelivery-fees-14.top/track",
+   "SCAM TYPE": "Courier / parcel fee",
+   "AMOUNT PAID": "R800"
+  },
+  "signals": [],
+  "statement_ok": true,
+  "evidence_rows": 3,
+  "summary": "No earlier reports match. Found: account, link, R800 paid, Courier / parcel fee."
+ },
+ "ZU-04": {
+  "head": "NO EARLIER REPORTS MATCH THIS SCAMMER YET.",
+  "victim": "",
+  "facts": {
+   "NAME USED": "SARS Refunds",
+   "BANK ACCOUNTS": "DemoBank \u00b7 4327 4073 42",
+   "PHONE NUMBERS": "None found",
+   "LINKS": "https://mytaxrefund-claim-38.online/verify",
+   "SCAM TYPE": "Fake SARS refund",
+   "AMOUNT PAID": "R800"
+  },
+  "signals": [],
+  "statement_ok": true,
+  "evidence_rows": 2,
+  "summary": "No earlier reports match. Found: account, link, R800 paid, Fake SARS refund."
+ },
+ "ZU-05": {
+  "head": "NO EARLIER REPORTS MATCH THIS SCAMMER YET.",
+  "victim": "",
+  "facts": {
+   "NAME USED": "New Number",
+   "BANK ACCOUNTS": "DemoBank \u00b7 2537 1587 30",
+   "PHONE NUMBERS": "None found",
+   "LINKS": "None found",
+   "SCAM TYPE": "Scam",
+   "AMOUNT PAID": "R4 950"
+  },
+  "signals": [],
+  "statement_ok": true,
+  "evidence_rows": 3,
+  "summary": "No earlier reports match. Found: account, R4 950 paid, Scam."
+ },
+ "XH-01": {
+  "head": "THIS SCAMMER HAS BEEN REPORTED BY 6 OTHER PEOPLE. COMBINED LOSSES: R84 000.",
+  "victim": "#7",
+  "facts": {
+   "NAME USED": "Thandi (HR Recruiter)",
+   "BANK ACCOUNTS": "DemoBank \u00b7 1047 2283 59",
+   "PHONE NUMBERS": "078 461 3775",
+   "LINKS": "None found",
+   "SCAM TYPE": "Fake job offer",
+   "AMOUNT PAID": "R2 300"
+  },
+  "signals": [
+   "Bank account"
+  ],
+  "statement_ok": true,
+  "evidence_rows": 2,
+  "summary": "Victim #7: linked to 6 earlier reports (R84 000 lost). Linked by bank account. Found: account, 1 phone number, R2 300 paid, Fake job offer."
+ },
+ "XH-02": {
+  "head": "NO EARLIER REPORTS MATCH THIS SCAMMER YET.",
+  "victim": "",
+  "facts": {
+   "NAME USED": "Kagiso Deals",
+   "BANK ACCOUNTS": "DemoBank \u00b7 8982 6347 33",
+   "PHONE NUMBERS": "068 660 2982",
+   "LINKS": "None found",
+   "SCAM TYPE": "Online seller / Marketplace",
+   "AMOUNT PAID": "R4 150"
+  },
+  "signals": [],
+  "statement_ok": true,
+  "evidence_rows": 2,
+  "summary": "No earlier reports match. Found: account, 1 phone number, R4 150 paid, Online seller / Marketplace."
+ },
+ "XH-03": {
+  "head": "NO EARLIER REPORTS MATCH THIS SCAMMER YET.",
+  "victim": "",
+  "facts": {
+   "NAME USED": "Courier Desk",
+   "BANK ACCOUNTS": "DemoBank \u00b7 8440 1910 73",
+   "PHONE NUMBERS": "None found",
+   "LINKS": "https://myparcel-track-51.site/track",
+   "SCAM TYPE": "Courier / parcel fee",
+   "AMOUNT PAID": "R500"
+  },
+  "signals": [],
+  "statement_ok": true,
+  "evidence_rows": 3,
+  "summary": "No earlier reports match. Found: account, link, R500 paid, Courier / parcel fee."
+ },
+ "XH-04": {
+  "head": "NO EARLIER REPORTS MATCH THIS SCAMMER YET.",
+  "victim": "",
+  "facts": {
+   "NAME USED": "SARS Official",
+   "BANK ACCOUNTS": "DemoBank \u00b7 6761 1155 81",
+   "PHONE NUMBERS": "None found",
+   "LINKS": "https://truetaxrefund-claim-83.online/verify",
+   "SCAM TYPE": "Fake SARS refund",
+   "AMOUNT PAID": "R550"
+  },
+  "signals": [],
+  "statement_ok": true,
+  "evidence_rows": 2,
+  "summary": "No earlier reports match. Found: account, link, R550 paid, Fake SARS refund."
+ },
+ "XH-05": {
+  "head": "NO EARLIER REPORTS MATCH THIS SCAMMER YET.",
+  "victim": "",
+  "facts": {
+   "NAME USED": "Daniel Morgan",
+   "BANK ACCOUNTS": "DemoBank \u00b7 8812 2829 20",
+   "PHONE NUMBERS": "071 638 3001",
+   "LINKS": "None found",
+   "SCAM TYPE": "Romance scam",
+   "AMOUNT PAID": "R11 650"
+  },
+  "signals": [],
+  "statement_ok": true,
+  "evidence_rows": 3,
+  "summary": "No earlier reports match. Found: account, 1 phone number, R11 650 paid, Romance scam."
+ },
+ "AF-01": {
+  "head": "THIS SCAMMER HAS BEEN REPORTED BY 6 OTHER PEOPLE. COMBINED LOSSES: R84 000.",
+  "victim": "#7",
+  "facts": {
+   "NAME USED": "Thandi (HR Recruiter)",
+   "BANK ACCOUNTS": "DemoBank \u00b7 1047 2283 59",
+   "PHONE NUMBERS": "073 902 3234",
+   "LINKS": "None found",
+   "SCAM TYPE": "Fake job offer",
+   "AMOUNT PAID": "R2 050"
+  },
+  "signals": [
+   "Bank account"
+  ],
+  "statement_ok": true,
+  "evidence_rows": 2,
+  "summary": "Victim #7: linked to 6 earlier reports (R84 000 lost). Linked by bank account. Found: account, 1 phone number, R2 050 paid, Fake job offer."
+ },
+ "AF-02": {
+  "head": "NO EARLIER REPORTS MATCH THIS SCAMMER YET.",
+  "victim": "",
+  "facts": {
+   "NAME USED": "Kagiso Deals",
+   "BANK ACCOUNTS": "DemoBank \u00b7 4947 8626 39",
+   "PHONE NUMBERS": "077 921 3077",
+   "LINKS": "None found",
+   "SCAM TYPE": "Online seller / Marketplace",
+   "AMOUNT PAID": "R3 550"
+  },
+  "signals": [],
+  "statement_ok": true,
+  "evidence_rows": 2,
+  "summary": "No earlier reports match. Found: account, 1 phone number, R3 550 paid, Online seller / Marketplace."
+ },
+ "AF-03": {
+  "head": "NO EARLIER REPORTS MATCH THIS SCAMMER YET.",
+  "victim": "",
+  "facts": {
+   "NAME USED": "Delivery Notice",
+   "BANK ACCOUNTS": "DemoBank \u00b7 9214 6785 23",
+   "PHONE NUMBERS": "None found",
+   "LINKS": "https://smartcourier-redeliver-11.online/track",
+   "SCAM TYPE": "Courier / parcel fee",
+   "AMOUNT PAID": "R600"
+  },
+  "signals": [],
+  "statement_ok": true,
+  "evidence_rows": 3,
+  "summary": "No earlier reports match. Found: account, link, R600 paid, Courier / parcel fee."
+ },
+ "AF-04": {
+  "head": "NO EARLIER REPORTS MATCH THIS SCAMMER YET.",
+  "victim": "",
+  "facts": {
+   "NAME USED": "Tax Office",
+   "BANK ACCOUNTS": "DemoBank \u00b7 3211 6680 54",
+   "PHONE NUMBERS": "None found",
+   "LINKS": "https://fasttaxrefund-claim-29.online/verify",
+   "SCAM TYPE": "Fake SARS refund",
+   "AMOUNT PAID": "R550"
+  },
+  "signals": [],
+  "statement_ok": true,
+  "evidence_rows": 2,
+  "summary": "No earlier reports match. Found: account, link, R550 paid, Fake SARS refund."
+ },
+ "AF-05": {
+  "head": "NO EARLIER REPORTS MATCH THIS SCAMMER YET.",
+  "victim": "",
+  "facts": {
+   "NAME USED": "Quick Loans",
+   "BANK ACCOUNTS": "DemoBank \u00b7 9877 8244 91",
+   "PHONE NUMBERS": "085 114 2417",
+   "LINKS": "None found",
+   "SCAM TYPE": "Scam",
+   "AMOUNT PAID": "R2 000"
+  },
+  "signals": [],
+  "statement_ok": true,
+  "evidence_rows": 3,
+  "summary": "No earlier reports match. Found: account, 1 phone number, R2 000 paid, Scam."
+ },
+ "ST-01": {
+  "head": "THIS SCAMMER HAS BEEN REPORTED BY 6 OTHER PEOPLE. COMBINED LOSSES: R84 000.",
+  "victim": "#7",
+  "facts": {
+   "NAME USED": "Thandi (HR Recruiter)",
+   "BANK ACCOUNTS": "DemoBank \u00b7 1047 2283 59",
+   "PHONE NUMBERS": "075 724 2636",
+   "LINKS": "None found",
+   "SCAM TYPE": "Fake job offer",
+   "AMOUNT PAID": "R2 000"
+  },
+  "signals": [
+   "Bank account"
+  ],
+  "statement_ok": true,
+  "evidence_rows": 2,
+  "summary": "Victim #7: linked to 6 earlier reports (R84 000 lost). Linked by bank account. Found: account, 1 phone number, R2 000 paid, Fake job offer."
+ },
+ "ST-02": {
+  "head": "NO EARLIER REPORTS MATCH THIS SCAMMER YET.",
+  "victim": "",
+  "facts": {
+   "NAME USED": "Marketplace Seller",
+   "BANK ACCOUNTS": "DemoBank \u00b7 5635 2357 91",
+   "PHONE NUMBERS": "064 350 7014",
+   "LINKS": "None found",
+   "SCAM TYPE": "Online seller / Marketplace",
+   "AMOUNT PAID": "R3 700"
+  },
+  "signals": [],
+  "statement_ok": true,
+  "evidence_rows": 2,
+  "summary": "No earlier reports match. Found: account, 1 phone number, R3 700 paid, Online seller / Marketplace."
+ },
+ "ST-03": {
+  "head": "NO EARLIER REPORTS MATCH THIS SCAMMER YET.",
+  "victim": "",
+  "facts": {
+   "NAME USED": "Courier Desk",
+   "BANK ACCOUNTS": "DemoBank \u00b7 2889 3019 22",
+   "PHONE NUMBERS": "None found",
+   "LINKS": "https://fastparcel-track-12.top/track",
+   "SCAM TYPE": "Courier / parcel fee",
+   "AMOUNT PAID": "R450"
+  },
+  "signals": [],
+  "statement_ok": true,
+  "evidence_rows": 3,
+  "summary": "No earlier reports match. Found: account, link, R450 paid, Courier / parcel fee."
+ },
+ "ST-04": {
+  "head": "NO EARLIER REPORTS MATCH THIS SCAMMER YET.",
+  "victim": "",
+  "facts": {
+   "NAME USED": "SARS Official",
+   "BANK ACCOUNTS": "DemoBank \u00b7 7386 4009 16",
+   "PHONE NUMBERS": "None found",
+   "LINKS": "https://gotaxrefund-claim-75.online/verify",
+   "SCAM TYPE": "Fake SARS refund",
+   "AMOUNT PAID": "R1 000"
+  },
+  "signals": [],
+  "statement_ok": true,
+  "evidence_rows": 2,
+  "summary": "No earlier reports match. Found: account, link, R1 000 paid, Fake SARS refund."
+ },
+ "ST-05": {
+  "head": "NO EARLIER REPORTS MATCH THIS SCAMMER YET.",
+  "victim": "",
+  "facts": {
+   "NAME USED": "Kevin Walsh",
+   "BANK ACCOUNTS": "DemoBank \u00b7 8579 5860 27",
+   "PHONE NUMBERS": "084 209 3080",
+   "LINKS": "None found",
+   "SCAM TYPE": "Romance scam",
+   "AMOUNT PAID": "R7 900"
+  },
+  "signals": [],
+  "statement_ok": true,
+  "evidence_rows": 3,
+  "summary": "No earlier reports match. Found: account, 1 phone number, R7 900 paid, Romance scam."
+ }
+}

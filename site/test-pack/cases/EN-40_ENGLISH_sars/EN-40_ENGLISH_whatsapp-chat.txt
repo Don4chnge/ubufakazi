@@ -1,0 +1,6 @@
+[14/10/2026, 11:33:16] Tax Office: SARS: You are due a tax refund of R4 700. Please verify your banking details using the secure link below within 24 hours to receive your refund.
+[14/10/2026, 11:45:50] Tax Office: https://secureefund-portal-65.top/verify
+[14/10/2026, 12:08:54] Palesa: I submitted my details. When do I get the refund?
+[14/10/2026, 12:16:13] Tax Office: To release the refund pay an admin fee of R850 to DemoBank account 5891 2705 55
+[14/10/2026, 12:33:24] Palesa: I have paid R850
+[14/10/2026, 12:51:17] Palesa: No refund came. Please answer
