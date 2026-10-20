@@ -124,6 +124,9 @@
           <select id="lang" name="lang">
             <option value="en">English</option>
             <option value="zu">isiZulu</option>
+            <option value="xh">isiXhosa</option>
+            <option value="af">Afrikaans</option>
+            <option value="st">Sesotho</option>
           </select>
         </div>
       </div>
@@ -205,12 +208,15 @@
       <article class="panel">
         <h3><span class="num">04</span> Your statement</h3>
         <div class="tabs" role="tablist" aria-label="Statement language">
-          <button type="button" role="tab" class="tab" id="tabEn" aria-controls="statement" data-lang="en">English</button>
-          <button type="button" role="tab" class="tab" id="tabZu" aria-controls="statement" data-lang="zu">isiZulu</button>
+          <button type="button" role="tab" class="tab" aria-controls="statement" data-lang="en">English</button>
+          <button type="button" role="tab" class="tab" aria-controls="statement" data-lang="zu">isiZulu</button>
+          <button type="button" role="tab" class="tab" aria-controls="statement" data-lang="xh">isiXhosa</button>
+          <button type="button" role="tab" class="tab" aria-controls="statement" data-lang="af">Afrikaans</button>
+          <button type="button" role="tab" class="tab" aria-controls="statement" data-lang="st">Sesotho</button>
         </div>
         <label class="sr-only" for="statement">Statement text</label>
         <textarea id="statement" rows="19"></textarea>
-        <p class="hint" id="zuNote" hidden>isiZulu draft: have a fluent speaker check it before signing.</p>
+        <p class="hint" id="zuNote" hidden>Draft translation: have a fluent speaker check it before signing.</p>
         <div class="row-btns"><button type="button" class="btn btn-small btn-ghost" data-copy="statement">Copy statement</button></div>
       </article>
 

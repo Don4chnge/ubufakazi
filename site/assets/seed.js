@@ -14,22 +14,30 @@ window.UBF_SEED = {
   "sars_refund": {
    "label": "Fake SARS refund",
    "text": "SARS: You are due a tax refund. Please verify your banking details using the secure link below within 24 hours to receive your refund."
+  },
+  "parcel_swift": {
+   "label": "Fake courier 'SwiftParcel' customs fee",
+   "text": "SwiftParcel: your parcel is held at our depot because customs duty is unpaid. Pay the clearance fee within 24 hours or the parcel will be returned. Pay securely on our clearance page and send proof of payment."
+  },
+  "invest_double": {
+   "label": "Fake crypto investment 'double your money'",
+   "text": "Good day, invest today and receive ten times your money in 7 days with our crypto trading platform. Returns are guaranteed and our account manager will guide you. Register on the link below and send proof of payment."
   }
  },
  "reports": [
   {
    "id": "R-0001",
-   "date": "2026-07-17",
-   "province": "Western Cape",
-   "scamType": "parcel",
-   "amount": 980,
-   "script": "parcel_customs",
+   "date": "2026-06-02",
+   "province": "Mpumalanga",
+   "scamType": "job",
+   "amount": 12090,
+   "script": null,
    "ids": {
     "acc": [
-     "4ef20f00758aa9d1cda3486e9bda38f33bb0a41e821cf97085d295403ca31fd9"
+     "37eb6f2b04e17923201e7710ec915433318b2c55a1808854842dee75ec20ad22"
     ],
     "phone": [
-     "557cb2cdac5584606f113d745c1f21587440e8343047514809211c4412c1ae70"
+     "d25d7834de18631301f569509cccdfb19a5e4b9cf4378d39127d606bdb0cfdb5"
     ],
     "domain": [],
     "email": []
@@ -37,17 +45,17 @@ window.UBF_SEED = {
   },
   {
    "id": "R-0002",
-   "date": "2026-07-17",
-   "province": "Northern Cape",
+   "date": "2026-06-02",
+   "province": "Gauteng",
    "scamType": "marketplace",
-   "amount": 5100,
+   "amount": 3700,
    "script": null,
    "ids": {
     "acc": [
-     "25c3127410f598a4a440ffedb4d6c561d602662f45e8f34ede9e38a8642a7efd"
+     "7ea164985c2c98670a1faa1b5474cffe7fbd594e57d4470b3f037608fd1cbd02"
     ],
     "phone": [
-     "f3dcbc6619dea256b07639b38e56911490cecdaab711d7113112e36c1cec68b2"
+     "a889a4183cdbd900aa1e3fb13ab81fbba2a71512c00dcd7f194c8b80c6eeaa52"
     ],
     "domain": [],
     "email": []
@@ -55,17 +63,17 @@ window.UBF_SEED = {
   },
   {
    "id": "R-0003",
-   "date": "2026-07-24",
+   "date": "2026-06-03",
    "province": "Gauteng",
-   "scamType": "romance",
-   "amount": 8600,
+   "scamType": "job",
+   "amount": 11010,
    "script": null,
    "ids": {
     "acc": [
-     "a735545e3e347762f70b78a3eb38b02ead44996db7b5e71f75389b0b08843333"
+     "36e398c635b1ed588f796f705ff6103f67005913c1a3ae734e1c1bacbeb9ffa0"
     ],
     "phone": [
-     "44258d40fb28558708c91de831d0c4e2619fdb6ddc2ae1108c42fb66c239bcc7"
+     "f743e253399336964c2535ee19a052259830f78aca44facdb3594420d220612d"
     ],
     "domain": [],
     "email": []
@@ -73,6 +81,374 @@ window.UBF_SEED = {
   },
   {
    "id": "R-0004",
+   "date": "2026-06-15",
+   "province": "Gauteng",
+   "scamType": "investment",
+   "amount": 12000,
+   "script": "invest_double",
+   "ids": {
+    "acc": [
+     "704cd3c5f0d024919b6e5809bde2299f6886ab9c9836df4f12637eb7f5a9d04d"
+    ],
+    "phone": [
+     "64e364f76eb2fff36b9430c12501f43dbd53b66d27b7e2e79858773f01f09910"
+    ],
+    "domain": [
+     "a843ef89390207b4620f333546626c855459545447f6728f881f00ab09b0230e"
+    ],
+    "email": []
+   }
+  },
+  {
+   "id": "R-0005",
+   "date": "2026-06-17",
+   "province": "Western Cape",
+   "scamType": "parcel",
+   "amount": 870,
+   "script": null,
+   "ids": {
+    "acc": [
+     "1662a8fa3eb5a0cce2d6ab7c40889ffc8ec211fe349d2586931995ca1fb5c282"
+    ],
+    "phone": [
+     "f4bde2ce87b59abced7b984d512706d28e5a91c3e02e7357c4b2548de219380a"
+    ],
+    "domain": [],
+    "email": []
+   }
+  },
+  {
+   "id": "R-0006",
+   "date": "2026-06-19",
+   "province": "Gauteng",
+   "scamType": "job",
+   "amount": 3610,
+   "script": null,
+   "ids": {
+    "acc": [
+     "b19640f8f6907490786e6b43c6dbe741cff7081120a21071e38825c6aff96e24"
+    ],
+    "phone": [
+     "79cd447abe5f15f470d8085d23fd405d7ad2523f7456a469df7be35049080282"
+    ],
+    "domain": [],
+    "email": []
+   }
+  },
+  {
+   "id": "R-0007",
+   "date": "2026-06-22",
+   "province": "North West",
+   "scamType": "marketplace",
+   "amount": 5940,
+   "script": null,
+   "ids": {
+    "acc": [
+     "0738d98e2f0456c4f080a71750433a31e7bf7c7662aa85b5101f62091db01896"
+    ],
+    "phone": [
+     "71afc5acb9328d7c46bc83523171912964f03687c2689e64385f8fc93d83d8e0"
+    ],
+    "domain": [],
+    "email": []
+   }
+  },
+  {
+   "id": "R-0008",
+   "date": "2026-06-25",
+   "province": "KwaZulu-Natal",
+   "scamType": "other",
+   "amount": 2970,
+   "script": null,
+   "ids": {
+    "acc": [
+     "49e039fe55bade843277dd4b6721b3343cfd27e86cf0ce96a7275790b64b331d"
+    ],
+    "phone": [
+     "29e51c9d4c67feab7e0c8bdfceb880d7abb36daa91d0b2974320ded8138c4863"
+    ],
+    "domain": [],
+    "email": []
+   }
+  },
+  {
+   "id": "R-0009",
+   "date": "2026-06-28",
+   "province": "Limpopo",
+   "scamType": "romance",
+   "amount": 28820,
+   "script": null,
+   "ids": {
+    "acc": [
+     "475563110386612b92d196d9bc69e25acaaa85e7704ab9dc601e5f253e207d0a"
+    ],
+    "phone": [
+     "1598d8ae184e8d47b868e7dfc3aae42cebb77992ca772b7fb1783d30d4f7d914"
+    ],
+    "domain": [],
+    "email": []
+   }
+  },
+  {
+   "id": "R-0010",
+   "date": "2026-07-02",
+   "province": "Western Cape",
+   "scamType": "investment",
+   "amount": 25000,
+   "script": "invest_double",
+   "ids": {
+    "acc": [
+     "704cd3c5f0d024919b6e5809bde2299f6886ab9c9836df4f12637eb7f5a9d04d"
+    ],
+    "phone": [
+     "fea8d9ac80ad0184211e9f96b6394518362ad1841f2f95826a7843b6ff4cea92"
+    ],
+    "domain": [
+     "a843ef89390207b4620f333546626c855459545447f6728f881f00ab09b0230e"
+    ],
+    "email": []
+   }
+  },
+  {
+   "id": "R-0011",
+   "date": "2026-07-03",
+   "province": "Northern Cape",
+   "scamType": "romance",
+   "amount": 57290,
+   "script": null,
+   "ids": {
+    "acc": [
+     "ad82dabbeab9818cc8dabbe232a7e51385aa6af8335068ac3ee0e9c5e5c7ec45"
+    ],
+    "phone": [
+     "3ac8ec151d5b9ced56e98f83c10b8adde5789c84bf12735349b66bdd4ccc746a"
+    ],
+    "domain": [],
+    "email": []
+   }
+  },
+  {
+   "id": "R-0012",
+   "date": "2026-07-04",
+   "province": "Gauteng",
+   "scamType": "parcel",
+   "amount": 850,
+   "script": "parcel_swift",
+   "ids": {
+    "acc": [
+     "6d8adaf0c75d3097a167d935c6c67b25bffba12a86da2e3e64101c82c32bbdff"
+    ],
+    "phone": [
+     "14851b54e6528e4bd625b8684c6597c2491ca010ba96ea00863c97d89574e5fb"
+    ],
+    "domain": [
+     "48e210ab36a5ae3b86ffb1d65d594c79910e29533e2dce15d20adf6228baa861"
+    ],
+    "email": []
+   }
+  },
+  {
+   "id": "R-0013",
+   "date": "2026-07-04",
+   "province": "Eastern Cape",
+   "scamType": "marketplace",
+   "amount": 3100,
+   "script": null,
+   "ids": {
+    "acc": [
+     "90a1e47e28bb6c2fdc9a71a07fec19ccd521730dbc2f4a669480c9ec7c5212b4"
+    ],
+    "phone": [
+     "7664e2fdb537e082bd0cf756bc4cc7ec82e07df8a6e40b4ae7fb9b150a26917d"
+    ],
+    "domain": [],
+    "email": []
+   }
+  },
+  {
+   "id": "R-0014",
+   "date": "2026-07-04",
+   "province": "Limpopo",
+   "scamType": "investment",
+   "amount": 25200,
+   "script": null,
+   "ids": {
+    "acc": [
+     "9242a868dfdbbfd43141617844b3a8690e10aab36676c5c64cb3c8b50c1938b1"
+    ],
+    "phone": [
+     "d2f48deb7a54622c1b718258979ec8ab91de00d637936b294ce4693a026495f0"
+    ],
+    "domain": [],
+    "email": []
+   }
+  },
+  {
+   "id": "R-0015",
+   "date": "2026-07-09",
+   "province": "Northern Cape",
+   "scamType": "investment",
+   "amount": 47410,
+   "script": null,
+   "ids": {
+    "acc": [
+     "d829aa51984fff9106384b505f6ab2fd22ad8eae3b2843042f40197f20750fdc"
+    ],
+    "phone": [
+     "b7d0649d9a46a38e8ae3ead902f3d737f5a77e812e4cdb18be98a33b02aef572"
+    ],
+    "domain": [],
+    "email": []
+   }
+  },
+  {
+   "id": "R-0016",
+   "date": "2026-07-10",
+   "province": "Eastern Cape",
+   "scamType": "sars",
+   "amount": 5720,
+   "script": "sars_refund",
+   "ids": {
+    "acc": [
+     "13e5e7bc6cb439074dff5a1cff443b31fb9dddfa299110f75a535ae541d44581"
+    ],
+    "phone": [
+     "60589ab5c9de54972219ac29c116b4848b5e5d3c143c7a76fdd81f1631122ab1"
+    ],
+    "domain": [],
+    "email": []
+   }
+  },
+  {
+   "id": "R-0017",
+   "date": "2026-07-11",
+   "province": "Free State",
+   "scamType": "parcel",
+   "amount": 1200,
+   "script": "parcel_swift",
+   "ids": {
+    "acc": [
+     "6d8adaf0c75d3097a167d935c6c67b25bffba12a86da2e3e64101c82c32bbdff"
+    ],
+    "phone": [
+     "c1b4dd0d987f183253490a07c7256a2d51fa3f475dc017b9504fc1e19149f73b"
+    ],
+    "domain": [],
+    "email": []
+   }
+  },
+  {
+   "id": "R-0018",
+   "date": "2026-07-15",
+   "province": "Northern Cape",
+   "scamType": "sars",
+   "amount": 6210,
+   "script": null,
+   "ids": {
+    "acc": [
+     "83f6ef3778eb7049fcab449836259d11ed6d08d1aba2e474d83f751c6d6aaee6"
+    ],
+    "phone": [
+     "a814453a856439a70f42b0624b2c966869c66bb2fef94c55f46bca874a0ae85e"
+    ],
+    "domain": [],
+    "email": []
+   }
+  },
+  {
+   "id": "R-0019",
+   "date": "2026-07-19",
+   "province": "KwaZulu-Natal",
+   "scamType": "parcel",
+   "amount": 650,
+   "script": "parcel_swift",
+   "ids": {
+    "acc": [
+     "6d8adaf0c75d3097a167d935c6c67b25bffba12a86da2e3e64101c82c32bbdff"
+    ],
+    "phone": [
+     "cb0f3bc559f2bbcaac66c78474974b85b4bd7d44d965465c39929a9fa3446e03"
+    ],
+    "domain": [
+     "48e210ab36a5ae3b86ffb1d65d594c79910e29533e2dce15d20adf6228baa861"
+    ],
+    "email": []
+   }
+  },
+  {
+   "id": "R-0020",
+   "date": "2026-07-22",
+   "province": "North West",
+   "scamType": "job",
+   "amount": 7890,
+   "script": null,
+   "ids": {
+    "acc": [
+     "0d4278b5cc6d91a6417ca42c281661e75ffcda129eab7d0345eea7f5dc78faac"
+    ],
+    "phone": [
+     "087a582459ded0a8024d6a6b1e957e279e1632acc44597a536bf315001460db4"
+    ],
+    "domain": [],
+    "email": []
+   }
+  },
+  {
+   "id": "R-0021",
+   "date": "2026-07-22",
+   "province": "Mpumalanga",
+   "scamType": "sars",
+   "amount": 2440,
+   "script": null,
+   "ids": {
+    "acc": [
+     "e0231b360754d4b2b21a2fed6f73e7a0185d47767fa34c3d1d10475128e1cd79"
+    ],
+    "phone": [
+     "840ba213e02f31d1a100483fc0347ead44fa2ff53cf60399befee6c3256077d0"
+    ],
+    "domain": [],
+    "email": []
+   }
+  },
+  {
+   "id": "R-0022",
+   "date": "2026-07-30",
+   "province": "Mpumalanga",
+   "scamType": "parcel",
+   "amount": 990,
+   "script": "parcel_swift",
+   "ids": {
+    "acc": [
+     "6d8adaf0c75d3097a167d935c6c67b25bffba12a86da2e3e64101c82c32bbdff"
+    ],
+    "phone": [
+     "14851b54e6528e4bd625b8684c6597c2491ca010ba96ea00863c97d89574e5fb"
+    ],
+    "domain": [],
+    "email": []
+   }
+  },
+  {
+   "id": "R-0023",
+   "date": "2026-08-02",
+   "province": "Limpopo",
+   "scamType": "marketplace",
+   "amount": 4380,
+   "script": null,
+   "ids": {
+    "acc": [
+     "56fbcb6ce9379deb9750ece32375c3b4e59542395ae07accfde82215105ecf75"
+    ],
+    "phone": [
+     "bb4d5e01b6369d22421642238fd4e6d01ea461bd0f44d850719f7a4537c94e19"
+    ],
+    "domain": [],
+    "email": []
+   }
+  },
+  {
+   "id": "R-0024",
    "date": "2026-08-03",
    "province": "Gauteng",
    "scamType": "job",
@@ -92,43 +468,119 @@ window.UBF_SEED = {
    }
   },
   {
-   "id": "R-0005",
-   "date": "2026-08-04",
-   "province": "Western Cape",
-   "scamType": "investment",
-   "amount": 27000,
+   "id": "R-0025",
+   "date": "2026-08-03",
+   "province": "KwaZulu-Natal",
+   "scamType": "marketplace",
+   "amount": 2570,
    "script": null,
    "ids": {
     "acc": [
-     "fdf557e96d3f5a61370461b5774b30d507355cc81d38c44118ee4e8e980957fd"
+     "352a31e0dee76b75fcfc005dc6e816cd119ee7589202925af9bb51cdfaea190d"
     ],
     "phone": [
-     "9a465d466d5dd21b690bf750e714b8ba26d4e014707b16f98b6b77e25a13463f"
+     "4246d7052e1a1abae46ecf52dd1d816c5868b1b1d352c97452965edfd2378fb0"
     ],
     "domain": [],
     "email": []
    }
   },
   {
-   "id": "R-0006",
-   "date": "2026-08-08",
-   "province": "Free State",
-   "scamType": "sars",
-   "amount": 6400,
-   "script": "sars_refund",
+   "id": "R-0026",
+   "date": "2026-08-05",
+   "province": "Gauteng",
+   "scamType": "investment",
+   "amount": 27680,
+   "script": null,
    "ids": {
     "acc": [
-     "4c319a811b2e98847caf0d7213d4266360881cc3a3df22667c6035304891625b"
+     "e1f622bcc0b32932fa4700b1bf97bc4007cbb85f888bace11b116f3a605b8bc9"
     ],
     "phone": [
-     "184cdc8e9d948542e508252ea2e6332b331e50ccb954ecadf3fbf00b53e9d8f0"
+     "1f8491531655a1e439e6b504a0c1dfd75678a1178e446071cbea20347f92bece"
     ],
     "domain": [],
     "email": []
    }
   },
   {
-   "id": "R-0007",
+   "id": "R-0027",
+   "date": "2026-08-08",
+   "province": "Gauteng",
+   "scamType": "parcel",
+   "amount": 1450,
+   "script": "parcel_swift",
+   "ids": {
+    "acc": [
+     "6d8adaf0c75d3097a167d935c6c67b25bffba12a86da2e3e64101c82c32bbdff"
+    ],
+    "phone": [
+     "c1b4dd0d987f183253490a07c7256a2d51fa3f475dc017b9504fc1e19149f73b"
+    ],
+    "domain": [
+     "48e210ab36a5ae3b86ffb1d65d594c79910e29533e2dce15d20adf6228baa861"
+    ],
+    "email": []
+   }
+  },
+  {
+   "id": "R-0028",
+   "date": "2026-08-08",
+   "province": "Free State",
+   "scamType": "romance",
+   "amount": 18520,
+   "script": null,
+   "ids": {
+    "acc": [
+     "3864e4f25d94f787493db18d9b7ce778b1a080308d683cc551144cd0beaca91e"
+    ],
+    "phone": [
+     "0e93a115e5846a6ddc3c3d5854477a7c96eb8454f8f78f3377421ad25493b213"
+    ],
+    "domain": [],
+    "email": []
+   }
+  },
+  {
+   "id": "R-0029",
+   "date": "2026-08-09",
+   "province": "KwaZulu-Natal",
+   "scamType": "sars",
+   "amount": 6100,
+   "script": null,
+   "ids": {
+    "acc": [
+     "a905cd600e6e6b2275f4f076aa3cf1df127d60f068cc07adfd54dc69b33a5962"
+    ],
+    "phone": [
+     "c300c1a324c38750bda4fa34998c2a64cf0c0e6fa9a2adbd2f78731b265f6573"
+    ],
+    "domain": [],
+    "email": []
+   }
+  },
+  {
+   "id": "R-0030",
+   "date": "2026-08-12",
+   "province": "KwaZulu-Natal",
+   "scamType": "investment",
+   "amount": 8500,
+   "script": "invest_double",
+   "ids": {
+    "acc": [
+     "704cd3c5f0d024919b6e5809bde2299f6886ab9c9836df4f12637eb7f5a9d04d"
+    ],
+    "phone": [
+     "c289253d74c053e6fe0c963d72941030aa049c32ce176f4c695af03e1d256f30"
+    ],
+    "domain": [
+     "a843ef89390207b4620f333546626c855459545447f6728f881f00ab09b0230e"
+    ],
+    "email": []
+   }
+  },
+  {
+   "id": "R-0031",
    "date": "2026-08-19",
    "province": "KwaZulu-Natal",
    "scamType": "job",
@@ -146,43 +598,97 @@ window.UBF_SEED = {
    }
   },
   {
-   "id": "R-0008",
+   "id": "R-0032",
    "date": "2026-08-21",
-   "province": "Free State",
+   "province": "North West",
+   "scamType": "parcel",
+   "amount": 780,
+   "script": "parcel_swift",
+   "ids": {
+    "acc": [
+     "d5623743630aa013be7ce923fec0d21d23fed947831ee0c76c4113e7f406ef2d"
+    ],
+    "phone": [
+     "cb0f3bc559f2bbcaac66c78474974b85b4bd7d44d965465c39929a9fa3446e03"
+    ],
+    "domain": [],
+    "email": []
+   }
+  },
+  {
+   "id": "R-0033",
+   "date": "2026-08-21",
+   "province": "Western Cape",
+   "scamType": "sars",
+   "amount": 2700,
+   "script": "sars_refund",
+   "ids": {
+    "acc": [
+     "ae90a680127ace00562f0f8a152fbfe9274e6465f8ab9f178d0cf108686e1ade"
+    ],
+    "phone": [
+     "e01bb6e2fb2c17728254a2727dc4ed0cf6bddee09c9926b45154d9358fc80bc8"
+    ],
+    "domain": [],
+    "email": []
+   }
+  },
+  {
+   "id": "R-0034",
+   "date": "2026-08-27",
+   "province": "Gauteng",
+   "scamType": "marketplace",
+   "amount": 890,
+   "script": null,
+   "ids": {
+    "acc": [
+     "9f6d0b52ec2528dcb75847232d82f581364cb7aa1149a70858ef02453a511c8e"
+    ],
+    "phone": [
+     "c74ad19fe5e07a71263b5fad1baeaeb538bde14a4cf972b60436ff99d5cac4fe"
+    ],
+    "domain": [],
+    "email": []
+   }
+  },
+  {
+   "id": "R-0035",
+   "date": "2026-08-27",
+   "province": "KwaZulu-Natal",
    "scamType": "investment",
-   "amount": 45000,
+   "amount": 11040,
    "script": null,
    "ids": {
     "acc": [
-     "bb8a86394f52482b9c092a9c41ff50286a8305bf283b7ca68d9d188c89bf6f7a"
+     "44c93f5f8fffac9b5f6b6edb889fdbf089435c1f6fac39c2fe707b24d6146af9"
     ],
     "phone": [
-     "9893771354f89f2bf3cb8470e9628d8ae2d4f38b993debec6fb45cb2c5c6df2b"
+     "b4df62665ab17ee3992f1d1016fa676a34bdb5c336db01361b261c17ebcebc83"
     ],
     "domain": [],
     "email": []
    }
   },
   {
-   "id": "R-0009",
-   "date": "2026-08-22",
-   "province": "Eastern Cape",
-   "scamType": "job",
-   "amount": 2500,
+   "id": "R-0036",
+   "date": "2026-08-27",
+   "province": "Western Cape",
+   "scamType": "other",
+   "amount": 4850,
    "script": null,
    "ids": {
     "acc": [
-     "db3801d41f3d7372d0e337037487d043ac57f0dafd84ff0ed21dbd9b626aac63"
+     "7ee1a23023d24ff04fe4e04c76fd8682ff55731455416cc7f53ffa793519c138"
     ],
     "phone": [
-     "060baf4348cd3ccd0db1043490fc7c5e24b715753f6e1ecf65821ad335537829"
+     "75151af691758ec88129b50047412e1fef76076362d26a0ceeeda0dda951fd74"
     ],
     "domain": [],
     "email": []
    }
   },
   {
-   "id": "R-0010",
+   "id": "R-0037",
    "date": "2026-09-02",
    "province": "Gauteng",
    "scamType": "job",
@@ -202,25 +708,191 @@ window.UBF_SEED = {
    }
   },
   {
-   "id": "R-0011",
+   "id": "R-0038",
    "date": "2026-09-03",
-   "province": "Eastern Cape",
+   "province": "Western Cape",
    "scamType": "parcel",
-   "amount": 1250,
-   "script": "parcel_customs",
+   "amount": 1100,
+   "script": "parcel_swift",
    "ids": {
     "acc": [
-     "d05a6616ef13ebd8e0a9680862fdedede4e3caec80bcfad0d99707d06e0f0a81"
+     "d5623743630aa013be7ce923fec0d21d23fed947831ee0c76c4113e7f406ef2d"
     ],
     "phone": [
-     "35cfaf98ecf03be0e94b86952897c24c152751ed5d0faa104d5475269228ad32"
+     "14851b54e6528e4bd625b8684c6597c2491ca010ba96ea00863c97d89574e5fb"
+    ],
+    "domain": [
+     "48e210ab36a5ae3b86ffb1d65d594c79910e29533e2dce15d20adf6228baa861"
+    ],
+    "email": []
+   }
+  },
+  {
+   "id": "R-0039",
+   "date": "2026-09-04",
+   "province": "Western Cape",
+   "scamType": "marketplace",
+   "amount": 2820,
+   "script": null,
+   "ids": {
+    "acc": [
+     "c458e316998e40fe10c849be7d79af2f015386ae82e57abd2adfcbf4889ba578"
+    ],
+    "phone": [
+     "da3545e856a8c0111a252a72a0585e248424321e0701a2ad78167da56d470b3a"
     ],
     "domain": [],
     "email": []
    }
   },
   {
-   "id": "R-0012",
+   "id": "R-0040",
+   "date": "2026-09-05",
+   "province": "Western Cape",
+   "scamType": "romance",
+   "amount": 26350,
+   "script": null,
+   "ids": {
+    "acc": [
+     "caaf1ac81010a04f2465f0fecf936cd41e202e727dbf2eb911bbd7cab4f27202"
+    ],
+    "phone": [
+     "ec3beb1984d229338024f92f8b924c999babed4de23daca1a4794a75cef9be47"
+    ],
+    "domain": [],
+    "email": []
+   }
+  },
+  {
+   "id": "R-0041",
+   "date": "2026-09-07",
+   "province": "Mpumalanga",
+   "scamType": "investment",
+   "amount": 13180,
+   "script": null,
+   "ids": {
+    "acc": [
+     "fe7cfe39930f4ccbc526522f96a97808609dedc9e61262d5c868e8288191db2b"
+    ],
+    "phone": [
+     "4288a0ac36719f6c6f4681cf96cb97c3d7b34b48d7b4ca992891c0778fb74c8f"
+    ],
+    "domain": [],
+    "email": []
+   }
+  },
+  {
+   "id": "R-0042",
+   "date": "2026-09-08",
+   "province": "Western Cape",
+   "scamType": "parcel",
+   "amount": 1580,
+   "script": null,
+   "ids": {
+    "acc": [
+     "4cb1ca4968428a58ddd8d24a174cb97852da64c9f7c4e2b59ce3f6ed2f0a4aa1"
+    ],
+    "phone": [
+     "28afac31ae525ee92bccf6ff30155c66035c7295f9b9833ed53d71ff612558da"
+    ],
+    "domain": [],
+    "email": []
+   }
+  },
+  {
+   "id": "R-0043",
+   "date": "2026-09-09",
+   "province": "Gauteng",
+   "scamType": "investment",
+   "amount": 40000,
+   "script": "invest_double",
+   "ids": {
+    "acc": [
+     "704cd3c5f0d024919b6e5809bde2299f6886ab9c9836df4f12637eb7f5a9d04d"
+    ],
+    "phone": [
+     "584e8664a71e2e061065bb9780441cbd258e27b4f0fd36ed66e3197ebca29301"
+    ],
+    "domain": [
+     "a843ef89390207b4620f333546626c855459545447f6728f881f00ab09b0230e"
+    ],
+    "email": []
+   }
+  },
+  {
+   "id": "R-0044",
+   "date": "2026-09-09",
+   "province": "Mpumalanga",
+   "scamType": "marketplace",
+   "amount": 2670,
+   "script": null,
+   "ids": {
+    "acc": [
+     "c142b1a07e0f5a7883004683e515ee41b59310b44cf964025cdc6de2c9512d7f"
+    ],
+    "phone": [
+     "b2b3865e6c002ee6d34ce589617c3c8b545fcfa6c805f302513a9cba2c39f5b7"
+    ],
+    "domain": [],
+    "email": []
+   }
+  },
+  {
+   "id": "R-0045",
+   "date": "2026-09-09",
+   "province": "Gauteng",
+   "scamType": "romance",
+   "amount": 46080,
+   "script": null,
+   "ids": {
+    "acc": [
+     "90271c5e7ae60c11045c08d3a6269549b4587bd046a25eb8da0abbd97559685e"
+    ],
+    "phone": [
+     "2672a59f76e16da370d2d6a70f88b7981012a20ead9bc50a70abad0d388ee6e0"
+    ],
+    "domain": [],
+    "email": []
+   }
+  },
+  {
+   "id": "R-0046",
+   "date": "2026-09-11",
+   "province": "Gauteng",
+   "scamType": "romance",
+   "amount": 54630,
+   "script": null,
+   "ids": {
+    "acc": [
+     "c1651d169dad0d4101cc88005086d39a400f1f2fd93be8344c3dc8115af771bc"
+    ],
+    "phone": [
+     "c7f112c5fa7801eb30315b524141dafccde21ee98dc00fd3549cdc16ba4d9f65"
+    ],
+    "domain": [],
+    "email": []
+   }
+  },
+  {
+   "id": "R-0047",
+   "date": "2026-09-13",
+   "province": "KwaZulu-Natal",
+   "scamType": "marketplace",
+   "amount": 2410,
+   "script": null,
+   "ids": {
+    "acc": [
+     "96de2e63e3393d218768631d78610f37c9c73e072138f7a2357ad67eebe334c5"
+    ],
+    "phone": [
+     "897f82f654126c45c1289c4a82b66dcf3fb0d7c4c246e03609e5e3d17f0e3424"
+    ],
+    "domain": [],
+    "email": []
+   }
+  },
+  {
+   "id": "R-0048",
    "date": "2026-09-14",
    "province": "Limpopo",
    "scamType": "job",
@@ -238,43 +910,207 @@ window.UBF_SEED = {
    }
   },
   {
-   "id": "R-0013",
+   "id": "R-0049",
    "date": "2026-09-15",
-   "province": "Western Cape",
-   "scamType": "investment",
-   "amount": 12500,
+   "province": "Gauteng",
+   "scamType": "job",
+   "amount": 14550,
    "script": null,
    "ids": {
     "acc": [
-     "383e987598a96afb2e5ba61824c243046f1c392f84502fdb860a8b5393c610a4"
+     "25c3127410f598a4a440ffedb4d6c561d602662f45e8f34ede9e38a8642a7efd"
     ],
     "phone": [
-     "5cda594ddafe739b427c526a7243de41b4ab8f0281411852913daa6b3daab664"
+     "f3dcbc6619dea256b07639b38e56911490cecdaab711d7113112e36c1cec68b2"
     ],
     "domain": [],
     "email": []
    }
   },
   {
-   "id": "R-0014",
+   "id": "R-0050",
+   "date": "2026-09-17",
+   "province": "Limpopo",
+   "scamType": "parcel",
+   "amount": 560,
+   "script": "parcel_swift",
+   "ids": {
+    "acc": [
+     "d5623743630aa013be7ce923fec0d21d23fed947831ee0c76c4113e7f406ef2d"
+    ],
+    "phone": [
+     "c1b4dd0d987f183253490a07c7256a2d51fa3f475dc017b9504fc1e19149f73b"
+    ],
+    "domain": [],
+    "email": []
+   }
+  },
+  {
+   "id": "R-0051",
+   "date": "2026-09-17",
+   "province": "Gauteng",
+   "scamType": "other",
+   "amount": 1010,
+   "script": null,
+   "ids": {
+    "acc": [
+     "262a1b1ad9892af810db92ea9d26cfff0a8e26c6c762df6f727e0eed53f1703e"
+    ],
+    "phone": [
+     "cd3542abdf7779c245757adea45210c8d394fbdf733d3c458582d875be663a47"
+    ],
+    "domain": [],
+    "email": []
+   }
+  },
+  {
+   "id": "R-0052",
    "date": "2026-09-18",
-   "province": "Northern Cape",
-   "scamType": "marketplace",
-   "amount": 3600,
+   "province": "Eastern Cape",
+   "scamType": "parcel",
+   "amount": 1760,
    "script": null,
    "ids": {
     "acc": [
-     "9f6d0b52ec2528dcb75847232d82f581364cb7aa1149a70858ef02453a511c8e"
+     "8b13727a8ee080116eafc24df19b314a55b1f31cf22fe1f7fd1b66e1b52ddb79"
     ],
     "phone": [
-     "0b0e76d54442bae502366db775928e75c5e734c0112a8c0602c5ad3ad40b6240"
+     "e423af9ee6ca5aaa0e0d87dd7e29d96e052ba390038c7e5c6c20338b4e288c43"
     ],
     "domain": [],
     "email": []
    }
   },
   {
-   "id": "R-0015",
+   "id": "R-0053",
+   "date": "2026-09-20",
+   "province": "KwaZulu-Natal",
+   "scamType": "job",
+   "amount": 11300,
+   "script": null,
+   "ids": {
+    "acc": [
+     "977b35ae03f5db9213eb05646a9daf1cf5d1066f1568f3e64f37db029e79c601"
+    ],
+    "phone": [
+     "957e6b466de193d6904f8e4c09baf01cd84d969f6008a55966980e3332ac4ba6"
+    ],
+    "domain": [],
+    "email": []
+   }
+  },
+  {
+   "id": "R-0054",
+   "date": "2026-09-22",
+   "province": "North West",
+   "scamType": "romance",
+   "amount": 48750,
+   "script": null,
+   "ids": {
+    "acc": [
+     "d24f2e80b2692704a764f8b4c9ef61680fd489ac9f503d3e382becbb2dcd2da2"
+    ],
+    "phone": [
+     "86421017d7bb54171b4c2a38513d04e1fab233f7f8d4a416e2ff6d552868b59f"
+    ],
+    "domain": [],
+    "email": []
+   }
+  },
+  {
+   "id": "R-0055",
+   "date": "2026-09-22",
+   "province": "Eastern Cape",
+   "scamType": "romance",
+   "amount": 27520,
+   "script": null,
+   "ids": {
+    "acc": [
+     "b0ff7e7fe9b962f22db2be6305ee0739eee12b44d2b85a3b4d8d92b655fafcb0"
+    ],
+    "phone": [
+     "fc13050e944ffb9c33a0eb928afabe30c09237c508deda17dd63bd4eb0019007"
+    ],
+    "domain": [],
+    "email": []
+   }
+  },
+  {
+   "id": "R-0056",
+   "date": "2026-09-22",
+   "province": "Limpopo",
+   "scamType": "investment",
+   "amount": 12160,
+   "script": null,
+   "ids": {
+    "acc": [
+     "0b6425832338f7be1792630522b7c1134a630ce1d596fa82cd4b9203e2e512cf"
+    ],
+    "phone": [
+     "a96a44290965c31470e5225ce77a9f75b8d9a04493a16c33c629824323feefd1"
+    ],
+    "domain": [],
+    "email": []
+   }
+  },
+  {
+   "id": "R-0057",
+   "date": "2026-09-22",
+   "province": "Eastern Cape",
+   "scamType": "parcel",
+   "amount": 1000,
+   "script": null,
+   "ids": {
+    "acc": [
+     "48c60d902b9e91f18e8b7281d3e0ae0bc56d3dd05a606dc8ce043e3e34f40833"
+    ],
+    "phone": [
+     "9ce0d5f5c61f1de7514d39b5845b487b267b1affc7322f2bba185db9bd7eb2e1"
+    ],
+    "domain": [],
+    "email": []
+   }
+  },
+  {
+   "id": "R-0058",
+   "date": "2026-09-25",
+   "province": "Free State",
+   "scamType": "other",
+   "amount": 1990,
+   "script": null,
+   "ids": {
+    "acc": [
+     "8064dd5a43a0a03f0ee4a5d492b3d1ffc216a14dd8d7534a722b229d4e158f44"
+    ],
+    "phone": [
+     "9eb187b9d039b370588a7a2a5ac653ac0117a21d9b0c1f93cfd9a58741699140"
+    ],
+    "domain": [],
+    "email": []
+   }
+  },
+  {
+   "id": "R-0059",
+   "date": "2026-09-26",
+   "province": "Northern Cape",
+   "scamType": "investment",
+   "amount": 6000,
+   "script": "invest_double",
+   "ids": {
+    "acc": [
+     "704cd3c5f0d024919b6e5809bde2299f6886ab9c9836df4f12637eb7f5a9d04d"
+    ],
+    "phone": [
+     "b12933312a1ec622726695feed847493ca738a5831f3530b24b2ba047dc2212c"
+    ],
+    "domain": [
+     "a843ef89390207b4620f333546626c855459545447f6728f881f00ab09b0230e"
+    ],
+    "email": []
+   }
+  },
+  {
+   "id": "R-0060",
    "date": "2026-09-29",
    "province": "Western Cape",
    "scamType": "job",
@@ -294,25 +1130,189 @@ window.UBF_SEED = {
    }
   },
   {
-   "id": "R-0016",
-   "date": "2026-10-05",
-   "province": "Free State",
-   "scamType": "romance",
-   "amount": 19800,
+   "id": "R-0061",
+   "date": "2026-10-02",
+   "province": "Eastern Cape",
+   "scamType": "parcel",
+   "amount": 1320,
+   "script": "parcel_swift",
+   "ids": {
+    "acc": [
+     "d5623743630aa013be7ce923fec0d21d23fed947831ee0c76c4113e7f406ef2d"
+    ],
+    "phone": [
+     "cb0f3bc559f2bbcaac66c78474974b85b4bd7d44d965465c39929a9fa3446e03"
+    ],
+    "domain": [
+     "48e210ab36a5ae3b86ffb1d65d594c79910e29533e2dce15d20adf6228baa861"
+    ],
+    "email": []
+   }
+  },
+  {
+   "id": "R-0062",
+   "date": "2026-10-03",
+   "province": "Western Cape",
+   "scamType": "parcel",
+   "amount": 750,
    "script": null,
    "ids": {
     "acc": [
-     "4966d3295ba48bd10fa930f151ac5eff358a7e12361d0094c6e9f2742e350974"
+     "2c88b9fa195707e14290a7c1a56d7b460e5c9e2a10bf95d041ed0c3446b1a67d"
     ],
     "phone": [
-     "a668fe185039cb9cf072754d338e60f94a5b5fe494ea19b70ea920981cd8950a"
+     "b5668ea9122459f940eff957361da99e4cdf2e83ac8be48e2d7e395141608886"
     ],
     "domain": [],
     "email": []
    }
   },
   {
-   "id": "R-0017",
+   "id": "R-0063",
+   "date": "2026-10-03",
+   "province": "Western Cape",
+   "scamType": "parcel",
+   "amount": 2420,
+   "script": null,
+   "ids": {
+    "acc": [
+     "8d50222562ac21ca652cdc5b9573f187370c4a6ffa8c80e731ecde0101fa5aae"
+    ],
+    "phone": [
+     "da3a34da5dc785d7771822a8d3434b341d2b4026a4b0221596f8b91c08e01768"
+    ],
+    "domain": [],
+    "email": []
+   }
+  },
+  {
+   "id": "R-0064",
+   "date": "2026-10-04",
+   "province": "Western Cape",
+   "scamType": "job",
+   "amount": 3650,
+   "script": null,
+   "ids": {
+    "acc": [
+     "98a555eb92f515bd3889ef6fdfe778dd8fc1f2257d398d1e82f782edcc8984fc"
+    ],
+    "phone": [
+     "294360dc78fa11e9668b86f54bff8d86c0d67183e4830cfa6192ef1a2a41be99"
+    ],
+    "domain": [],
+    "email": []
+   }
+  },
+  {
+   "id": "R-0065",
+   "date": "2026-10-04",
+   "province": "Gauteng",
+   "scamType": "sars",
+   "amount": 5310,
+   "script": null,
+   "ids": {
+    "acc": [
+     "a95fe8bc143e10cb88588523b04b66c15c2e396f783cb217c4d9bdc46766c5b8"
+    ],
+    "phone": [
+     "2a7989c187e0696726ecbaae67574447c631ccad8ba76656a9d2d321c97593c3"
+    ],
+    "domain": [],
+    "email": []
+   }
+  },
+  {
+   "id": "R-0066",
+   "date": "2026-10-04",
+   "province": "KwaZulu-Natal",
+   "scamType": "other",
+   "amount": 6240,
+   "script": null,
+   "ids": {
+    "acc": [
+     "28e393e65ff932d8b83e426a033083f6e21d954402fe71b3ef26c33d41818f6a"
+    ],
+    "phone": [
+     "f21c72cceebf94f0e689348de561a5c9d3007a21d56d3e5dc08bbb81daa8d793"
+    ],
+    "domain": [],
+    "email": []
+   }
+  },
+  {
+   "id": "R-0067",
+   "date": "2026-10-05",
+   "province": "Gauteng",
+   "scamType": "marketplace",
+   "amount": 5940,
+   "script": null,
+   "ids": {
+    "acc": [
+     "6fd10556974f9e64e91b108e77dbd6304df24d7a54440f7cac77f3f5e829efe6"
+    ],
+    "phone": [
+     "4f68a0eb005fed9192ff3e3c50faac0605b4a20e573d28db140d122ca6994296"
+    ],
+    "domain": [],
+    "email": []
+   }
+  },
+  {
+   "id": "R-0068",
+   "date": "2026-10-05",
+   "province": "Eastern Cape",
+   "scamType": "marketplace",
+   "amount": 4020,
+   "script": null,
+   "ids": {
+    "acc": [
+     "568095ad36c0437924e57c19063102c1f86399daab1e46ffcec514dd61c09cd5"
+    ],
+    "phone": [
+     "da3d72bb7b0fba227eab39346d388047b104951b31deb20ee4091dac51943b98"
+    ],
+    "domain": [],
+    "email": []
+   }
+  },
+  {
+   "id": "R-0069",
+   "date": "2026-10-05",
+   "province": "KwaZulu-Natal",
+   "scamType": "marketplace",
+   "amount": 3980,
+   "script": null,
+   "ids": {
+    "acc": [
+     "2534342be95efa84c20e97e8cb16b6737e03772d78e93bf59c282d7a48ef4a98"
+    ],
+    "phone": [
+     "1d2e2beb486a151e6604fc28f8f873b6b9e332ad8bea5becfe03597a456585cc"
+    ],
+    "domain": [],
+    "email": []
+   }
+  },
+  {
+   "id": "R-0070",
+   "date": "2026-10-06",
+   "province": "KwaZulu-Natal",
+   "scamType": "marketplace",
+   "amount": 7660,
+   "script": null,
+   "ids": {
+    "acc": [
+     "589ce628ff3fbc584b54c1f5f5a9464840333b286fae606b6a722f98cf598814"
+    ],
+    "phone": [
+     "51468011575d350cba60fb35cf1a364cf4a8636af153b9d4edb770fb9c9ddb48"
+    ],
+    "domain": [],
+    "email": []
+   }
+  },
+  {
+   "id": "R-0071",
    "date": "2026-10-08",
    "province": "Eastern Cape",
    "scamType": "job",
@@ -332,54 +1332,162 @@ window.UBF_SEED = {
    }
   },
   {
-   "id": "R-0018",
-   "date": "2026-10-08",
-   "province": "Western Cape",
+   "id": "R-0072",
+   "date": "2026-10-09",
+   "province": "KwaZulu-Natal",
+   "scamType": "sars",
+   "amount": 4340,
+   "script": "sars_refund",
+   "ids": {
+    "acc": [
+     "e9e21aa2799973c5b01af379e7156341e9109d92611f89241bc46af562717c65"
+    ],
+    "phone": [
+     "4cbb697792b50fb10dd3ace466eeaf2c6dae1979b33609296f23aafb79062689"
+    ],
+    "domain": [],
+    "email": []
+   }
+  },
+  {
+   "id": "R-0073",
+   "date": "2026-10-10",
+   "province": "Northern Cape",
    "scamType": "marketplace",
-   "amount": 2900,
+   "amount": 7820,
+   "script": null,
+   "ids": {
+    "acc": [
+     "52ce0b59a2c7785241cda7b9eb9a64fab70e6bfbd67817eabc9a0d4b65403c9a"
+    ],
+    "phone": [
+     "96fd4010ba4c5ce398432ef89496b1a5ba31afeb99137c6a5fef5cc31a511c04"
+    ],
+    "domain": [],
+    "email": []
+   }
+  },
+  {
+   "id": "R-0074",
+   "date": "2026-10-11",
+   "province": "Gauteng",
+   "scamType": "marketplace",
+   "amount": 3590,
    "script": null,
    "ids": {
     "acc": [
      "9f6d0b52ec2528dcb75847232d82f581364cb7aa1149a70858ef02453a511c8e"
     ],
     "phone": [
-     "c0291115e2952080b963ce6f3b9750fe9c10da591e15498640cde9916da9af1d"
+     "90a79e6dd4dc6bbbdf3ff99172d31b44709a363c7a250f676e1b517da8e3729f"
     ],
     "domain": [],
     "email": []
    }
   },
   {
-   "id": "R-0019",
+   "id": "R-0075",
+   "date": "2026-10-11",
+   "province": "North West",
+   "scamType": "job",
+   "amount": 6250,
+   "script": null,
+   "ids": {
+    "acc": [
+     "46f29ece258daea6abc11925b2d186965e8b7eb2913a1fa3cb7c1ebb7d31db5a"
+    ],
+    "phone": [
+     "5b85159fe65d0c8e9461853c3874eea0f9c91e516f76ed0e68a03d865afeceb6"
+    ],
+    "domain": [],
+    "email": []
+   }
+  },
+  {
+   "id": "R-0076",
+   "date": "2026-10-12",
+   "province": "Western Cape",
+   "scamType": "job",
+   "amount": 8080,
+   "script": null,
+   "ids": {
+    "acc": [
+     "26e9aa8b93cbf936fa1428a84dc8f60e03a5cb8dbda54982aa75822f80b2d29d"
+    ],
+    "phone": [
+     "d1910bed0d5358cf709497b9db7a6326aad221fded45bcd66e87ae8c519b27fc"
+    ],
+    "domain": [],
+    "email": []
+   }
+  },
+  {
+   "id": "R-0077",
    "date": "2026-10-13",
-   "province": "Gauteng",
+   "province": "Limpopo",
    "scamType": "romance",
-   "amount": 31000,
+   "amount": 44330,
    "script": null,
    "ids": {
     "acc": [
-     "50e58b583b09d856cfab543b39dc545e503876dc9076f58a3e29dcee9ae0e953"
+     "475563110386612b92d196d9bc69e25acaaa85e7704ab9dc601e5f253e207d0a"
     ],
     "phone": [
-     "c74ad19fe5e07a71263b5fad1baeaeb538bde14a4cf972b60436ff99d5cac4fe"
+     "2b8437503fe26f1137812a0e41047c815d8dab76cbef7d52e5cde1f7f0057dd3"
     ],
     "domain": [],
     "email": []
    }
   },
   {
-   "id": "R-0020",
+   "id": "R-0078",
    "date": "2026-10-14",
-   "province": "Free State",
-   "scamType": "marketplace",
-   "amount": 4200,
+   "province": "Limpopo",
+   "scamType": "romance",
+   "amount": 24930,
    "script": null,
    "ids": {
     "acc": [
-     "43b2daef295326915f315dfe36b0fd45d49f890c1adbaecf8883346d08ef1959"
+     "cc41c5167780d2a3ce36892d4f0a4f8f1e334c4565f0300cfda1bc2949824bc4"
     ],
     "phone": [
-     "bbd43e59e6c7b796d65661b08b52c6e8e46512c986b284d468919b4f35e03be6"
+     "c7450365441c8020bb46067551d43b7a8262dfa54845809ec3624500ca2eab0f"
+    ],
+    "domain": [],
+    "email": []
+   }
+  },
+  {
+   "id": "R-0079",
+   "date": "2026-10-14",
+   "province": "Western Cape",
+   "scamType": "investment",
+   "amount": 8440,
+   "script": null,
+   "ids": {
+    "acc": [
+     "be2e9831b475aa44b8d3746ff1cf6d91afff36c027e62a64dd7697e844c11a31"
+    ],
+    "phone": [
+     "ac40d4917a6b50a80ff019b92f22314f66e3a9e2be5fadad4e23b193b6d4bbee"
+    ],
+    "domain": [],
+    "email": []
+   }
+  },
+  {
+   "id": "R-0080",
+   "date": "2026-10-14",
+   "province": "Eastern Cape",
+   "scamType": "other",
+   "amount": 4330,
+   "script": null,
+   "ids": {
+    "acc": [
+     "f2bf343ef76818a3925c8ed42745187df93f6236ba36c0361f2d10726cb36145"
+    ],
+    "phone": [
+     "08397a88771659da55f803424b376d701c4ba2815cd73e350704ce5042335b20"
     ],
     "domain": [],
     "email": []

@@ -72,10 +72,41 @@ reports = [
 ]
 assert sum(r[3] for r in reports) == 84000
 
+# Two more fictional syndicates, so the network looks like the real world.
+SCRIPTS["parcel_swift"] = {
+    "label": "Fake courier 'SwiftParcel' customs fee",
+    "text": ("SwiftParcel: your parcel is held at our depot because customs duty is unpaid. Pay the clearance fee "
+             "within 24 hours or the parcel will be returned. Pay securely on our clearance page and send proof of payment."),
+}
+SCRIPTS["invest_double"] = {
+    "label": "Fake crypto investment 'double your money'",
+    "text": ("Good day, invest today and receive ten times your money in 7 days with our crypto trading platform. "
+             "Returns are guaranteed and our account manager will guide you. Register on the link below and send proof of payment."),
+}
+S2_ACCS = ["5530187264", "5530199012"]  # switched to a second mule account halfway
+S2_PHONES = ["+27612245873", "+27725561190", "+27836604412"]
+S2_DOMAIN = "swiftparcel-clearance.online"
+s2 = [("2026-07-04", "Gauteng", 850), ("2026-07-11", "Free State", 1200), ("2026-07-19", "KwaZulu-Natal", 650),
+      ("2026-07-30", "Mpumalanga", 990), ("2026-08-08", "Gauteng", 1450), ("2026-08-21", "North West", 780),
+      ("2026-09-03", "Western Cape", 1100), ("2026-09-17", "Limpopo", 560), ("2026-10-02", "Eastern Cape", 1320)]
+for k, (d, prov, amt) in enumerate(s2):
+    acc = S2_ACCS[0] if k < 5 else S2_ACCS[1]
+    reports.append((d, prov, "parcel", amt, "parcel_swift", ids([acc], [S2_PHONES[k % 3]], [S2_DOMAIN] if k % 2 == 0 else [])))
+
+S3_ACC = "7718203345"
+S3_DOMAIN = "doublemyrands-invest.site"
+s3 = [("2026-06-15", "Gauteng", 12000), ("2026-07-02", "Western Cape", 25000), ("2026-08-12", "KwaZulu-Natal", 8500),
+      ("2026-09-09", "Gauteng", 40000), ("2026-09-26", "Northern Cape", 6000)]
+for k, (d, prov, amt) in enumerate(s3):
+    reports.append((d, prov, "investment", amt, "invest_double", ids([S3_ACC], ["+2779" + str(3310450 + k * 1117)], [S3_DOMAIN])))
+
 # Unrelated background reports (random fictional identifiers).
 rng = random.Random(2026)
 provinces = ["Gauteng", "KwaZulu-Natal", "Western Cape", "Eastern Cape", "Limpopo",
              "Mpumalanga", "North West", "Free State", "Northern Cape"]
+weights = [26, 19, 12, 10, 9, 8, 7, 5, 4]
+ranges = {"job": (1500, 15000), "marketplace": (800, 8000), "romance": (5000, 60000), "investment": (2000, 50000),
+          "parcel": (300, 3000), "sars": (1000, 9000), "other": (500, 12000)}
 
 
 def rand_acc():
@@ -86,21 +117,23 @@ def rand_phone():
     return "+27" + rng.choice("678") + "".join(str(rng.randint(0, 9)) for _ in range(8))
 
 
-market_acc = rand_acc()  # a small 2-report cluster, so the data looks realistic
-background = [
-    ("romance", 31000, None), ("romance", 8600, None), ("marketplace", 4200, None),
-    ("marketplace", 2900, "shared"), ("marketplace", 3600, "shared"), ("investment", 45000, None),
-    ("investment", 12500, None), ("sars", 6400, "sars_refund"), ("parcel", 1250, "parcel_customs"),
-    ("parcel", 980, "parcel_customs"), ("job", 2500, None), ("romance", 19800, None),
-    ("marketplace", 5100, None), ("investment", 27000, None),
-]
-for i, (kind, amount, tag) in enumerate(background):
-    month = rng.choice([7, 8, 9, 10])
-    day = rng.randint(1, 28) if month < 10 else rng.randint(1, 15)
-    acc = market_acc if tag == "shared" else rand_acc()
-    script = tag if tag in SCRIPTS else None
-    reports.append((f"2026-{month:02d}-{day:02d}", rng.choice(provinces), kind, amount, script,
+def rand_date():
+    month = rng.choice([6, 7, 8, 9, 10])
+    return f"2026-{month:02d}-{rng.randint(1, 28) if month < 10 else rng.randint(1, 15):02d}"
+
+
+market_acc, romance_acc = rand_acc(), rand_acc()  # two small 2-report clusters
+for tag, kind, acc in [("pair", "marketplace", market_acc), ("pair", "marketplace", market_acc),
+                       ("pair", "romance", romance_acc), ("pair", "romance", romance_acc)]:
+    lo, hi = ranges[kind]
+    reports.append((rand_date(), rng.choices(provinces, weights)[0], kind, round(rng.randint(lo, hi), -1), None,
                     ids([acc], [rand_phone()])))
+kinds = ["job"] * 9 + ["marketplace"] * 13 + ["romance"] * 8 + ["investment"] * 7 + ["parcel"] * 6 + ["sars"] * 7 + ["other"] * 6
+for kind in kinds:
+    lo, hi = ranges[kind]
+    script = "sars_refund" if kind == "sars" and rng.random() < 0.5 else None
+    reports.append((rand_date(), rng.choices(provinces, weights)[0], kind, round(rng.randint(lo, hi), -1), script,
+                    ids([rand_acc()], [rand_phone()])))
 
 reports.sort(key=lambda r: r[0])
 out = {

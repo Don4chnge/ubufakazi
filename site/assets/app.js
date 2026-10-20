@@ -340,6 +340,7 @@
     return {
       reports: list,
       count: list.length,
+      networkSize: reports.length,
       total: list.reduce((s, r) => s + (r.amount || 0), 0),
       provinces: uniq(list.map((r) => r.province).filter((p) => p && p !== '—')),
       first: list[0] && list[0].date,
@@ -390,7 +391,89 @@
     other: 'Angizange ngikuthole engakuthenjiswa, futhi lo muntu wayeka ukuphendula.',
   };
 
+  // More statement languages (drafts: a fluent speaker should check them before signing).
+  const LANG_NAMES = { en: 'English', zu: 'isiZulu', xh: 'isiXhosa', af: 'Afrikaans', st: 'Sesotho' };
+  const EXTRA_LANGS = {
+    af: {
+      months: ['Januarie', 'Februarie', 'Maart', 'April', 'Mei', 'Junie', 'Julie', 'Augustus', 'September', 'Oktober', 'November', 'Desember'],
+      and: 'en', title: 'VERKLARING VAN KLAGER', nameph: '[jou volle naam]',
+      intro: (n) => `Ek, ${n}, verklaar soos volg:`,
+      l1: (d, a, ph) => `1. Op ${d} is ek op WhatsApp gekontak deur 'n persoon wat die naam "${a}"${ph ? ' en die nommer' + (ph.n > 1 ? 's ' : ' ') + ph.t : ''} gebruik.`,
+      offer: { job: "my 'n werk aangebied en gesê dat ek gekies is", marketplace: "aangebied om 'n item aan my te verkoop", romance: "'n verhouding met my opgebou en my toe vir geld gevra", investment: "my 'n belegging met hoë opbrengste aangebied", parcel: "gesê dat 'n pakkie teruggehou word en dat 'n fooi betaal moet word om dit vry te stel", sars: "gesê dat ek 'n belastingterugbetaling van SARS sou ontvang", other: "my 'n aanbod gemaak" },
+      l2: (o) => `2. Hierdie persoon het ${o}.`,
+      acc: (a) => 'rekening ' + showAcc(a.value) + (a.bank ? ' by ' + a.bank : ''),
+      l3: (t) => (t ? `3. Hulle het my gevra om betaling te maak in ${t}.` : '3. Hulle het my gevra om \'n betaling te maak.'),
+      l4: (amt, d) => `4. Ek het 'n totaal van ${amt} betaal${d ? ' op ' + d : ''}.`,
+      outcome: { job: 'het ek nooit die werk gekry nie, en die persoon het opgehou om te antwoord', marketplace: 'het ek nooit die item ontvang nie, en die persoon het opgehou om te antwoord', romance: 'het die persoon aangehou om meer geld te vra en toe opgehou om te antwoord', investment: 'het ek geen opbrengs of my geld terug ontvang nie, en die persoon het opgehou om te antwoord', parcel: 'is geen pakkie afgelewer nie, en die persoon het opgehou om te antwoord', sars: 'het ek geen terugbetaling ontvang nie', other: 'het ek nie ontvang wat belowe is nie, en die persoon het opgehou om te antwoord' },
+      l5: (o) => `5. Nadat ek betaal het, ${o}.`,
+      l6: (t) => `6. Hulle het my ook 'n skakel na ${t} gestuur.`,
+      notKnown: 'Ek het nie hierdie persoon geken nie en het hulle nie toestemming gegee om my geld te hou nie.',
+      attach: (id) => `Ek heg die bewyse aan wat in Ubufakazi-saaklêer ${id} gelys word. Elke lêer het 'n SHA-256-vingerafdruk sodat enige latere verandering opgespoor kan word.`,
+      request: "Ek versoek dat 'n saak van bedrog geopen word.",
+      sign: 'Handtekening: ______________________     Datum: ______________',
+      amountph: '[bedrag]', dateph: '[datum]', aliasph: '[naam]',
+    },
+    xh: {
+      months: ['Janyuwari', 'Februwari', 'Matshi', 'Epreli', 'Meyi', 'Juni', 'Julayi', 'Agasti', 'Septemba', 'Okthobha', 'Novemba', 'Disemba'],
+      and: 'kunye', title: 'INGXELO YOMMANGALELI', nameph: '[igama lakho]',
+      intro: (n) => `Mna, ${n}, ndithi:`,
+      l1: (d, a, ph) => `1. Ngomhla we-${d}, ndaqhagamshelwa kuWhatsApp ngumntu osebenzisa igama elithi "${a}"${ph ? ', nenombolo ' + ph.t : ''}.`,
+      offer: { job: 'wandithembisa umsebenzi wathi ndikhethiwe', marketplace: 'wathi uza kundithengisela into', romance: 'wakha ubudlelwane nam waza wacela imali', investment: 'wandithembisa utyalo-mali olunenzuzo ephezulu', parcel: 'wathi kukho ipasile ebanjiweyo ekufuneka ihlawulelwe ukuze ikhululwe', sars: 'wathi ndiza kubuyiselwa imali yerhafu yi-SARS', other: 'wandithembisa into ethile' },
+      l2: (o) => `2. Lo mntu ${o}.`,
+      acc: (a) => 'akhawunti ' + (a.bank ? 'yase' + a.bank + ' ' : '') + showAcc(a.value),
+      l3: (t) => (t ? `3. Wandicela ukuba ndihlawule imali kwi-${t}.` : '3. Wandicela ukuba ndihlawule imali.'),
+      l4: (amt, d) => `4. Ndahlawula imali eyi-${amt}${d ? ' ngomhla we-' + d : ''}.`,
+      outcome: { job: 'Andizange ndiwufumane umsebenzi, kwaye lo mntu wayeka ukuphendula.', marketplace: 'Andizange ndiyifumane loo nto, kwaye lo mntu wayeka ukuphendula.', romance: 'Lo mntu waqhubeka ecela imali engakumbi waza wayeka ukuphendula.', investment: 'Andizange ndifumane nzuzo okanye imali yam ibuyiselwe, kwaye lo mntu wayeka ukuphendula.', parcel: 'Akukho pasile yafika, kwaye lo mntu wayeka ukuphendula.', sars: 'Andizange ndiyifumane imali ebuyiselwayo.', other: 'Andizange ndikufumane endakuthenjiswayo, kwaye lo mntu wayeka ukuphendula.' },
+      l5: (o) => `5. ${o}`,
+      l6: (t) => `6. Wandithumelela nekhonkco (link) eliya ku-${t}.`,
+      notKnown: 'Andimazi lo mntu, kwaye andizange ndimnike imvume yokugcina imali yam.',
+      attach: (id) => `Ndincamathisela ubungqina obudweliswe kwifayile yetyala (${id}). Ifayile nganye inesitampu sedijithali (SHA-256), ukuze naluphi na utshintsho lubonakale.`,
+      request: 'Ndicela ukuba kuvulwe ityala lobuqhophololo (fraud).',
+      sign: 'Utyikityo: ______________________     Umhla: ______________',
+      amountph: '[isixa]', dateph: '[umhla]', aliasph: '[igama]',
+    },
+    st: {
+      months: ['Pherekgong', 'Hlakola', 'Hlakubele', 'Mmesa', 'Motsheanong', 'Phupjane', 'Phupu', 'Phato', 'Lwetse', 'Mphalane', 'Pudungwana', 'Tshitwe'],
+      and: 'le', title: 'POLELO YA MMELAEDI', nameph: '[lebitso la hao]',
+      intro: (n) => `Nna, ${n}, ke re:`,
+      l1: (d, a, ph) => `1. Ka la ${d}, motho ya sebedisang lebitso la "${a}"${ph ? ' le nomoro ' + ph.t : ''} o ile a ikopanya le nna ho WhatsApp.`,
+      offer: { job: 'o ile a ntshepisa mosebetsi mme a re ke kgethilwe', marketplace: 'o ile a re o tla nthekisetsa thepa', romance: 'o ile a aha kamano le nna mme a nkopa tjhelete', investment: 'o ile a ntshepisa peeletso e nang le phaello e hodimo', parcel: 'o ile a re ho na le phasela e tshwerweng e hlokang ho lefellwa hore e lokollwe', sars: 'o ile a re ke tla busetswa tjhelete ya lekgetho ke SARS', other: 'o ile a ntshepisa ho itseng' },
+      l2: (o) => `2. Motho enwa ${o}.`,
+      acc: (a) => 'akhaontong ' + (a.bank ? 'ya ' + a.bank + ' ' : '') + showAcc(a.value),
+      l3: (t) => (t ? `3. O ile a nkopa hore ke lefe tjhelete ${t}.` : '3. O ile a nkopa hore ke lefe tjhelete.'),
+      l4: (amt, d) => `4. Ke lefile kakaretso ya ${amt}${d ? ' ka la ' + d : ''}.`,
+      outcome: { job: 'Ha ke a ka ka fumana mosebetsi, mme motho enwa o ile a kgaotsa ho araba.', marketplace: 'Ha ke a ka ka fumana thepa, mme motho enwa o ile a kgaotsa ho araba.', romance: 'Motho enwa o ile a tswela pele ho kopa tjhelete e eketsehileng mme a kgaotsa ho araba.', investment: 'Ha ke a ka ka fumana phaello kapa tjhelete ya ka e busetswa, mme motho enwa o ile a kgaotsa ho araba.', parcel: 'Ha ho phasela e ileng ya fihla, mme motho enwa o ile a kgaotsa ho araba.', sars: 'Ha ke a ka ka fumana tjhelete e busetswang.', other: 'Ha ke a ka ka fumana se neng se tshepisitswe, mme motho enwa o ile a kgaotsa ho araba.' },
+      l5: (o) => `5. ${o}`,
+      l6: (t) => `6. O ile a nthomella le lehokela (link) le yang ho ${t}.`,
+      notKnown: 'Ha ke mo tsebe motho enwa, mme ha ke a mo fa tumello ya ho boloka tjhelete ya ka.',
+      attach: (id) => `Ke kenya bopaki bo thathamisitsweng faeleng ya nyewe (${id}). Faele ka nngwe e na le setempe sa dijithale (SHA-256), hore phetoho efe kapa efe e bonahale.`,
+      request: 'Ke kopa hore ho bulwe nyewe ya bomenemene (fraud).',
+      sign: 'Tshaeno: ______________________     Letsatsi: ______________',
+      amountph: '[kakaretso]', dateph: '[letsatsi]', aliasph: '[lebitso]',
+    },
+  };
+
+  function writeStatementExtra(c, L) {
+    const ex = c.ex;
+    const fd = (d) => `${d.getDate()} ${L.months[d.getMonth()]} ${d.getFullYear()}`;
+    const first = c.msgs.find((m) => m.date);
+    const payDates = ex.paid.map((p) => c.msgs.find((m) => m.i === p.msg)).filter((m) => m && m.date).map((m) => m.date);
+    const phones = ex.phones.map((p) => showPhone(p.value));
+    return [
+      L.title, '',
+      L.intro(c.victimName || L.nameph), '',
+      L.l1(first ? fd(first.date) : L.dateph, c.scammer || L.aliasph, phones.length ? { n: phones.length, t: listText(phones, L.and) } : null),
+      L.l2(L.offer[c.type]),
+      L.l3(ex.accounts.length ? listText(ex.accounts.map(L.acc), L.and) : ''),
+      L.l4(ex.totalPaid != null ? money(ex.totalPaid) : L.amountph, payDates.length ? listText(uniq(payDates.map(fd)), L.and) : ''),
+      L.l5(L.outcome[c.type]),
+      ex.domains.length ? L.l6(listText(ex.domains, L.and)) : null,
+      '', L.notKnown, L.attach(c.caseId), '', L.request, '', L.sign,
+    ].filter((l) => l !== null).join('\n');
+  }
+
   function writeStatement(c, lang) {
+    if (EXTRA_LANGS[lang]) return writeStatementExtra(c, EXTRA_LANGS[lang]);
     const ex = c.ex;
     const name = c.victimName || (lang === 'zu' ? '[igama lakho]' : '[your full name]');
     const first = c.msgs.find((m) => m.date);
@@ -599,7 +682,7 @@ If WhatsApp is slow call me on 071 482 0937
       const manifestSha = await sha256(manifest);
       const caseId = 'UBF-' + manifestSha.slice(0, 8).toUpperCase();
       const c = { caseId, manifestSha, lockedAt, evidence, msgs, scammer, ex, type, timeline, fp, linked, victimName: $('#victimName').value.trim(), scammerText };
-      await step(4, async () => { c.statement = { en: writeStatement(c, 'en'), zu: writeStatement(c, 'zu') }; c.bank = writeBankReport(c); });
+      await step(4, async () => { c.statement = Object.fromEntries(Object.keys(LANG_NAMES).map((l) => [l, writeStatement(c, l)])); c.bank = writeBankReport(c); });
       state.result = c; state.added = false; state.lang = $('#lang').value;
       await sleep(250);
       renderResults(c);
@@ -639,13 +722,13 @@ If WhatsApp is slow call me on 071 482 0937
           sig(n(L.signal.phone), 'Phone number', n(L.signal.phone) ? `Same number in ${n(L.signal.phone)} report${n(L.signal.phone) > 1 ? 's' : ''}` : 'New number'),
           sig(n(L.signal.domain), 'Link', n(L.signal.domain) ? `Same site in ${n(L.signal.domain)} report${n(L.signal.domain) > 1 ? 's' : ''}` : 'No match'),
           sig(n(L.signal.script), 'Message script', L.scriptId ? `${Math.round(L.scriptScore * 100)}% match to a known script` : 'No match')),
-        h('p', { class: 'link-foot', text: `Scam Fingerprint: this group has used ${L.distinctPhones} phone number${L.distinctPhones === 1 ? '' : 's'} and ${L.distinctAccounts} bank account${L.distinctAccounts === 1 ? '' : 's'}. ${L.distinctAccounts > 1 ? 'Switching numbers and bank accounts' : 'Switching numbers'} doesn't hide them.` }),
+        h('p', { class: 'link-foot', text: `Scam Fingerprint: this group has used ${L.distinctPhones} phone number${L.distinctPhones === 1 ? '' : 's'} and ${L.distinctAccounts} bank account${L.distinctAccounts === 1 ? '' : 's'}. ${L.distinctAccounts > 1 ? 'Switching numbers and bank accounts' : 'Switching numbers'} doesn't hide them. Checked against ${L.networkSize} reports in the network.` }),
       );
     } else {
       card.className = 'link-card clear';
       card.append(h('p', { class: 'link-kicker', text: 'Scam Fingerprint' }),
         h('p', { class: 'link-head', text: 'No earlier reports match this scammer yet.' }),
-        h('p', { class: 'link-sub', text: 'Add your report below. If this scammer strikes again, the next victim will be linked to you.' }));
+        h('p', { class: 'link-sub', text: `Checked against ${L.networkSize} reports in the network. Add your report below: if this scammer strikes again, the next victim will be linked to you.` }));
     }
 
     // evidence
@@ -695,9 +778,8 @@ If WhatsApp is slow call me on 071 482 0937
     if (keepEdits && state.lang) c.statement[state.lang] = $('#statement').value;
     state.lang = lang;
     $('#statement').value = c.statement[lang];
-    $('#tabEn').setAttribute('aria-selected', String(lang === 'en'));
-    $('#tabZu').setAttribute('aria-selected', String(lang === 'zu'));
-    $('#zuNote').hidden = lang !== 'zu';
+    document.querySelectorAll('.tabs .tab').forEach((t) => t.setAttribute('aria-selected', String(t.dataset.lang === lang)));
+    $('#zuNote').hidden = lang === 'en';
   }
 
   function addReport() {
@@ -836,9 +918,9 @@ If WhatsApp is slow call me on 071 482 0937
     });
 
     newPage();
-    heading('04', state.lang === 'zu' ? 'Statement (isiZulu draft)' : 'Statement');
+    heading('04', state.lang === 'en' ? 'Statement' : `Statement (${LANG_NAMES[state.lang]} draft)`);
     para(c.statement[state.lang], { size: 10.2, after: 4 });
-    if (state.lang === 'zu') para('isiZulu draft: check with a fluent speaker before signing.', { size: 8.5, muted: true });
+    if (state.lang !== 'en') para(`${LANG_NAMES[state.lang]} draft: check with a fluent speaker before signing.`, { size: 8.5, muted: true });
 
     heading('05', 'Report for the bank');
     para(bank, { size: 9.8 });
@@ -881,8 +963,7 @@ If WhatsApp is slow call me on 071 482 0937
       if (txt && !$('#chat').value.trim()) txt.text().then((t) => { $('#chat').value = t; });
       addFiles(files.filter((f) => f !== txt));
     });
-    $('#tabEn').addEventListener('click', () => setLang('en'));
-    $('#tabZu').addEventListener('click', () => setLang('zu'));
+    document.querySelectorAll('.tabs .tab').forEach((t) => t.addEventListener('click', () => setLang(t.dataset.lang)));
     $('#pdfBtn').addEventListener('click', makePdf);
     $('#consentBtn').addEventListener('click', addReport);
     $('#newBtn').addEventListener('click', () => {
