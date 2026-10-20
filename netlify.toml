@@ -1,0 +1,5 @@
+# Netlify settings for Ubufakazi (used when deploying from GitHub).
+# No build step: the site is plain HTML, CSS and JavaScript.
+[build]
+  publish = "site"
+  command = ""

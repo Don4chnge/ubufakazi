@@ -1,0 +1,245 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data: blob:; font-src 'self'; connect-src 'self'; object-src 'none'; base-uri 'none'; form-action 'self'">
+<meta name="referrer" content="no-referrer">
+<title>Ubufakazi · From scam victim to case file in 60 seconds</title>
+<meta name="description" content="Ubufakazi turns a scam victim's chats and proof of payment into a tamper-evident case file, and privately links victims of the same scammer. A CyberThreat prototype for HackSecure 2026.">
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="assets/app.css">
+</head>
+<body>
+
+<a class="skip" href="#report">Skip to the report form</a>
+
+<header class="top">
+  <div class="wrap top-in">
+    <a class="brand" href="#" aria-label="Ubufakazi home">
+      <svg class="brand-mark" viewBox="0 0 32 32" aria-hidden="true"><rect x="7" y="4" width="18" height="24" rx="2"/><path d="M11 10h10M11 14h10M11 18h6"/><circle cx="22" cy="23" r="5"/><path d="M19.8 23l1.6 1.6 2.8-3.2"/></svg>
+      <span class="brand-name">Ubufakazi</span>
+      <span class="brand-by">by CyberThreat</span>
+    </a>
+    <nav class="nav" aria-label="Page sections">
+      <a href="#how">How it works</a>
+      <a href="#privacy">Privacy</a>
+    </nav>
+    <span class="pill pill-demo">Demo · fictional data only</span>
+  </div>
+</header>
+
+<main>
+
+  <section class="hero wrap">
+    <p class="kicker">HackSecure 2026 · Team CyberThreat</p>
+    <h1>From scam victim to <span class="hl">case file</span> in 60 seconds.</h1>
+    <p class="hero-sub">Forward the scam chat and proof of payment. Ubufakazi locks every file with a digital fingerprint, pulls out the scammer's details, writes your statement in your language, and checks whether the same scammer has hit anyone else.</p>
+    <dl class="stats">
+      <div><dt>R2.4bn</dt><dd>lost to digital banking crime in SA in 2025 (SABRIC)</dd></div>
+      <div><dt>6%</dt><dd>of scam victims report it to authorities (GASA 2026)</dd></div>
+      <div><dt>1 → 7</dt><dd>one victim gets ignored; seven victims is a syndicate</dd></div>
+    </dl>
+  </section>
+
+  <section id="report" class="wrap panel" aria-labelledby="report-title">
+    <div class="panel-head">
+      <p class="step-tag">Step 1</p>
+      <h2 id="report-title">Tell us what happened</h2>
+    </div>
+
+    <div class="demo-row">
+      <span class="demo-label">Try a demo case</span>
+      <button type="button" class="btn btn-ghost" id="demoA">Fake job offer</button>
+      <button type="button" class="btn btn-ghost" id="demoB">Same scammer, new number &amp; new account</button>
+    </div>
+
+    <form id="caseForm" class="form" novalidate>
+      <div class="field-row">
+        <div class="field">
+          <label for="victimName">Your name <span class="opt">(optional)</span></label>
+          <input id="victimName" name="victimName" type="text" autocomplete="off" placeholder="e.g. Lerato Mokoena">
+        </div>
+        <div class="field">
+          <label for="scamType">Type of scam</label>
+          <select id="scamType" name="scamType">
+            <option value="auto">Detect automatically</option>
+            <option value="job">Fake job offer</option>
+            <option value="marketplace">Online seller / Marketplace</option>
+            <option value="romance">Romance</option>
+            <option value="investment">Investment / crypto</option>
+            <option value="parcel">Courier / parcel fee</option>
+            <option value="sars">Fake SARS refund</option>
+            <option value="other">Something else</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="lang">Statement language</label>
+          <select id="lang" name="lang">
+            <option value="en">English</option>
+            <option value="zu">isiZulu</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="field">
+        <label for="chat">The scam chat</label>
+        <textarea id="chat" name="chat" rows="9" spellcheck="false" placeholder="Paste the chat here, or upload a WhatsApp chat export below."></textarea>
+        <p class="hint">On WhatsApp: open the chat › More › Export chat › Without media. Then upload the .txt file.</p>
+        <label class="btn btn-small btn-ghost file-btn" for="chatFile">Upload chat export (.txt)</label>
+        <input id="chatFile" class="sr-only" type="file" accept=".txt,text/plain">
+      </div>
+
+      <div class="field">
+        <span class="label" id="evidenceLabel">Screenshots and proof of payment</span>
+        <label class="drop" for="evidence" id="drop">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 16V4M7 9l5-5 5 5M4 16v3a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-3"/></svg>
+          <span><b>Add files</b> or drop them here</span>
+          <span class="hint">Images or PDFs. Files stay on this device; only their fingerprints are used.</span>
+        </label>
+        <input id="evidence" class="sr-only" type="file" multiple accept="image/*,.pdf,application/pdf" aria-labelledby="evidenceLabel">
+        <ul class="file-list" id="fileList" aria-live="polite"></ul>
+      </div>
+
+      <div class="form-foot">
+        <button type="submit" class="btn btn-primary" id="buildBtn">Build my case file</button>
+        <p class="hint" id="formMsg" role="status"></p>
+      </div>
+    </form>
+  </section>
+
+  <section id="progress" class="wrap panel" hidden aria-live="polite" aria-labelledby="progress-title">
+    <div class="panel-head">
+      <p class="step-tag">Step 2</p>
+      <h2 id="progress-title">Building your case file</h2>
+    </div>
+    <ol class="steps" id="stepList">
+      <li data-step="lock">Locking evidence with SHA-256 fingerprints</li>
+      <li data-step="extract">Extracting the scammer's details</li>
+      <li data-step="timeline">Building the timeline</li>
+      <li data-step="link">Checking for other victims of this scammer</li>
+      <li data-step="write">Writing your statement and bank report</li>
+    </ol>
+  </section>
+
+  <section id="results" class="wrap" hidden aria-labelledby="results-title">
+    <div class="results-head">
+      <div>
+        <p class="step-tag">Step 3 · Your case file</p>
+        <h2 id="results-title">Case <span id="caseId" class="mono-hl"></span></h2>
+      </div>
+      <div class="results-actions">
+        <button type="button" class="btn btn-primary" id="pdfBtn">Download case pack (PDF)</button>
+        <button type="button" class="btn btn-ghost" id="newBtn">Start a new case</button>
+      </div>
+    </div>
+
+    <div id="linkCard" class="link-card" tabindex="-1"></div>
+
+    <div class="grid-2">
+      <article class="panel">
+        <h3><span class="num">01</span> Evidence locked</h3>
+        <p class="hint">Each file's SHA-256 fingerprint. If even one pixel changes later, the fingerprint will not match.</p>
+        <div class="table-wrap"><table class="hash-table" id="hashTable"><thead><tr><th scope="col">File</th><th scope="col">SHA-256 fingerprint</th></tr></thead><tbody></tbody></table></div>
+        <p class="hint" id="lockedAt"></p>
+      </article>
+
+      <article class="panel">
+        <h3><span class="num">02</span> Scammer details found</h3>
+        <dl class="facts" id="facts"></dl>
+      </article>
+    </div>
+
+    <article class="panel">
+      <h3><span class="num">03</span> Timeline</h3>
+      <ol class="timeline" id="timeline"></ol>
+    </article>
+
+    <div class="grid-2">
+      <article class="panel">
+        <h3><span class="num">04</span> Your statement</h3>
+        <div class="tabs" role="tablist" aria-label="Statement language">
+          <button type="button" role="tab" class="tab" id="tabEn" aria-controls="statement" data-lang="en">English</button>
+          <button type="button" role="tab" class="tab" id="tabZu" aria-controls="statement" data-lang="zu">isiZulu</button>
+        </div>
+        <label class="sr-only" for="statement">Statement text</label>
+        <textarea id="statement" rows="19"></textarea>
+        <p class="hint" id="zuNote" hidden>isiZulu draft: have a fluent speaker check it before signing.</p>
+        <div class="row-btns"><button type="button" class="btn btn-small btn-ghost" data-copy="statement">Copy statement</button></div>
+      </article>
+
+      <article class="panel">
+        <h3><span class="num">05</span> Report to your bank</h3>
+        <p class="hint">Contact your bank's fraud line straight away (the number is on the back of your card). Fast reports give the bank the best chance to stop the money.</p>
+        <label class="sr-only" for="bankReport">Bank fraud report text</label>
+        <textarea id="bankReport" rows="17"></textarea>
+        <div class="row-btns"><button type="button" class="btn btn-small btn-ghost" data-copy="bankReport">Copy bank report</button></div>
+      </article>
+    </div>
+
+    <article class="panel consent" id="consentCard">
+      <div>
+        <h3>Help warn the next victim</h3>
+        <p>Add this report to the Ubufakazi network. Only secure fingerprints of the scammer's account, numbers and links are shared. Never your name, chats or files.</p>
+      </div>
+      <button type="button" class="btn btn-primary" id="consentBtn">Add my report</button>
+    </article>
+
+    <article class="panel">
+      <h3>What to do next</h3>
+      <ol class="next">
+        <li><b>Call your bank's fraud line now.</b> Give them the bank report above.</li>
+        <li><b>Open a case at your nearest SAPS station.</b> Bring the case pack PDF and your phone with the original chats.</li>
+        <li><b>Don't delete the chat</b> or block the number until the police have what they need.</li>
+        <li><b>Add the SAPS case number</b> to your bank report once you have it.</li>
+      </ol>
+    </article>
+  </section>
+
+  <section id="how" class="wrap section" aria-labelledby="how-title">
+    <h2 id="how-title">How it works</h2>
+    <ol class="how">
+      <li><b>Forward</b><span>Chats, screenshots and proof of payment.</span></li>
+      <li><b>Lock</b><span>Every file gets a SHA-256 fingerprint and a timestamp.</span></li>
+      <li><b>Extract</b><span>Bank accounts, numbers, links and amounts are pulled out automatically.</span></li>
+      <li><b>Link</b><span>Scam Fingerprint matches victims by account, number, link and message script.</span></li>
+      <li><b>Act</b><span>Case pack for SAPS, statement in your language, report for your bank.</span></li>
+    </ol>
+  </section>
+
+  <section id="privacy" class="wrap section" aria-labelledby="privacy-title">
+    <h2 id="privacy-title">Privacy and security</h2>
+    <div class="grid-2">
+      <div class="panel">
+        <h3>What leaves your phone</h3>
+        <ul class="ticks">
+          <li>Keyed fingerprints (HMAC-SHA256) of the scammer's bank account, phone numbers and link domains, only if you choose to add your report.</li>
+          <li>The amount lost, date, scam type and province, for the "you are not alone" count.</li>
+        </ul>
+      </div>
+      <div class="panel">
+        <h3>What never leaves your phone</h3>
+        <ul class="crosses">
+          <li>Your name, ID number or contact details.</li>
+          <li>Your chats, screenshots and proof of payment.</li>
+          <li>Readable account or phone numbers. Fingerprints can't be turned back into numbers without the server's secret key.</li>
+        </ul>
+      </div>
+    </div>
+    <p class="hint demo-note">This is a hackathon prototype. Matching runs in your browser against a sample database of fictional reports, and reports you add are saved only in this browser. In the full version, fingerprints are computed on a server in South Africa with a secret key, evidence is encrypted, and an independent timestamp authority proves when files were locked.</p>
+  </section>
+
+</main>
+
+<footer class="foot">
+  <div class="wrap foot-in">
+    <p><b>Ubufakazi</b> (isiZulu: evidence) · built by Team CyberThreat: Thabang Manyama, Amani Tondi, Shaun Matlou · HackSecure 2026</p>
+    <button type="button" class="link-btn" id="resetBtn">Reset demo data</button>
+  </div>
+</footer>
+
+<script src="assets/vendor/jspdf.umd.min.js"></script>
+<script src="assets/seed.js"></script>
+<script src="assets/app.js"></script>
+</body>
+</html>
