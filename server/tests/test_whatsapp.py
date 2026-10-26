@@ -167,3 +167,11 @@ def test_stop_explains_chat_cannot_be_deleted(client, wa):
     _text(client, "/new")
     _text(client, "stop")
     assert "delete the chat yourself" in wa["sent"][-1]["text"]["body"]
+
+
+def test_meta_errors_never_show_numbers(app):
+    import httpx
+    from ubufakazi_server.whatsapp import _meta_error
+    r = httpx.Response(400, json={"error": {"code": 100, "message": "Object with ID '0698330557' does not exist"}})
+    msg = _meta_error(r)
+    assert "0698330557" not in msg and "Phone number ID" in msg

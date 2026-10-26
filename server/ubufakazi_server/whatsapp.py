@@ -21,6 +21,7 @@ import hashlib
 import hmac
 import io
 import logging
+import re
 import time
 
 import httpx
@@ -100,16 +101,23 @@ def _auth() -> dict:
 
 
 def _meta_error(r: httpx.Response) -> str:
+    """A short, PUBLIC-safe description (shown on /integrations): long digit runs such as phone numbers or IDs are masked."""
+    code = None
     try:
         e = r.json().get("error", {})
-        msg = f"HTTP {r.status_code}, Meta error {e.get('code')}: {e.get('message', '')}"
+        code = e.get("code")
+        text = re.sub(r"\d{6,}", "[number hidden]", str(e.get("message", "")))
+        msg = f"HTTP {r.status_code}, Meta error {code}: {text}"
     except ValueError:
         msg = f"HTTP {r.status_code}"
-    if r.status_code == 401 or "190" in msg:
+    if r.status_code == 401 or code == 190:
         msg += " (the access token is wrong or has expired: temporary tokens last 24 hours)"
-    if "131030" in msg:
+    elif code == 100:
+        msg += (" (check WHATSAPP_PHONE_NUMBER_ID: it must be Meta's long Phone number ID from WhatsApp > API Setup, "
+                "not a phone number)")
+    if code == 131030:
         msg += " (add this phone number to the allowed recipients in Meta: WhatsApp > API Setup)"
-    return msg[:300]
+    return msg[:400]
 
 
 async def check_connection() -> None:
