@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="referrer" content="no-referrer">
+<title>Verify a file · Ubufakazi</title>
+<meta name="description" content="Check that an evidence file has not changed by comparing its SHA-256 fingerprint. Runs in your browser; nothing is uploaded.">
+<link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/app/console.css">
+</head>
+<body>
+<header class="topbar">
+  <a class="brand" href="/" aria-label="Ubufakazi home">
+    <svg viewBox="0 0 32 32" aria-hidden="true"><rect x="7" y="4" width="18" height="24" rx="2"/><path d="M11 10h10M11 14h10M11 18h6"/><circle cx="22" cy="23" r="5"/><path d="M19.8 23l1.6 1.6 2.8-3.2"/></svg>
+    <b>Ubufakazi</b><span>2.0 demo</span>
+  </a>
+  <span class="pill pill-demo">Demo · not SAPS</span>
+  <span class="spacer"></span>
+  <nav class="pubnav" aria-label="Ubufakazi">
+    <a href="/report">Report</a><a href="/track">Track</a><a href="/verify" aria-current="page">Verify a file</a><a href="/integrations">Status</a>
+  </nav>
+  
+</header>
+<main class="public" id="main">
+  <div class="kicker">Verify</div>
+  <h1>Has this file changed?</h1>
+  <p class="lead-in">Choose a file and paste the SHA-256 fingerprint from the case pack. Your browser calculates the file's fingerprint itself: <b>the file never leaves this device</b>.</p>
+  <div id="app"></div>
+</main>
+<script src="/app/common.js"></script>
+<script src="/app/verify.js"></script>
+</body>
+</html>

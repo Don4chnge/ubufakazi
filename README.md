@@ -87,6 +87,28 @@ Click **Reset demo data** in the footer before presenting, so the count starts a
 
 **Prototype limits:** the HMAC key is in the browser and added reports are saved only in that browser. In the full build, fingerprints are computed on a server in a South African cloud region with a secret key, evidence is encrypted, an independent RFC 3161 timestamp authority (such as FreeTSA) proves when files were locked, and the system is designed for POPIA compliance.
 
+## Ubufakazi 2.0 (branch `ubufakazi-2`)
+
+The MVP above runs entirely in the browser. **Ubufakazi 2.0** adds the real backend that the hackathon plan describes:
+
+- **Telegram reporting bot.** It guides a victim step by step in plain language, fingerprints every file the moment it arrives, has a `/stop` quick exit at every step, and treats abuse reports safety-first.
+- **Web reporting, tracking and verification.** `/report` (with a Quick exit button), `/track` with a private receipt key, and `/verify`, which checks a file's SHA-256 on your own device.
+- **Server-side evidence pipeline.** Originals are checked by their bytes, stored read-only and hashed on receipt. Derived text is kept separate. Statements are drafted in 5 languages, and there is a PDF case pack for the complainant and a restricted one for police.
+- **Private police console at `/police`.** Password plus two-factor sign-in, CSRF protection, and **station isolation**: officers see only their station's reports. Reports at other stations appear only as restricted stubs.
+- **Explainable scam intelligence.** Leads come from shared accounts, phone numbers, websites, social profiles, usernames, payment references and message templates. Every lead states its reason, and there is an interactive investigation graph.
+- **Fictional DemoBank dashboard at `/bank-demo`.** Masked accounts with no victim data. Its actions are simulated and audited.
+- **Hash-chained audit log.** Every view, download, verification and status change is recorded, and tampering is detected.
+
+```bash
+cd server
+pip install -r requirements.txt
+python -m ubufakazi_server.setup                 # random secrets, demo accounts, 80 synthetic reports
+uvicorn ubufakazi_server.app:app --port 8000     # open http://localhost:8000
+python -m pytest -q                              # acceptance tests A-H
+```
+
+Read **[docs/UBUFAKAZI-2.md](docs/UBUFAKAZI-2.md)** for the demo script, architecture, intelligence rules, the tests and the known limitations. Everything is fictional: Ubufakazi is not connected to SAPS or to any bank, and it issues no case numbers.
+
 ## Hackathon plan (27–28 October 2026)
 
 | Who | Builds |
@@ -129,6 +151,11 @@ tools/
   make_demo_kit.py             builds the demo evidence kit
   make_test_pack.py            builds the 70-case test pack
   validate_test_pack.py        runs every test case through the site in a headless browser
+server/                        Ubufakazi 2.0 backend (FastAPI)
+  ubufakazi_server/            app, bot, conversation, services, storage, intel, casepack, audit, police
+  ubufakazi_server/web/        police console, bank demo, report/track/verify pages
+  tests/                       acceptance tests A-H
+Dockerfile                     2.0 server image (serves site/ too)
 netlify.toml                   Netlify settings
 ```
 

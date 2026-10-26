@@ -1,0 +1,8 @@
+.git
+**/__pycache__
+**/.pytest_cache
+server/.env
+server/data
+server/DEMO-CREDENTIALS.txt
+docs
+tools

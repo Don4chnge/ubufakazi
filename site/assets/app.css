@@ -249,3 +249,9 @@ input:focus, select:focus, textarea:focus { border-color: var(--accent); outline
   .how, .signals { grid-template-columns: minmax(0, 1fr); }
   .brand-by { display: none; }
 }
+
+/* Ubufakazi 2.0 band (only visible when served by the 2.0 server) */
+.v2band { margin-top: 26px; }
+.v2-in { border: 1px solid rgba(92, 242, 214, 0.45); background: linear-gradient(135deg, rgba(10, 40, 36, 0.75), rgba(10, 17, 27, 0.92)); padding: 20px 22px; }
+.v2-copy { margin: 0 0 14px; color: var(--ink); max-width: 720px; }
+.v2-links { display: flex; flex-wrap: wrap; gap: 10px; }

@@ -1,0 +1,84 @@
+"""Settings, read from environment variables (and an optional .env file).
+
+Secrets never have defaults that would work in production: if UBF_SECRET_KEY or
+UBF_HMAC_KEY is missing the server refuses to start (tests set their own).
+"""
+from __future__ import annotations
+
+import os
+import pathlib
+from dataclasses import dataclass
+
+SERVER_DIR = pathlib.Path(__file__).resolve().parent.parent
+REPO_DIR = SERVER_DIR.parent
+SITE_DIR = REPO_DIR / "site"
+WEB_DIR = pathlib.Path(__file__).resolve().parent / "web"
+
+
+def _load_dotenv(path: pathlib.Path) -> None:
+    """Minimal .env loader (KEY=VALUE lines). Real environment variables win."""
+    if not path.is_file():
+        return
+    for line in path.read_text(encoding="utf-8").splitlines():
+        line = line.strip()
+        if not line or line.startswith("#") or "=" not in line:
+            continue
+        key, _, value = line.partition("=")
+        os.environ.setdefault(key.strip(), value.strip())
+
+
+@dataclass
+class Settings:
+    secret_key: str
+    hmac_key: str
+    database_url: str
+    storage_dir: pathlib.Path
+    public_base_url: str
+    cookie_secure: bool
+    telegram_token: str
+    gemini_api_key: str
+    gemini_model: str
+    max_upload_bytes: int = 25 * 1024 * 1024       # per file
+    max_files_per_report: int = 20
+    session_hours: int = 8
+    demo_mode: bool = True                           # all data fictional; UI shows DEMO banners
+
+
+_settings: Settings | None = None
+
+
+def get_settings() -> Settings:
+    global _settings
+    if _settings is None:
+        _load_dotenv(SERVER_DIR / ".env")
+        secret = os.environ.get("UBF_SECRET_KEY", "")
+        hkey = os.environ.get("UBF_HMAC_KEY", "")
+        if len(secret) < 32 or len(hkey) < 32 or "change-me" in (secret, hkey):
+            raise RuntimeError(
+                "UBF_SECRET_KEY and UBF_HMAC_KEY must be set to random values of 32+ characters. "
+                "Run:  python -m ubufakazi_server.setup"
+            )
+        storage = pathlib.Path(os.environ.get("UBF_STORAGE_DIR", "./data/evidence"))
+        if not storage.is_absolute():
+            storage = (SERVER_DIR / storage).resolve()
+        db_url = os.environ.get("DATABASE_URL", "sqlite:///./data/ubufakazi.db")
+        if db_url.startswith("sqlite:///./"):
+            db_url = "sqlite:///" + str((SERVER_DIR / db_url[len("sqlite:///./"):]).resolve())
+        _settings = Settings(
+            secret_key=secret,
+            hmac_key=hkey,
+            database_url=db_url,
+            storage_dir=storage,
+            public_base_url=os.environ.get("UBF_PUBLIC_BASE_URL", "http://localhost:8000").rstrip("/"),
+            cookie_secure=os.environ.get("UBF_COOKIE_SECURE", "0") == "1",
+            telegram_token=os.environ.get("TELEGRAM_BOT_TOKEN", ""),
+            gemini_api_key=os.environ.get("GEMINI_API_KEY", ""),
+            gemini_model=os.environ.get("GEMINI_MODEL", "gemini-2.0-flash"),
+        )
+    return _settings
+
+
+def reset_settings() -> None:
+    """Used by tests."""
+    global _settings
+    _settings = None

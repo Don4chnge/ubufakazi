@@ -1,0 +1,6 @@
+.env
+data/
+DEMO-CREDENTIALS.txt
+__pycache__/
+*.pyc
+.pytest_cache/
