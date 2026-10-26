@@ -88,8 +88,9 @@ const UBF = (() => {
       el("div", { class: "field" }, el("label", { for: "lg-user" }, "Username"), user),
       el("div", { class: "field" }, el("label", { for: "lg-pass" }, "Password"), pass));
     const step2 = el("div", { class: "field", hidden: true }, el("label", { for: "lg-code" }, "Two-factor code"), code,
-      el("p", { class: "hint" }, "Open your authenticator app (for the demo: python -m ubufakazi_server.totp <username>)."));
+      el("p", { class: "hint" }, "Type the 6-digit number from your authenticator app (team members: the \u201cCode now\u201d column on the demo-logins page). Not the long setup key."));
     const form = el("form", { novalidate: true }, step1, step2, err, btn);
+    code.addEventListener("input", () => { const d = code.value.replace(/\D/g, "").slice(0, 6); if (d !== code.value) code.value = d; });
     let mfa = false;
     form.addEventListener("submit", async (e) => {
       e.preventDefault(); err.textContent = ""; btn.disabled = true;
