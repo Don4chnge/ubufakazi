@@ -5,6 +5,7 @@ Run:  uvicorn ubufakazi_server.app:app --port 8000
 from __future__ import annotations
 
 import datetime as dt
+import json
 import os
 import re
 from contextlib import asynccontextmanager
@@ -17,7 +18,7 @@ from pydantic import BaseModel, Field
 from sqlalchemy import func
 from sqlalchemy.orm import Session
 
-from . import ai, audit, bot, police, services, storage
+from . import ai, audit, bot, police, services, storage, whatsapp
 from .casepack import build_case_pack
 from .config import SITE_DIR, WEB_DIR, get_settings
 from .db import get_db, init_db, write_lock
@@ -42,6 +43,7 @@ async def lifespan(_app):
     get_settings().storage_dir.mkdir(parents=True, exist_ok=True)
     if os.environ.get("UBF_RUN_BOT", "1") == "1":
         await bot.start_bot()
+        await whatsapp.check_connection()
     yield
     await bot.stop_bot()
 
@@ -102,14 +104,44 @@ def integrations():
     s = get_settings()
     return {
         "telegram": _bot_status(),
-        "whatsapp": {"configured": False, "note": "Not built yet. The conversation engine is channel-neutral, so a "
-                                                  "WhatsApp Business adapter can reuse it."},
+        "whatsapp": whatsapp.status(),
         "ai_media_reading": ai.status(),
         "trusted_timestamps": {"configured": False, "note": "Not configured. Times are the server's clock, not RFC 3161 tokens."},
         "saps": {"connected": False, "note": "Not connected. Fictional demo stations only; no CAS numbers are issued."},
         "banks": {"connected": False, "note": "No bank is contacted. The bank dashboard is a fictional DemoBank simulation."},
         "database": "postgres" if s.database_url.startswith("postgres") else "sqlite",
     }
+
+
+# ------------------------------------------------------------------ WhatsApp webhook (Meta Cloud API)
+@app.get("/api/whatsapp/webhook")
+def whatsapp_verify(request: Request):
+    """Meta's one-time check when the webhook URL is saved in the Meta developer dashboard."""
+    if not whatsapp.configured():
+        raise HTTPException(404, "WhatsApp is not configured.")
+    q = request.query_params
+    challenge = whatsapp.verify_challenge(q.get("hub.mode"), q.get("hub.verify_token"), q.get("hub.challenge"))
+    if challenge is None:
+        raise HTTPException(403, "Verification failed.")
+    return Response(challenge, media_type="text/plain")
+
+
+@app.post("/api/whatsapp/webhook")
+async def whatsapp_webhook(request: Request):
+    if not whatsapp.configured():
+        raise HTTPException(404, "WhatsApp is not configured.")
+    raw = await request.body()
+    if len(raw) > 1_000_000:
+        raise HTTPException(413, "Too large.")
+    if not whatsapp.verify_signature(raw, request.headers.get("X-Hub-Signature-256")):
+        raise HTTPException(403, "Bad signature.")
+    try:
+        payload = json.loads(raw)
+    except ValueError:
+        raise HTTPException(400, "Not JSON.")
+    for c in whatsapp.dispatch(payload if isinstance(payload, dict) else {}):
+        await c
+    return {"ok": True}
 
 
 @app.get("/api/public/stats")

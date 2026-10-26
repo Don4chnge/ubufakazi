@@ -88,7 +88,7 @@ PAGES = {
         desc="Report a scam or crime, attach evidence, and get a draft statement and case pack to take to the police station.",
         body=SIMPLE.format(kicker="Step 1 · Collect", h1="Tell us what <span class=\"grad\">happened</span>",
             lead="Ubufakazi organises your evidence, fingerprints every file and prepares a draft statement and case pack for you to take to a police station. It is a demonstration: it is not SAPS and it does not open a case.",
-            pre='<div class="notice"><b>In danger right now?</b>&nbsp;Call 10111. Gender-based violence: GBV Command Centre 0800 428 428 (free, 24 hours).</div>\n  <p class="hint">Prefer chatting? The same report can be made on Telegram when the bot is running (see <a href="/integrations">System status</a>).</p>\n  ')),
+            pre='<div class="notice"><b>In danger right now?</b>&nbsp;Call 10111. Gender-based violence: GBV Command Centre 0800 428 428 (free, 24 hours).</div>\n  <p class="hint">Prefer chatting? The same report can be made on Telegram or WhatsApp when those are connected (see <a href="/integrations">System status</a>).</p>\n  ')),
     "track.html": dict(path="/track", title="Track a case · Ubufakazi", scripts=["share.js", "track.js"],
         desc="Check the progress of your Ubufakazi report, see your evidence fingerprints, download your case pack and share a warning.",
         body=SIMPLE.format(kicker="Track", h1="Track your <span class=\"grad\">case</span>",

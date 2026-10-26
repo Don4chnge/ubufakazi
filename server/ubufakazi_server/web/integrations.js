@@ -10,7 +10,7 @@
   app.replaceChildren(el("section", { class: "panel" },
     row("Web reporting form", true, "Available at /report."),
     row("Telegram bot", i.telegram.running, i.telegram.note + (i.telegram.running ? " Open Telegram and search for @" + i.telegram.username + "." : "")),
-    row("WhatsApp", i.whatsapp.configured, i.whatsapp.note),
+    row("WhatsApp", i.whatsapp.running, i.whatsapp.note),
     row("AI reading of images, voice notes and scans", i.ai_media_reading.configured, i.ai_media_reading.note),
     row("Trusted timestamps (RFC 3161)", i.trusted_timestamps.configured, i.trusted_timestamps.note),
     row("SAPS systems", i.saps.connected, i.saps.note),

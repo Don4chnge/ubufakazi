@@ -50,6 +50,11 @@ class Settings:
     demo_mode: bool = True                           # all data fictional; UI shows DEMO banners
     storage_backend: str = "file"                   # file (local disk) | db (inside the database, for hosts without disks)
     demo_seed: str = ""                              # optional: derive demo passwords/2FA secrets (see creds.py)
+    whatsapp_token: str = ""                         # Meta WhatsApp Cloud API (see whatsapp.py)
+    whatsapp_phone_id: str = ""
+    whatsapp_verify_token: str = ""
+    whatsapp_app_secret: str = ""
+    whatsapp_api_version: str = "v23.0"
 
 
 _settings: Settings | None = None
@@ -88,6 +93,11 @@ def get_settings() -> Settings:
             gemini_api_key=os.environ.get("GEMINI_API_KEY", ""),
             gemini_model=os.environ.get("GEMINI_MODEL") or "gemini-2.0-flash",
             demo_seed=os.environ.get("UBF_DEMO_SEED", ""),
+            whatsapp_token=os.environ.get("WHATSAPP_TOKEN", "").strip(),
+            whatsapp_phone_id=os.environ.get("WHATSAPP_PHONE_NUMBER_ID", "").strip(),
+            whatsapp_verify_token=os.environ.get("WHATSAPP_VERIFY_TOKEN", "").strip(),
+            whatsapp_app_secret=os.environ.get("WHATSAPP_APP_SECRET", "").strip(),
+            whatsapp_api_version=os.environ.get("WHATSAPP_API_VERSION", "").strip() or "v23.0",
             storage_backend=(os.environ.get("UBF_STORAGE") or ("db" if db_url.startswith("postgresql") else "file")).lower(),
         )
     return _settings

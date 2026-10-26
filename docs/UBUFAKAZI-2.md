@@ -41,6 +41,12 @@ existing stack, tests and deployment stay unchanged.
 
 **Telegram.** Create a bot with @BotFather and put the token in `server/.env` as `TELEGRAM_BOT_TOKEN=...` (never in code or chat). Restart the server. The bot starts inside the server process using long polling, so it needs no public URL.
 
+**WhatsApp (optional, Meta WhatsApp Cloud API).** Same conversation as the Telegram bot. Set four variables (never in code or chat):
+`WHATSAPP_TOKEN` (access token), `WHATSAPP_PHONE_NUMBER_ID` (WhatsApp > API Setup), `WHATSAPP_VERIFY_TOKEN` (any random string you choose)
+and `WHATSAPP_APP_SECRET` (App settings > Basic). In Meta, set the webhook to `https://<your-site>/api/whatsapp/webhook` with the same
+verify token and subscribe to the `messages` field. Every webhook call is checked against the app secret. The sender's number is stored
+only as a keyed hash. Meta's free test number can message up to 5 numbers you add as allowed recipients; temporary tokens last 24 hours.
+
 **AI reading of media (optional).** Set `GEMINI_API_KEY`. Without it, screenshots, voice notes and scans are still stored and hashed, but they are marked "not processed". Nothing is guessed.
 
 **Tests:**
@@ -92,6 +98,7 @@ Any Docker host with a persistent volume also works (mount it at `/data`; see `r
 
 ```
 Telegram (long polling) ─┐
+WhatsApp (webhook) ──────┤
 Web form (/report) ──────┼─► conversation.py / app.py ─► services.submit_report
                          │        (consent first)            │ originals → storage.py (magic-byte check, random name, read-only, SHA-256)
                          │                                   ▼

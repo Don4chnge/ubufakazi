@@ -192,7 +192,7 @@
 
     shell("queue", [
       el("div", { class: "page-head" }, el("div", null, el("div", { class: "kicker" }, me.role === "admin" ? "All demo stations" : me.stations.map((x) => x.name).join(" · ")),
-        el("h1", null, "Report queue"), el("p", null, "Reports submitted through Telegram and the web, prepared for your review."))),
+        el("h1", null, "Report queue"), el("p", null, "Reports submitted through Telegram, WhatsApp and the web, prepared for your review."))),
       tiles, filters, list]);
 
     async function load() {
@@ -532,7 +532,7 @@
     const row = (name, on, note) => el("div", { class: "integ" }, el("span", { class: "dot " + (on ? "on" : "off") }), el("div", null, el("b", null, name), el("div", { class: "muted" }, note)));
     return el("section", { class: "panel" },
       row("Telegram bot", i.telegram.running, i.telegram.note),
-      row("WhatsApp", i.whatsapp.configured, i.whatsapp.note),
+      row("WhatsApp", i.whatsapp.running, i.whatsapp.note),
       row("AI reading of images, voice notes and scans", i.ai_media_reading.configured, i.ai_media_reading.note),
       row("Trusted timestamps (RFC 3161)", i.trusted_timestamps.configured, i.trusted_timestamps.note),
       row("SAPS systems", i.saps.connected, i.saps.note),
