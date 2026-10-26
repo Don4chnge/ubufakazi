@@ -23,12 +23,21 @@ You can also scan the `otpauth://` link from the credentials file into an authen
 
 | Page | What it is |
 |---|---|
-| `/report` | Public web reporting form (it uses the same pipeline as Telegram). Has a Quick exit button. |
-| `/track` | Track a report with its reference and private receipt key, download the case pack, add more evidence. |
-| `/verify` | Checks a file's SHA-256 in the browser. Nothing is uploaded. |
-| `/police` | Police console: queue, report detail, evidence and custody, leads and graph, notes, audit. |
-| `/bank-demo` | Fictional DemoBank fraud-review simulation. |
-| `/integrations` | An honest list of what is connected right now. |
+| `/` | Home: cinematic landing page (canvas globe, live aggregate counts from the demo database) |
+| `/report` | Report a scam (same pipeline as Telegram), with Quick exit, browser-side fingerprints and a warning builder on the receipt |
+| `/track` | Track a case with reference + private receipt key; case pack download; add evidence; share a warning |
+| `/share` | Social-media scam warning builder (image + text, WhatsApp / X / Facebook / download). Never includes names, references, account numbers or evidence |
+| `/verify` | SHA-256 check in the browser, nothing uploaded |
+| `/resources`, `/about` | What to do after a scam (numbers from gov.za), how linking works, privacy, limitations |
+| `/police` | Investigator dashboard: overview, case queue, evidence inventory, scam network (filters + details panel), audit, integrations |
+| `/bank-demo` | Fictional DemoBank fraud-review simulation |
+| `/integrations` | Honest status of what is connected |
+| `/mvp` | The original browser-only MVP (also what Netlify serves) |
+
+Design: one stylesheet (`web/console.css`) with self-hosted Space Grotesk / Inter / JetBrains Mono (SIL OFL), no CDN and a strict
+CSP (no inline scripts or styles). Public pages are generated from one header/footer by `server/scripts/build_pages.py`.
+The globe is plain canvas 2D using Natural Earth land dots (public domain); no React or 3D library was added, so the
+existing stack, tests and deployment stay unchanged.
 
 **Telegram.** Create a bot with @BotFather and put the token in `server/.env` as `TELEGRAM_BOT_TOKEN=...` (never in code or chat). Restart the server. The bot starts inside the server process using long polling, so it needs no public URL.
 

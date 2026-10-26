@@ -112,6 +112,26 @@ def integrations():
     }
 
 
+@app.get("/api/public/stats")
+def public_stats(db: Session = Depends(get_db)):
+    """Aggregate counts only (no case details), for the home page. All data in this demo is synthetic."""
+    linked = {a for (a,) in db.query(IntelMatch.report_a).all()} | {b for (b,) in db.query(IntelMatch.report_b).all()}
+    from .models import Station
+    return {"reports": db.query(func.count(Report.id)).scalar() or 0,
+            "evidence_files": db.query(func.count(EvidenceFile.id)).scalar() or 0,
+            "linked_reports": len(linked), "stations": db.query(func.count(Station.id)).scalar() or 0,
+            "networks": len(police.clusters(db, _AllSeeing())) if linked else 0,
+            "demo": True, "note": "Synthetic demonstration data, not real cases."}
+
+
+class _AllSeeing:
+    """Used only to count networks for public aggregate stats (no details are returned)."""
+    is_admin = True
+
+    def can_see_station(self, _sid):
+        return True
+
+
 @app.get("/api/public/meta")
 def meta():
     return {"categories": CATEGORIES, "languages": LANG_NAMES, "provinces": PROVINCES, "towns": towns_by_province(),
@@ -200,6 +220,35 @@ def public_pack(body: TrackIn, request: Request, db: Session = Depends(get_db)):
                      station_id=r.station_id, ip=client_ip(request))
     return Response(pdf, media_type="application/pdf",
                     headers={"Content-Disposition": f'attachment; filename="Ubufakazi-{r.reference}.pdf"'})
+
+
+RED_FLAGS = {
+    "ask": "Asked for money upfront (a 'fee' before you get the job, parcel, prize or refund)",
+    "pressure": "Pressured you to pay quickly ('today', 'urgent', 'or you lose it')",
+    "details": "Asked you to pay into a personal or unrelated bank account",
+    "link": "Sent a link to a website outside the official one",
+    "offer": "Promised something too good to be true",
+    "gone": "Stopped answering or blocked you after you paid",
+}
+
+
+@app.post("/api/public/warning")
+def public_warning(body: TrackIn, request: Request, db: Session = Depends(get_db)):
+    """Redacted facts for a social-media scam warning. Never returns names, account numbers, references,
+    statements or evidence. Optional items (website, partly hidden number) are only shown if the user ticks them."""
+    r = _receipt_report(db, request, body)
+    kinds = {e.kind for e in r.timeline}
+    flags = [txt for k, txt in RED_FLAGS.items() if k in kinds]
+    domains = [i.display for i in r.identifiers if i.kind == "domain"][:3]
+    phones = [i.display for i in r.identifiers if i.kind == "phone"][:2]
+    masked = [p[:3] + " *** **" + p.replace(" ", "")[-2:] for p in phones]
+    with write_lock:
+        audit.record(db, "warning.prepared", actor="complainant", target_type="report", target_id=r.reference,
+                     station_id=r.station_id, ip=client_ip(request))
+    return {"category": r.category, "category_label": CATEGORIES.get(r.category, r.category),
+            "scam_type": r.scam_type, "scam_type_label": TYPE_LABEL.get(r.scam_type or "", None),
+            "red_flags": flags, "optional": {"websites": domains, "phones_masked": masked},
+            "province": r.province}
 
 
 @app.post("/api/public/evidence")
@@ -384,6 +433,31 @@ def police_reports(status: str = "", category: str = "", station: str = "", q: s
                     c["corroborated"] += strength == "corroborated"
     items = [{**police.summary(r), **lead_counts.get(r.id, {"leads": 0, "corroborated": 0})} for r in rows]
     return {"total": total, "page": page, "page_size": page_size, "items": items}
+
+
+@app.get("/api/police/evidence")
+def police_evidence(q: str = "", type: str = "", page: int = 1, page_size: int = 30,
+                    p: Principal = Depends(officer), db: Session = Depends(get_db)):
+    """Evidence inventory across the reports this officer may see (metadata only, never file contents)."""
+    query = db.query(EvidenceFile).join(Report, EvidenceFile.report_id == Report.id)
+    if not p.is_admin:
+        query = query.filter(Report.station_id.in_(p.station_ids or {-1}))
+    groups = {"image": ("jpeg", "png", "webp", "gif"), "document": ("pdf",), "text": ("txt",),
+              "audio": ("mp3", "ogg", "wav", "m4a"), "video": ("mp4", "mov", "webm")}
+    if type in groups:
+        query = query.filter(EvidenceFile.detected_type.in_(groups[type]))
+    if q.strip():
+        like = f"%{q.strip()[:80]}%"
+        query = query.filter((EvidenceFile.original_name.ilike(like)) | (EvidenceFile.sha256.ilike(like)) |
+                             (Report.reference.ilike(like)))
+    page_size = max(5, min(page_size, 100))
+    total = query.count()
+    rows = query.order_by(EvidenceFile.received_at.desc()).offset((max(page, 1) - 1) * page_size).limit(page_size).all()
+    return {"total": total, "page": page, "page_size": page_size, "items": [
+        {"id": e.id, "name": e.original_name, "type": e.detected_type, "size": e.size, "sha256": e.sha256,
+         "received_at": e.received_at.isoformat() + "Z", "channel": e.channel, "reference": e.report.reference,
+         "station": e.report.station.name, "previewable": e.detected_type in ("jpeg", "png", "webp", "gif"),
+         "processed": [d.kind for d in e.derivatives]} for e in rows]}
 
 
 @app.get("/api/police/reports/{reference}")
@@ -624,7 +698,8 @@ def bank_alert_status(alert_id: int, body: AlertStatusIn, request: Request, p: P
 
 
 # ------------------------------------------------------------------ pages + website
-PAGES = {"/police": "police.html", "/bank-demo": "bank.html", "/report": "report.html", "/track": "track.html",
+PAGES = {"/": "home.html", "/share": "share.html", "/resources": "resources.html", "/about": "about.html",
+         "/police": "police.html", "/bank-demo": "bank.html", "/report": "report.html", "/track": "track.html",
          "/verify": "verify.html", "/integrations": "integrations.html"}
 
 
@@ -636,6 +711,12 @@ def _page(name: str):
 
 for _path, _file in PAGES.items():
     app.add_api_route(_path, _page(_file), methods=["GET"], include_in_schema=False)
+
+
+@app.get("/mvp", include_in_schema=False)
+def mvp_page():
+    """The original browser-only MVP case builder (also what the Netlify site serves)."""
+    return FileResponse(SITE_DIR / "index.html", media_type="text/html")
 
 app.mount("/app", StaticFiles(directory=WEB_DIR), name="web")
 app.mount("/", StaticFiles(directory=SITE_DIR, html=True), name="site")

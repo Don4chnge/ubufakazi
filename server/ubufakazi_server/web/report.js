@@ -41,7 +41,7 @@
     const fileInput = el("input", { type: "file", id: "files", multiple: true, class: "sr-only",
       accept: ".txt,.pdf,.jpg,.jpeg,.png,.webp,.gif,.mp3,.ogg,.oga,.opus,.wav,.m4a,.mp4,.mov,.webm,text/plain,application/pdf,image/*,audio/*,video/*" });
     const list = el("ul", { class: "files" });
-    const drop = el("label", { class: "drop", for: "files" }, el("b", null, "Add evidence files"),
+    const drop = el("label", { class: "drop", for: "files" }, UBF.icon(["M12 16V4M7 9l5-5 5 5", "M4 16v3a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-3"]), el("b", null, "Drop files here or tap to choose"),
       el("span", { class: "muted small" }, `Screenshots, proof of payment, chat exports, voice notes, videos · up to ${meta.limits.max_files} files, ${meta.limits.max_file_mb} MB each`));
     const consent = el("input", { type: "checkbox", id: "consent", name: "consent", value: "yes", required: true });
     const msg = el("p", { class: "err-msg", role: "alert" });
@@ -75,15 +75,15 @@
     drop.addEventListener("drop", (e) => { e.preventDefault(); addFiles([...e.dataTransfer.files]); });
 
     const f = el("form", { class: "form-grid", novalidate: true },
-      el("fieldset", null, el("legend", null, "1 · What happened"), field("category", "Type of incident", cat), safety),
-      el("fieldset", null, el("legend", null, "2 · Where and when"),
+      el("fieldset", null, el("legend", null, el("span", { class: "n" }, "1"), "What happened"), field("category", "Type of incident", cat), safety),
+      el("fieldset", null, el("legend", null, el("span", { class: "n" }, "2"), "Where and when"),
         el("div", { class: "grid3" }, field("province", "Province", prov), field("town", "Town or area", town, "Decides which demo station receives it."), field("when", "When did it happen?", when)), dl,
         el("p", { class: "hint" }, "We never ask for your GPS location or ID number.")),
-      el("fieldset", null, el("legend", null, "3 · In your own words"), field("desc", "Describe what happened", desc),
+      el("fieldset", null, el("legend", null, el("span", { class: "n" }, "3"), "In your own words"), field("desc", "Describe what happened", desc),
         el("div", { class: "grid3" }, field("lang", "Statement language", lang), field("cname", "Name for the statement (optional)", name, "You can also add it at the station."), amountField)),
-      el("fieldset", null, el("legend", null, "4 · Evidence"), fileInput, drop, list, field("paste", "Pasted messages (optional)", paste),
+      el("fieldset", null, el("legend", null, el("span", { class: "n" }, "4"), "Evidence"), fileInput, drop, list, field("paste", "Pasted messages (optional)", paste),
         el("p", { class: "hint" }, "Each file gets a SHA-256 fingerprint in your browser now and again on the server when it arrives, so you can see they match.")),
-      el("fieldset", null, el("legend", null, "5 · Consent"), el("p", { class: "small" }, meta.consent.text),
+      el("fieldset", null, el("legend", null, el("span", { class: "n" }, "5"), "Consent"), el("p", { class: "small" }, meta.consent.text),
         el("label", { class: "check" }, consent, "I understand and agree. I am using demo or test data.")),
       msg, el("div", null, submit));
 
@@ -106,11 +106,27 @@
     app.replaceChildren(f);
   }
 
+  function warningPanel(body) {
+    const out = el("div");
+    const btn = el("button", { class: "btn btn-primary", type: "button", onclick: async () => {
+      btn.disabled = true;
+      try {
+        const w = await api("POST", "/api/public/warning", body);
+        const P = UBFShare.PRESETS, key = w.category === "banking_fraud" ? "banking" : (P[w.scam_type] ? w.scam_type : "other");
+        UBFShare.tool(out, { title: w.scam_type_label || P[key].label, where: w.province, flags: w.red_flags.length ? w.red_flags : P[key].flags, rule: P[key].rule, optional: w.optional });
+        btn.remove();
+      } catch (e) { toast(e.message, true); btn.disabled = false; }
+    } }, "Create a scam warning");
+    return el("section", { class: "panel" }, el("div", { class: "kicker" }, "Warn your community"), el("h3", null, "Share a warning, not your details"),
+      el("p", { class: "muted" }, "Make a ready-to-post warning for WhatsApp, Facebook, X or Instagram from this report. Your name, bank details, case reference and evidence are never included."),
+      btn, out);
+  }
+
   function receipt(out) {
     const browserHash = new Map(picked.map((p) => [p.file.name, p.hash]));
     const packBtn = el("button", { class: "btn btn-primary", disabled: true }, "Preparing your case pack…");
     const keyText = `Reference: ${out.reference}\nReceipt key: ${out.receipt_key}`;
-    app.replaceChildren(el("div", { class: "stack" },
+    const stack = el("div", { class: "stack" },
       el("section", { class: "receipt" }, el("div", { class: "kicker" }, "Report submitted"),
         el("div", { class: "grid2" }, el("div", null, el("div", { class: "muted small" }, "Reference"), el("div", { class: "big" }, out.reference)),
           el("div", null, el("div", { class: "muted small" }, "Private receipt key"), el("div", { class: "big" }, out.receipt_key))),
@@ -122,7 +138,7 @@
         el("ol", { class: "steps-v" },
           el("li", { class: "done" }, `Sent to ${out.station} (a fictional demo station).`),
           el("li", { class: "done" }, "Your files were fingerprinted (SHA-256) on arrival."),
-          el("li", null, "Ubufakazi prepares your draft statement and case pack (a few seconds)."),
+          el("li", { id: "stepPack" }, "Ubufakazi prepares your draft statement and case pack (a few seconds)."),
           el("li", null, "Take the case pack and your ID to a police station to register the case. No SAPS case number exists until then."),
           el("li", null, "If you paid money, contact your bank's fraud line now. A draft bank report is in your pack.")),
         packBtn),
@@ -134,7 +150,8 @@
             return el("tr", null, el("td", null, e.name), el("td", { class: "num" }, size(e.size)), el("td", { class: "hash" }, e.sha256),
               el("td", null, bh ? (bh === e.sha256 ? el("span", { class: "verify-ok" }, "✓ identical") : el("span", { class: "verify-bad" }, "✗ different")) : el("span", { class: "muted" }, "pasted text")));
           })))),
-        out.rejected.map((r) => el("div", { class: "notice" }, el("b", null, r.name + ": "), r.reason))) : null));
+        out.rejected.map((r) => el("div", { class: "notice" }, el("b", null, r.name + ": "), r.reason))) : null);
+    app.replaceChildren(stack);
     window.scrollTo(0, 0);
 
     const body = { reference: out.reference, key: out.receipt_key };
@@ -146,6 +163,8 @@
         if (t.processing_status === "ready") {
           packBtn.disabled = false; packBtn.textContent = "Download my case pack (PDF)";
           packBtn.onclick = async () => { try { download(await api("POST", "/api/public/pack", body, { blob: true }), `Ubufakazi-${out.reference}.pdf`); } catch (e) { toast(e.message, true); } };
+          stack.append(warningPanel(body));
+          const sp = document.getElementById("stepPack"); if (sp) sp.classList.add("done");
           return;
         }
         if (t.processing_status === "error") { packBtn.textContent = "Could not prepare the pack automatically. Your report is safe."; return; }

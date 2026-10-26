@@ -14,7 +14,14 @@
     dl: ["M12 4v11M7 10l5 5 5-5M5 20h14"],
     check: ["M5 12l4 4 10-10"],
     redo: ["M4 12a8 8 0 1 0 2.4-5.7L4 8.5", "M4 4v4.5h4.5"],
+    home: ["M4 11l8-7 8 7v9H4z", "M10 20v-6h4v6"],
+    files: ["M6 3h8l4 4v14H6z", "M14 3v4h4", "M9 12h6M9 16h4"],
+    net: ["M12 5a2 2 0 1 0 0 .01M5 18a2 2 0 1 0 0 .01M19 18a2 2 0 1 0 0 .01M11 7l-5 9M13 7l5 9M7 18h10"],
+    side: ["M4 5h16v14H4z", "M9 5v14"],
   };
+  const COLLAPSE_KEY = "ubf-rail-collapsed";
+  let collapsed = false;
+  try { collapsed = localStorage.getItem(COLLAPSE_KEY) === "1"; } catch (_) { /* storage unavailable */ }
   let me = null, meta = null;
   const state = { filters: { q: "", status: "", category: "", station: "", linked: false, sort: "newest", page: 1 } };
 
@@ -47,27 +54,110 @@
 
   // ------------------------------------------------------------------ shell + routing
   function shell(active, content) {
-    const nav = (id, label, ic, hash) => el("button", { "aria-current": active === id ? "page" : null, onclick: () => { location.hash = hash; } }, icon(ic), label);
-    root.replaceChildren(el("div", { class: "shell" },
+    const nav = (id, label, ic, hash) => el("button", { "aria-current": active === id ? "page" : null, title: label, onclick: () => { location.hash = hash; } }, icon(ic), el("span", { class: "label-txt" }, label));
+    const shellEl = el("div", { class: "shell" + (collapsed ? " collapsed" : "") },
       el("nav", { class: "rail", "aria-label": "Console" },
-        nav("queue", "Report queue", I.queue, "#/queue"),
-        nav("intel", "Intelligence", I.intel, "#/intel"),
+        nav("overview", "Overview", I.home, "#/overview"),
+        nav("queue", "Case queue", I.queue, "#/queue"),
+        nav("evidence", "Evidence", I.files, "#/evidence"),
+        nav("network", "Scam network", I.net, "#/network"),
         me.role === "admin" ? nav("audit", "Audit log", I.audit, "#/audit") : null,
         el("div", { class: "sep" }),
         nav("integ", "Integrations", I.plug, "#/integrations"),
+        el("button", { class: "collapse-btn", title: "Collapse sidebar", "aria-label": "Collapse or expand the sidebar", onclick: () => {
+          collapsed = !collapsed; shellEl.classList.toggle("collapsed", collapsed);
+          try { localStorage.setItem(COLLAPSE_KEY, collapsed ? "1" : "0"); } catch (_) { /* ignore */ }
+        } }, icon(I.side), el("span", { class: "label-txt" }, "Collapse")),
         el("div", { class: "foot" }, "Fictional demo stations. Leads are investigative, not findings of guilt.")),
-      el("main", { class: "main", id: "main" }, content)));
+      el("main", { class: "main", id: "main" }, content));
+    root.replaceChildren(shellEl);
     window.scrollTo(0, 0);
   }
 
   function route() {
-    const h = location.hash || "#/queue";
+    const h = location.hash || "#/overview";
     const m = h.match(/^#\/report\/([A-Z0-9-]{6,24})(?:\/(\w+))?/);
     if (m) return showReport(m[1], m[2] || "overview");
-    if (h.startsWith("#/intel")) return showIntel();
+    const n = h.match(/^#\/network(?:\/([A-Z0-9-]{6,24}))?/);
+    if (n) return showNetwork(n[1]);
+    if (h.startsWith("#/intel")) return showNetwork();
+    if (h.startsWith("#/queue")) return showQueue();
+    if (h.startsWith("#/evidence")) return showEvidence();
     if (h.startsWith("#/audit") && me.role === "admin") return showAudit();
     if (h.startsWith("#/integrations")) return showIntegrations();
-    return showQueue();
+    return showOverview();
+  }
+
+  // ------------------------------------------------------------------ overview
+  async function showOverview() {
+    shell("overview", el("div", { class: "empty" }, "Loading…"));
+    await refreshMeta();
+    const s = meta.stats;
+    let recent = { items: [] }, cl = [];
+    try { [recent, cl] = await Promise.all([api("GET", "/api/police/reports?page_size=6&sort=newest"), api("GET", "/api/police/intel/clusters")]); } catch (e) { toast(e.message, true); }
+    const maxS = Math.max(1, ...Object.values(s.by_status).map((x) => x.count));
+    const maxC = Math.max(1, ...Object.values(s.by_category).map((x) => x.count));
+    const bars = (obj, max, filterKey) => el("div", { class: "bars-h" }, Object.entries(obj).filter(([, v]) => v.count || filterKey === "status").map(([k, v]) => {
+      const fill = el("div", { class: "fill" }); fill.style.width = (v.count / max * 100) + "%";
+      return el("div", { class: "bar-h" }, el("span", null, v.label), el("div", { class: "track" }, fill), el("b", null, String(v.count)));
+    }));
+    const stationTxt = me.role === "admin" ? "All demo stations" : me.stations.map((x) => x.name).join(" · ");
+    shell("overview", [
+      el("div", { class: "page-head" }, el("div", null, el("div", { class: "kicker" }, stationTxt),
+        el("h1", null, `Good ${new Date().getHours() < 12 ? "morning" : new Date().getHours() < 18 ? "afternoon" : "evening"}, ${me.display_name.replace(/^Demo /, "")}`),
+        el("p", null, "Your case overview. Counts include only reports your station may see. All data in this demo is synthetic.")),
+        el("div", { class: "row-btns" }, el("a", { class: "btn btn-primary", href: "#/queue" }, "Open case queue"), el("a", { class: "btn btn-ghost", href: "#/network" }, "Scam network"))),
+      el("div", { class: "tiles" },
+        tile(s.total, "Total cases", false), tile(s.awaiting, "Awaiting review", true),
+        tile(s.linked_reports, "Cases with possible connections", true), tile(money(s.reported_loss), "Reported losses", false, spark(s.per_day))),
+      el("div", { class: "grid-2" },
+        el("section", { class: "panel" }, el("h3", null, "Case status"), bars(s.by_status, maxS, "status")),
+        el("section", { class: "panel" }, el("h3", null, "By category"), bars(s.by_category, maxC))),
+      el("div", { class: "spacer-16" }),
+      el("div", { class: "grid-2" },
+        el("section", { class: "panel" }, el("div", { class: "lead-top" }, el("h3", null, "Recent cases"), el("a", { href: "#/queue", class: "small" }, "View all →")),
+          recent.items.length ? el("ul", { class: "list-plain" }, recent.items.map((r) => el("li", null,
+            el("span", null, el("a", { href: "#/report/" + r.reference, class: "ref" }, r.reference), el("span", { class: "sub" }, `${r.scam_type_label || r.category_label} · ${r.town || "-"}`)),
+            el("span", null, el("span", { class: "st st-" + r.status }, r.status_label), r.leads ? el("span", { class: "sub" }, `${r.leads} lead${r.leads > 1 ? "s" : ""}`) : null))))
+            : el("p", { class: "muted" }, "No cases yet.")),
+        el("section", { class: "panel" }, el("div", { class: "lead-top" }, el("h3", null, "Possible scam networks"), el("a", { href: "#/network", class: "small" }, "Explore →")),
+          cl.length ? el("ul", { class: "list-plain" }, cl.slice(0, 5).map((c) => el("li", null,
+            el("span", null, el("a", { href: "#/network/" + c.anchor }, `${c.size} linked reports`), el("span", { class: "sub" }, `${c.scam_type || "Mixed"} · ${c.stations} station${c.stations > 1 ? "s" : ""} · ${c.restricted} restricted`)),
+            el("span", { class: "lead-badge" }, money(c.visible_amount)))))
+            : el("p", { class: "muted" }, "No linked reports yet."))),
+    ]);
+  }
+
+  // ------------------------------------------------------------------ evidence inventory
+  async function showEvidence() {
+    const q = el("input", { type: "search", id: "ev-q", placeholder: "File name, SHA-256 or case reference" });
+    const type = el("select", { id: "ev-type" }, [["", "All types"], ["image", "Images"], ["document", "PDF documents"], ["text", "Text / chat exports"], ["audio", "Audio"], ["video", "Video"]].map(([v, t]) => el("option", { value: v }, t)));
+    const list = el("div", null, el("div", { class: "empty" }, "Loading…"));
+    let page = 1;
+    const load = async () => {
+      let d;
+      try { d = await api("GET", "/api/police/evidence?" + new URLSearchParams({ q: q.value, type: type.value, page, page_size: 30 })); }
+      catch (e) { list.replaceChildren(el("div", { class: "empty" }, e.message)); return; }
+      if (!d.items.length) { list.replaceChildren(el("div", { class: "empty" }, "No evidence files match. Seed records are synthetic and have no files: submit a report on /report to see evidence here.")); return; }
+      const pages = Math.max(1, Math.ceil(d.total / d.page_size));
+      list.replaceChildren(el("div", { class: "table-wrap" }, el("table", { class: "data" },
+        el("thead", null, el("tr", null, ["File", "Case", "Type / size", "Received (server clock)", "SHA-256", "Processing"].map((h) => el("th", null, h)))),
+        el("tbody", null, d.items.map((e) => el("tr", { tabindex: "0", onclick: () => { location.hash = `#/report/${e.reference}/evidence`; } },
+          el("td", null, e.name, el("span", { class: "sub" }, "via " + e.channel)), el("td", null, el("span", { class: "ref" }, e.reference), el("span", { class: "sub" }, e.station.replace("Demo Station · ", ""))),
+          el("td", null, e.type.toUpperCase(), el("span", { class: "sub" }, size(e.size))), el("td", null, dateTime(e.received_at)),
+          el("td", { class: "hash" }, e.sha256.slice(0, 20) + "…"), el("td", null, e.processed.map((k) => el("span", { class: "tag" + (k === "not-processed" ? "" : " ok") }, k)))))))),
+        el("div", { class: "pager" }, el("span", null, `${d.total} file${d.total === 1 ? "" : "s"} · page ${d.page} of ${pages}`),
+          el("span", null, el("button", { class: "btn btn-ghost btn-small", disabled: d.page <= 1 ? true : null, onclick: () => { page--; load(); } }, "Previous"), " ",
+            el("button", { class: "btn btn-ghost btn-small", disabled: d.page >= pages ? true : null, onclick: () => { page++; load(); } }, "Next"))));
+    };
+    let t; q.addEventListener("input", () => { clearTimeout(t); t = setTimeout(() => { page = 1; load(); }, 300); });
+    type.addEventListener("change", () => { page = 1; load(); });
+    shell("evidence", [
+      el("div", { class: "page-head" }, el("div", null, el("div", { class: "kicker" }, "Evidence inventory"), el("h1", null, "Evidence & chain of custody"),
+        el("p", null, "Every original file your station holds, with the fingerprint recorded when it arrived. Open a file's case to verify it, preview it or download the original (each action is audited)."))),
+      el("div", { class: "filters" }, el("div", { class: "field q" }, el("label", { for: "ev-q" }, "Search"), q), el("div", { class: "field" }, el("label", { for: "ev-type" }, "Type"), type)),
+      list]);
+    load();
   }
 
   // ------------------------------------------------------------------ queue
@@ -298,30 +388,20 @@
   }
 
   async function leads(r, body) {
-    const gbox = el("div", { class: "graph-box" }, el("div", { class: "empty" }, "Building graph…"));
-    const summary = el("div", { class: "graph-summary" });
     const list = r.leads.length ? r.leads.map((L) => el("article", { class: `lead ${L.strength}${L.visible ? "" : " restricted"}` },
       el("div", { class: "lead-top" },
-        L.visible ? el("button", { class: "back", onclick: () => { location.hash = "#/report/" + L.reference + "/leads"; } }, el("span", { class: "ref" }, L.reference))
+        L.visible ? el("a", { class: "ref", href: "#/report/" + L.reference + "/leads" }, L.reference)
                   : el("span", null, el("b", null, "Restricted report"), " ", el("span", { class: "muted small" }, "· request access through your station commander")),
         el("span", { class: "lead-badge" + (L.strength === "corroborated" ? "" : " single") }, L.strength === "corroborated" ? "Corroborated lead" : "Single-signal lead")),
       el("div", { class: "muted small" }, L.station + (L.visible ? ` · ${date(L.date)} · ${money(L.amount_paid)} · ${L.status_label}` : "")),
       el("ul", null, L.signals.map((s) => el("li", null, s.reason, ...(s.conflicts || []).map((c) => el("div", { class: "conflict" }, "Conflict: " + c)))))))
       : [el("div", { class: "empty" }, "No possible connections.")];
+    const work = el("div");
     body.replaceChildren(
       el("div", { class: "notice info" }, el("b", null, "How to read this. "), "A lead means another report shares an identifier or message template with this one. One kind of shared signal = single lead; two or more kinds = corroborated. Shared accounts can belong to money mules, so a lead is a reason to investigate, never proof of who is responsible."),
-      el("section", { class: "panel" }, el("h3", null, "Investigation graph"), summary, gbox,
-        el("p", { class: "hint" }, "Drag nodes, scroll to zoom, double-click a report from your station to open it. Reports at other stations stay restricted.")),
+      el("section", { class: "panel" }, el("h3", null, "Investigation graph"), work),
       el("section", { class: "panel" }, el("h3", null, `Leads (${r.leads.length})`), list));
-    try {
-      const g = await api("GET", `/api/police/reports/${r.reference}/graph`);
-      const s = g.summary;
-      summary.replaceChildren(el("span", null, el("b", null, String(s.reports)), " reports linked"), el("span", null, el("b", null, String(s.visible)), " visible to you"),
-        el("span", null, el("b", null, String(s.restricted)), " restricted"), el("span", null, el("b", null, String(s.stations)), " stations"),
-        el("span", null, el("b", null, money(s.visible_amount)), " reported loss (visible)"), ...(g.truncated ? [el("span", null, "(showing the closest 60)")] : []));
-      if (s.reports < 2) { gbox.replaceChildren(el("div", { class: "empty" }, "This report has no possible connections yet.")); return; }
-      requestAnimationFrame(() => UBFGraph.render(gbox, g, { onOpen: (ref) => { location.hash = "#/report/" + ref + "/leads"; } }));
-    } catch (e) { gbox.replaceChildren(el("div", { class: "empty" }, e.message)); }
+    graphWorkspace(work, r.reference, { onOpen: (ref) => { location.hash = "#/report/" + ref + "/leads"; } });
   }
 
   function notes(r, body) {
@@ -348,22 +428,79 @@
     } catch (e) { body.replaceChildren(el("div", { class: "empty" }, e.message)); }
   }
 
-  // ------------------------------------------------------------------ intelligence
-  async function showIntel() {
-    shell("intel", el("div", { class: "empty" }, "Loading…"));
+  // ------------------------------------------------------------------ scam network
+  function nodePanel(panel, n, nbrs, edges) {
+    const put = (...k) => panel.replaceChildren(...k.filter((x) => x !== null && x !== undefined && x !== false));
+    if (!n) { put(el("div", { class: "kicker" }, "Details"), el("p", { class: "muted" }, "Select a node to see what it is and why it is connected. Double-click a report from your station to open it."),
+      el("p", { class: "hint" }, "A connection means a shared signal, not proof. Accounts can belong to money mules and numbers can be spoofed.")); return; }
+    if (n.type === "report") {
+      const sigs = nbrs.filter((x) => x.type !== "report").map((x) => `${UBFGraph.KIND[x.type]}: ${x.label}`);
+      const scripts = edges.filter((e) => e.kind === "script").length;
+      put(el("div", { class: "kicker" }, n.visible ? "Report" : "Restricted report"),
+        el("h4", null, n.visible ? n.label : "Held by " + n.station),
+        n.visible ? el("dl", { class: "facts" }, el("dt", null, "Station"), el("dd", null, n.station), el("dt", null, "Type"), el("dd", null, n.scam_type || "-"),
+          el("dt", null, "Paid"), el("dd", null, money(n.amount)), el("dt", null, "Date"), el("dd", null, date(n.date)), el("dt", null, "Status"), el("dd", null, n.status))
+          : el("p", { class: "muted small" }, "You can see that this report exists and how it connects, but not its details. Request access through your station commander."),
+        el("h4", null, "Connected by"),
+        sigs.length || scripts ? el("ul", null, sigs.map((x) => el("li", null, x)), scripts ? el("li", null, `Similar message template (${scripts} report${scripts > 1 ? "s" : ""})`) : null) : el("p", { class: "muted small" }, "No visible signals."),
+        n.visible && !n.focus ? el("a", { class: "btn btn-primary btn-small", href: "#/report/" + n.label }, "Open case") : null,
+        n.visible ? el("a", { class: "btn btn-ghost btn-small", href: "#/report/" + n.label + "/leads" }, "Leads for this case") : null);
+    } else {
+      const reps = nbrs.filter((x) => x.type === "report");
+      const vis = reps.filter((x) => x.visible), res = reps.length - vis.length;
+      put(el("div", { class: "kicker" }, UBFGraph.KIND[n.type] || n.type), el("h4", { class: "mono" }, n.label),
+        el("p", { class: "muted small" }, `Appears in ${reps.length} reports${res ? ` (${res} at other stations)` : ""}. Compared by a keyed hash: the raw value is shown only because a report you may see contains it.`),
+        el("ul", null, vis.map((r) => el("li", null, el("a", { href: "#/report/" + r.label }, r.label), ` · ${money(r.amount)}`)), res ? el("li", { class: "muted" }, `${res} restricted report${res > 1 ? "s" : ""}`) : null),
+        n.type === "account" ? el("p", { class: "hint" }, "A shared receiving account is the strongest signal, but the holder may be a money mule rather than the organiser.") : null);
+    }
+  }
+
+  async function graphWorkspace(container, reference, { onOpen } = {}) {
+    const gbox = el("div", { class: "graph-box" }, el("div", { class: "empty" }, "Building graph…"));
+    const panel = el("aside", { class: "node-panel", "aria-live": "polite" });
+    const summary = el("div", { class: "graph-summary" });
+    const filters = el("div");
+    container.replaceChildren(summary, filters, el("div", { class: "graph-layout" }, gbox, panel),
+      el("p", { class: "hint" }, "Drag nodes, scroll to zoom, click to see details. Reports at other stations stay restricted."));
+    nodePanel(panel, null);
+    try {
+      const g = await api("GET", `/api/police/reports/${reference}/graph`);
+      const s = g.summary;
+      summary.replaceChildren(el("span", null, el("b", null, String(s.reports)), " reports linked"), el("span", null, el("b", null, String(s.visible)), " visible to you"),
+        el("span", null, el("b", null, String(s.restricted)), " restricted"), el("span", null, el("b", null, String(s.stations)), " stations"),
+        el("span", null, el("b", null, money(s.visible_amount)), " reported loss (visible)"), ...(g.truncated ? [el("span", null, "(showing the closest 60)")] : []));
+      if (s.reports < 2) { gbox.replaceChildren(el("div", { class: "empty" }, "This report has no possible connections yet.")); return; }
+      requestAnimationFrame(() => {
+        const ctrl = UBFGraph.render(gbox, g, { onOpen: onOpen || ((ref) => { location.hash = "#/report/" + ref; }), onSelect: (n, nb, ed) => nodePanel(panel, n, nb, ed) });
+        filters.replaceChildren(UBFGraph.filterBar(ctrl));
+      });
+    } catch (e) { gbox.replaceChildren(el("div", { class: "empty" }, e.message)); }
+  }
+
+  async function showNetwork(anchor) {
+    shell("network", el("div", { class: "empty" }, "Loading…"));
     let cl;
-    try { cl = await api("GET", "/api/police/intel/clusters"); } catch (e) { shell("intel", el("div", { class: "empty" }, e.message)); return; }
+    try { cl = await api("GET", "/api/police/intel/clusters"); } catch (e) { shell("network", el("div", { class: "empty" }, e.message)); return; }
     const kindLabel = { account: "acc", phone: "tel", domain: "web", social: "social", email: "email", username: "user", payment_ref: "ref" };
-    shell("intel", [
-      el("div", { class: "page-head" }, el("div", null, el("div", { class: "kicker" }, "Scam intelligence"), el("h1", null, "Possible networks"),
-        el("p", null, "Groups of reports linked by shared accounts, numbers, websites or message templates. Each group includes at least one report from your station."))),
-      el("div", { class: "notice info" }, "Investigative leads only. Numbers and accounts can be recycled, spoofed or belong to money mules. Reports held by other stations are counted but not shown."),
-      el("div", { class: "clusters" }, cl.length ? cl.map((c) => el("button", { class: "cluster", onclick: () => { location.hash = "#/report/" + c.anchor + "/leads"; } },
+    const current = anchor || (cl[0] && cl[0].anchor);
+    const work = el("section", { class: "panel" });
+    shell("network", [
+      el("div", { class: "page-head" }, el("div", null, el("div", { class: "kicker" }, "Scam fingerprint network"), el("h1", null, "Possible scam networks"),
+        el("p", null, "Groups of reports linked by shared bank accounts, phone numbers, websites or message templates. Each group includes at least one report from your station."))),
+      el("div", { class: "notice info" }, el("b", null, "Investigative leads only. "), "Solid red lines: shared bank account. Amber: shared phone. Violet: website or other identifier. Dashed violet: similar message template. A grey dashed ring is a report at another station (restricted)."),
+      el("div", { class: "spacer-16" }),
+      cl.length ? el("div", { class: "clusters" }, cl.map((c) => el("button", { class: "cluster" + (c.anchor === current ? " active" : ""), onclick: () => { location.hash = "#/network/" + c.anchor; } },
         el("div", { class: "lead-top" }, el("span", { class: "big" }, String(c.size)), el("span", { class: "muted small" }, `${c.stations} station${c.stations > 1 ? "s" : ""} · ${c.provinces.length} province${c.provinces.length > 1 ? "s" : ""}`)),
         el("div", null, el("b", null, c.scam_type || "Mixed"), el("span", { class: "muted" }, ` · ${date(c.first)} → ${date(c.last)}`)),
         el("div", { class: "muted small" }, `${c.visible} visible to you · ${c.restricted} restricted · ${money(c.visible_amount)} reported loss (visible)`),
-        el("div", { class: "chips" }, c.shared.map((s) => el("span", { class: "chip" }, `${kindLabel[s.kind] || s.kind} ${s.display}`, el("span", { class: "src" }, `×${s.reports}`))))))
-        : el("div", { class: "empty" }, "No linked reports yet."))]);
+        el("div", { class: "chips" }, c.shared.map((s) => el("span", { class: "chip" }, `${kindLabel[s.kind] || s.kind} ${s.display}`, el("span", { class: "src" }, `×${s.reports}`)))))))
+        : el("div", { class: "empty" }, "No linked reports yet."),
+      el("div", { class: "spacer-16" }),
+      current ? work : null]);
+    if (current) {
+      work.append(el("div", { class: "lead-top" }, el("h3", null, "Network around " + current), el("a", { class: "btn btn-ghost btn-small", href: "#/report/" + current }, "Open anchor case")), el("div"));
+      graphWorkspace(work.lastChild, current);
+    }
   }
 
   // ------------------------------------------------------------------ audit (admin)

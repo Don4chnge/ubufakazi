@@ -1,6 +1,8 @@
 /* Ubufakazi 2.0 shared browser helpers. No secrets live here: all keys stay on the server. */
 "use strict";
 
+document.documentElement.classList.add("js");
+
 const UBF = (() => {
   let csrf = "";
 
@@ -119,6 +121,22 @@ const UBF = (() => {
     try { await api("POST", "/api/auth/logout", {}); } catch (_) { /* already signed out */ }
     setCsrf(""); location.reload();
   }
+
+  // ---- page chrome: mobile menu + reveal-on-scroll (progressive: content is visible without JS)
+  function chrome() {
+    const btn = document.querySelector(".menu-btn"), nav = document.getElementById("pubnav");
+    if (btn && nav) btn.addEventListener("click", () => {
+      const open = nav.classList.toggle("open");
+      btn.setAttribute("aria-expanded", open ? "true" : "false");
+    });
+    const items = document.querySelectorAll(".reveal");
+    if (!("IntersectionObserver" in window)) { items.forEach((i) => i.classList.add("in")); return; }
+    const io = new IntersectionObserver((entries) => entries.forEach((e) => {
+      if (e.isIntersecting) { e.target.classList.add("in"); io.unobserve(e.target); }
+    }), { threshold: 0.12 });
+    items.forEach((i) => io.observe(i));
+  }
+  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", chrome); else chrome();
 
   return { el, icon, api, setCsrf, toast, money, date, dateTime, size, download, sha256, loginForm, session, logout };
 })();

@@ -20,6 +20,22 @@
     app.replaceChildren(f);
   }
 
+  function warningPanel(body) {
+    const out = el("div");
+    const btn = el("button", { class: "btn btn-primary", type: "button", onclick: async () => {
+      btn.disabled = true;
+      try {
+        const w = await api("POST", "/api/public/warning", body);
+        const P = UBFShare.PRESETS, key = w.category === "banking_fraud" ? "banking" : (P[w.scam_type] ? w.scam_type : "other");
+        UBFShare.tool(out, { title: w.scam_type_label || P[key].label, where: w.province, flags: w.red_flags.length ? w.red_flags : P[key].flags, rule: P[key].rule, optional: w.optional });
+        btn.remove();
+      } catch (e) { toast(e.message, true); btn.disabled = false; }
+    } }, "Create a scam warning");
+    return el("section", { class: "panel" }, el("div", { class: "kicker" }, "Warn your community"), el("h3", null, "Share a warning, not your details"),
+      el("p", { class: "muted" }, "Make a ready-to-post warning for WhatsApp, Facebook, X or Instagram from this report. Your name, bank details, case reference and evidence are never included."),
+      btn, out);
+  }
+
   function show(body, t) {
     const fileInput = el("input", { type: "file", id: "more", multiple: true });
     const addBtn = el("button", { class: "btn btn-ghost btn-small", type: "button", onclick: async () => {
@@ -51,7 +67,8 @@
           el("tbody", null, t.evidence.map((e) => el("tr", null, el("td", null, e.name), el("td", { class: "num" }, size(e.size)), el("td", null, dateTime(e.received)), el("td", { class: "hash" }, e.sha256))))))
           : el("p", { class: "muted" }, "No files yet."),
         t.status !== "closed" ? el("div", { class: "field" }, el("label", { for: "more" }, "Add more evidence"), fileInput, el("div", null, addBtn)) : null,
-        el("p", { class: "hint" }, "Want to check a copy of a file later? Use ", el("a", { href: "/verify" }, "Verify a file"), ": it compares fingerprints on your own device."))));
+        el("p", { class: "hint" }, "Want to check a copy of a file later? Use ", el("a", { href: "/verify" }, "Verify a file"), ": it compares fingerprints on your own device.")),
+      t.processing_status === "ready" ? warningPanel(body) : null));
     if (t.processing_status !== "ready") setTimeout(async () => { try { show(body, await api("POST", "/api/public/track", body)); } catch (_) { /* ignore */ } }, 2000);
   }
 

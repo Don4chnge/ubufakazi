@@ -1,0 +1,118 @@
+<main id="main" class="home">
+  <!-- ============================================================ HERO -->
+  <section class="hero" aria-labelledby="hero-title">
+    <div class="hero-copy">
+      <div class="kicker">AI-assisted digital forensics · South Africa</div>
+      <h1 id="hero-title">Turn digital evidence into <span class="grad">real justice</span></h1>
+      <p class="hero-lead">Ubufakazi helps scam victims lock their chats, screenshots and proof of payment with a tamper-evident fingerprint, prepares a case pack for the police station, and privately connects reports about the same scammer.</p>
+      <div class="hero-ctas">
+        <a class="btn btn-primary btn-lg" href="/report">Report a Scam <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+        <a class="btn btn-ghost btn-lg" href="/track">Track a Case</a>
+      </div>
+      <ul class="hero-feats">
+        <li><span class="fi"><svg viewBox="0 0 24 24"><path d="M12 3l8 3v6c0 5-3.5 8.3-8 9.8C7.5 20.3 4 17 4 12V6z"/><path d="M9 12l2 2 4-4"/></svg></span><span><b>Secure evidence</b><small>SHA-256 on arrival</small></span></li>
+        <li><span class="fi"><svg viewBox="0 0 24 24"><circle cx="6" cy="7" r="2.2"/><circle cx="18" cy="6" r="2.2"/><circle cx="12" cy="18" r="2.2"/><path d="M8 8l3 8M16.4 7.6L13 16M8.2 7h7.6"/></svg></span><span><b>Linked cases</b><small>Explainable leads</small></span></li>
+        <li><span class="fi"><svg viewBox="0 0 24 24"><path d="M7 3h7l5 5v13H7z"/><path d="M14 3v5h5M10 13h6M10 17h4"/></svg></span><span><b>Case support</b><small>For victims &amp; police</small></span></li>
+      </ul>
+    </div>
+
+    <div class="hero-stage" aria-label="Illustration: a globe centred on South Africa with linked report locations">
+      <canvas id="globe" class="globe" aria-hidden="true"></canvas>
+      <div class="hud hud-tl reveal">
+        <div class="hud-h">Evidence extracted</div>
+        <ul class="hud-list">
+          <li><i class="hi hi-phone"></i>Phone numbers<span class="ok">✓</span></li>
+          <li><i class="hi hi-bank"></i>Bank accounts<span class="ok">✓</span></li>
+          <li><i class="hi hi-link"></i>Links &amp; domains<span class="ok">✓</span></li>
+          <li><i class="hi hi-msg"></i>Message timeline<span class="ok">✓</span></li>
+        </ul>
+        <div class="hud-foot">Documented rules · AI optional</div>
+      </div>
+      <div class="hud hud-tr reveal">
+        <div class="hud-h">Forensic fingerprint</div>
+        <div class="fp-row">
+          <svg class="fp" viewBox="0 0 48 48" aria-hidden="true"><path d="M12 30c0-8 5-14 12-14s12 6 12 14"/><path d="M16 34c0-7 3.5-11 8-11s8 4 8 11"/><path d="M20 38c0-6 1.8-9 4-9s4 3 4 9"/><path d="M8 24c1.6-9 8-15 16-15s14.4 6 16 15"/><path d="M24 33v8"/></svg>
+          <div><div class="hud-k">SHA-256</div><div class="hud-hash" id="heroHash">9f691cbc…e128152</div><span class="tag ok">Verified</span></div>
+        </div>
+        <div class="hud-foot">Demo kit file: case1 chat export</div>
+      </div>
+      <div class="hud hud-bl reveal">
+        <div class="hud-h">Linked reports</div>
+        <div class="hud-big"><span id="statLinked">–</span><small>reports share an account, number, link or script</small></div>
+        <div class="hud-foot">Live from the demo database · synthetic</div>
+      </div>
+      <div class="hud hud-br reveal">
+        <div class="hud-h">Routed to station</div>
+        <div class="route"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s-6-5.4-6-11a6 6 0 0 1 12 0c0 5.6-6 11-6 11z"/><circle cx="12" cy="10" r="2.2"/></svg><div><b>Mthatha, Eastern Cape</b><small>→ Demo Station · Mthatha</small></div></div>
+        <div class="hud-foot">Fictional station · no GPS needed</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================ TRUST STRIP -->
+  <section class="trust reveal" aria-label="What makes Ubufakazi different">
+    <span><b>5</b> languages for statements</span><span><b>SHA-256</b> fingerprint on every file</span><span><b>Telegram</b> + web reporting</span><span><b>Station-isolated</b> police access</span><span><b>Hash-chained</b> audit log</span>
+  </section>
+
+  <!-- ============================================================ DASHBOARD -->
+  <section class="split reveal" aria-labelledby="dash-title">
+    <div class="split-copy">
+      <div class="kicker">Investigator dashboard</div>
+      <h2 id="dash-title">Investigate. Connect. <span class="grad">Bring justice.</span></h2>
+      <p class="muted">Officers sign in with two-factor codes and see only their own station's reports. Every view, download and status change is written to a tamper-evident audit log.</p>
+      <ul class="checks">
+        <li>Case queue with status tracking and filters</li>
+        <li>Evidence with fingerprints, one-click integrity checks and chain of custody</li>
+        <li>Scam fingerprint network: which reports share accounts, numbers, links or scripts, and why</li>
+        <li>Police case pack PDF in seconds</li>
+      </ul>
+      <a class="btn btn-ghost" href="/police">Open the dashboard <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+    </div>
+    <figure class="shot">
+      <div class="shot-bar"><i></i><i></i><i></i><span>ubufakazi · police console</span></div>
+      <img src="/app/img/dashboard.png" alt="Screenshot of the Ubufakazi investigator dashboard showing a report queue and statistics" loading="lazy" width="1440" height="900">
+      <figcaption>Real screenshot · synthetic demo data</figcaption>
+    </figure>
+  </section>
+
+  <!-- ============================================================ WORKFLOW -->
+  <section class="workflow" aria-labelledby="flow-title">
+    <div class="section-head reveal">
+      <div class="kicker">The evidence workflow</div>
+      <h2 id="flow-title">From scam to case file, <span class="grad">in four steps</span></h2>
+    </div>
+    <ol class="flow">
+      <li class="reveal"><span class="flow-n">01</span><span class="flow-ic"><svg viewBox="0 0 24 24"><path d="M4 7h16M4 12h10M4 17h7"/><path d="M17 14v6M14 17h6"/></svg></span><h3>Collect</h3><p>Send chats, screenshots, proof of payment and voice notes on the web or Telegram. We never ask for your ID number or GPS.</p><a href="/report">Report a scam →</a></li>
+      <li class="reveal"><span class="flow-n">02</span><span class="flow-ic"><svg viewBox="0 0 24 24"><path d="M12 3l8 3v6c0 5-3.5 8.3-8 9.8C7.5 20.3 4 17 4 12V6z"/><path d="M9 12l2 2 4-4"/></svg></span><h3>Preserve</h3><p>Each original is stored read-only with a SHA-256 fingerprint and a hash-chained custody log, so any change is detectable.</p><a href="/verify">Verify a file →</a></li>
+      <li class="reveal"><span class="flow-n">03</span><span class="flow-ic"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="6"/><path d="M20 20l-4.2-4.2M8.5 11h5M11 8.5v5"/></svg></span><h3>Analyse</h3><p>Accounts, numbers, links, amounts and a timeline are extracted and labelled unverified. Shared signals become explainable leads, never verdicts.</p><a href="/about#how">How linking works →</a></li>
+      <li class="reveal"><span class="flow-n">04</span><span class="flow-ic"><svg viewBox="0 0 24 24"><path d="M7 3h7l5 5v13H7z"/><path d="M14 3v5h5M10 13h6M10 17h4"/></svg></span><h3>Report</h3><p>Get a draft statement in your language, a bank fraud letter and a case pack PDF to take to the station. No case number until SAPS registers it.</p><a href="/track">Track a case →</a></li>
+    </ol>
+  </section>
+
+  <!-- ============================================================ SHARE -->
+  <section class="split split-rev reveal" aria-labelledby="share-title">
+    <div class="split-copy">
+      <div class="kicker">Warn your community</div>
+      <h2 id="share-title">One report can stop <span class="grad">the next victim</span></h2>
+      <p class="muted">Turn your report into a ready-to-post scam warning for WhatsApp, Facebook, X or Instagram. It shows the tricks the scammer used. Your name, your bank details and your case reference are never included.</p>
+      <div class="row-btns"><a class="btn btn-primary" href="/share">Create a warning</a><a class="btn btn-ghost" href="/resources">Get help now</a></div>
+    </div>
+    <div class="share-teaser"><canvas id="sampleCard" width="1080" height="1350" aria-label="Example scam warning card"></canvas><p class="hint">Example card</p></div>
+  </section>
+
+  <!-- ============================================================ STATS -->
+  <section class="stats-band reveal" aria-labelledby="stats-title">
+    <div>
+      <div class="kicker">Live demo database</div>
+      <h2 id="stats-title">Stronger cases. <span class="grad">Safer communities.</span></h2>
+      <p class="muted small">These counts come straight from this demo's database. All reports are synthetic test data, not real cases.</p>
+    </div>
+    <dl class="stat-row">
+      <div><dt id="sReports">–</dt><dd>Reports in the demo</dd></div>
+      <div><dt id="sEvidence">–</dt><dd>Evidence files fingerprinted</dd></div>
+      <div><dt id="sNetworks">–</dt><dd>Possible scam networks</dd></div>
+      <div><dt id="sStations">–</dt><dd>Fictional demo stations</dd></div>
+    </dl>
+    <a class="btn btn-primary btn-lg" href="/report">Report an incident</a>
+  </section>
+</main>

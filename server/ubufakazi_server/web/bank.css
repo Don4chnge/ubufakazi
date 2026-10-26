@@ -1,5 +1,9 @@
 /* DemoBank: a deliberately different, invented look so it can never be mistaken for a real bank. */
-.bankui { --accent: #F5C66B; --accent-ink: #2A1E05; --accent-dim: rgba(245, 198, 107, 0.12); }
+.bankui { --accent: #F5C66B; --accent-ink: #2A1E05; --accent-dim: rgba(245, 198, 107, 0.12); --line-3: rgba(245, 198, 107, .45); }
+.bankui .btn-primary { background: linear-gradient(135deg, #FCD98A, #F0B44C); box-shadow: 0 8px 30px rgba(245, 198, 107, .25); }
+.bankui .brand svg { stroke: #F5C66B; filter: drop-shadow(0 0 6px rgba(245, 198, 107, .45)); }
+.bankui .bar .fill { background: linear-gradient(90deg, #F5C66B, #F0B44C); border-radius: 99px; }
+.bankui .bar .track { border-radius: 99px; }
 .bankui .panel::before { border-color: var(--accent); }
 .bank-grid { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); gap: 14px; align-items: start; }
 .alert-row.sel { background: var(--panel-3); box-shadow: inset 3px 0 0 var(--accent); }

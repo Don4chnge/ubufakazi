@@ -282,6 +282,17 @@ class TestC_PoliceSecurity:
         assert jhb.post(f"/api/police/reports/{ref}/status", json={"status": "closed"}).status_code == 404
         assert all(i["station_code"] in ("JHB", "ALB") for i in jhb.get("/api/police/reports?page_size=100").json()["items"])
 
+    def test_evidence_inventory_is_station_scoped(self, login, lerato):
+        mth, _ = login("officer.mthatha")
+        jhb, _ = login("officer.joburg")
+        ref = lerato["report"].reference
+        mine = mth.get("/api/police/evidence?page_size=100").json()["items"]
+        assert ref in {e["reference"] for e in mine} and all(e["station"].endswith("Mthatha") for e in mine)
+        theirs = jhb.get("/api/police/evidence?page_size=100").json()["items"]
+        assert ref not in {e["reference"] for e in theirs}
+        assert all("content" not in e for e in mine)
+        assert mth.get("/api/police/evidence", params={"type": "image"}).json()["items"][0]["type"] in ("png", "jpeg", "webp", "gif")
+
     def test_roles(self, login):
         bank, _ = login("bank.reviewer")
         assert bank.get("/api/police/reports").status_code == 403
@@ -417,7 +428,7 @@ class TestF_Audit:
 # ====================================================================== G
 class TestG_WebsiteAndPublic:
     @pytest.mark.parametrize("path", ["/", "/police", "/bank-demo", "/report", "/track", "/verify", "/integrations",
-                                      "/scam-demo/"])
+                                      "/share", "/resources", "/about", "/mvp", "/scam-demo/"])
     def test_pages(self, client, path):
         r = client.get(path)
         assert r.status_code == 200 and "text/html" in r.headers["content-type"]
@@ -452,6 +463,35 @@ class TestG_WebsiteAndPublic:
                            files=[("files", ("pop.pdf", kit("case2-sipho-proof-of-payment.pdf"), "application/pdf"))])
         assert more.json()["added"][0]["name"] == "pop.pdf"
         assert len(client.post("/api/public/track", json=body).json()["evidence"]) == 2
+
+    def test_home_is_the_platform_and_mvp_is_separate(self, client):
+        home = client.get("/").text
+        assert "Turn digital evidence into" in home and 'id="globe"' in home and "Build a case file" not in home
+        assert "Build a case file" in client.get("/mvp").text
+
+    def test_public_stats_are_aggregates_only(self, client):
+        s = client.get("/api/public/stats").json()
+        assert set(s) == {"reports", "evidence_files", "linked_reports", "stations", "networks", "demo", "note"}
+        assert s["demo"] is True and s["reports"] >= 80 and s["linked_reports"] >= 7 and s["networks"] >= 1
+
+    def test_warning_is_redacted(self, client, lerato):
+        from ubufakazi_server import services
+        r = lerato["report"]
+        db = lerato["db"]
+        from ubufakazi_server.db import write_lock
+        from ubufakazi_server.security import sha256_hex
+        with write_lock:                       # give the chatbot report a known receipt key for this test
+            key = services.new_receipt_key()
+            r.receipt_hash = sha256_hex(key)
+            db.commit()
+        w = client.post("/api/public/warning", json={"reference": r.reference, "key": key}).json()
+        assert w["scam_type_label"] == "Fake job offer" and len(w["red_flags"]) >= 3
+        assert w["optional"]["websites"] == ["mzansi-careers-onboard.site"]
+        assert w["optional"]["phones_masked"] == ["071 *** **37"]
+        blob = json.dumps(w)
+        for private in (r.reference, r.complainant_name, "1047", "Thandi", "071 482 0937", r.description[:20]):
+            assert private not in blob
+        assert client.post("/api/public/warning", json={"reference": r.reference, "key": "WRONG-KEY1-XXXX"}).status_code == 404
 
     def test_public_rate_limit(self, client):
         for _ in range(20):
