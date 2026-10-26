@@ -40,23 +40,26 @@ You can also scan the `otpauth://` link from the credentials file into an authen
 cd server && python -m pytest -q
 ```
 
-## Host it online (Railway)
+## Host it online (free): Render + Neon
 
-The server runs as one Docker container that serves the website, the police and bank consoles, the API and the
-Telegram bot. It needs a **persistent volume** for the database and evidence. Free tiers that sleep or wipe the disk
-(for example Render Free) lose reports and stop the bot.
+The server is one Docker container (website, police and bank consoles, API and Telegram bot). The database **and the
+evidence files** live in a free Neon Postgres database, so nothing is lost when the free web service restarts.
+Originals in the database are insert-only: a trigger refuses any UPDATE.
 
-1. Create a seed for the demo accounts on your laptop: `python -m ubufakazi_server.creds --new-seed`, and put it in your
-   local `server/.env` as `UBF_DEMO_SEED=...`.
-2. On [railway.com](https://railway.com): **New Project → Deploy from GitHub repo → Don4chnge/ubufakazi**. In the service's
-   **Settings → Source**, set the branch to `ubufakazi-2`. Railway reads `railway.json` and builds the `Dockerfile`.
-3. Right-click the service → **Attach volume**, mount path **`/data`**.
-4. **Variables:** `UBF_DEMO_SEED` (same value as step 1); later `TELEGRAM_BOT_TOKEN`, optional `GEMINI_API_KEY`.
-5. **Settings → Networking → Generate domain.** Add `UBF_PUBLIC_BASE_URL=https://<that domain>` (turns on Secure cookies).
-6. On your laptop: `python -m ubufakazi_server.creds` prints each account's password, 2FA setup key and current code.
+1. **Neon** ([neon.com](https://neon.com), free, no card): create a project in region *AWS Europe Central (Frankfurt)*.
+   Copy the connection string (`postgresql://...`).
+2. **Render** ([render.com](https://render.com)): **New > Blueprint**, pick `Don4chnge/ubufakazi`. Render reads
+   `render.yaml` (branch `ubufakazi-2`, Docker, free plan, Frankfurt). Paste the Neon string into `DATABASE_URL`.
+   `UBF_SECRET_KEY`, `UBF_HMAC_KEY` and `UBF_DEMO_SEED` are generated for you.
+3. After the first deploy, set `UBF_PUBLIC_BASE_URL` to your `https://....onrender.com` address (Secure cookies).
+4. **Keep it awake:** a free Render service sleeps after 15 minutes without visitors (and the Telegram bot sleeps with
+   it). Add a free monitor (e.g. UptimeRobot or cron-job.org) that opens `https://<your-app>/api/health` every 10 minutes.
+   One always-on service fits in Render's 750 free hours per month.
+5. **Demo logins:** copy `UBF_DEMO_SEED` from Render's Environment tab into your local `server/.env`, then run
+   `python -m ubufakazi_server.creds` for each account's password, 2FA setup key and current code.
 
-The first start creates secrets on the volume, the database, the demo accounts and the 80 synthetic reports. Later
-restarts and redeploys keep everything. `/api/health` is the health check.
+The first start creates the tables, demo accounts and the 80 synthetic reports; later starts keep everything.
+Any Docker host with a persistent volume also works (mount it at `/data`; see `railway.json`).
 
 ## Demo script (5 minutes)
 

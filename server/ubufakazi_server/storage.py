@@ -103,8 +103,13 @@ def storage_dir() -> pathlib.Path:
     return d
 
 
-def store_original(data: bytes, original_name: str) -> dict:
-    """Validate and store one original file. Returns metadata including SHA-256."""
+def _db_backend() -> bool:
+    return get_settings().storage_backend == "db"
+
+
+def store_original(data: bytes, original_name: str, db=None) -> dict:
+    """Validate and store one original file. Returns metadata including SHA-256.
+    With the database backend the bytes are added to `db` (the caller's transaction), insert-only."""
     s = get_settings()
     if not data:
         raise RejectedFile("The file is empty.")
@@ -115,12 +120,19 @@ def store_original(data: bytes, original_name: str) -> dict:
         raise RejectedFile("This file type is not supported. Send text, PDF, JPEG/PNG/WebP images, "
                            "MP3/OGG/WAV/M4A audio or MP4/MOV/WebM video.")
     uid = uuid.uuid4().hex
+    meta = {"uid": uid, "detected_type": kind, "size": len(data), "sha256": hashlib.sha256(data).hexdigest(),
+            "original_name": safe_display_name(original_name)}
+    if _db_backend():
+        from .models import EvidenceBlob
+        if db is None:
+            raise RuntimeError("database storage needs the caller's session")
+        db.add(EvidenceBlob(uid=uid, data=bytes(data)))
+        return meta
     path = storage_dir() / uid
     with open(path, "xb") as fh:      # "x": never overwrite an existing file
         fh.write(data)
     os.chmod(path, stat.S_IRUSR)       # read-only original
-    return {"uid": uid, "detected_type": kind, "size": len(data), "sha256": hashlib.sha256(data).hexdigest(),
-            "original_name": safe_display_name(original_name)}
+    return meta
 
 
 def path_for(uid: str) -> pathlib.Path:
@@ -129,11 +141,32 @@ def path_for(uid: str) -> pathlib.Path:
     return storage_dir() / uid
 
 
+def _read_blob(uid: str) -> bytes | None:
+    from .db import SessionLocal
+    from .models import EvidenceBlob
+    if not re.fullmatch(r"[0-9a-f]{32}", uid or ""):
+        raise ValueError("bad id")
+    db = SessionLocal()
+    try:
+        row = db.get(EvidenceBlob, uid)
+        return bytes(row.data) if row else None
+    finally:
+        db.close()
+
+
 def read_original(uid: str) -> bytes:
+    if _db_backend():
+        data = _read_blob(uid)
+        if data is None:
+            raise FileNotFoundError(uid)
+        return data
     return path_for(uid).read_bytes()
 
 
 def rehash(uid: str) -> str | None:
+    if _db_backend():
+        data = _read_blob(uid)
+        return hashlib.sha256(data).hexdigest() if data is not None else None
     p = path_for(uid)
     if not p.exists():
         return None

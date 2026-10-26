@@ -1,0 +1,27 @@
+# Render Blueprint: Ubufakazi 2.0 on a free web service, with the database (and evidence) on Neon Postgres.
+# Render: New > Blueprint > pick this repo. You will be asked for DATABASE_URL (from Neon) and optional tokens.
+services:
+  - type: web
+    name: ubufakazi
+    runtime: docker
+    plan: free
+    region: frankfurt
+    branch: ubufakazi-2
+    dockerfilePath: ./Dockerfile
+    healthCheckPath: /api/health
+    autoDeploy: true
+    envVars:
+      - key: DATABASE_URL          # Neon connection string (postgresql://...); evidence is stored in the database
+        sync: false
+      - key: UBF_SECRET_KEY
+        generateValue: true
+      - key: UBF_HMAC_KEY
+        generateValue: true
+      - key: UBF_DEMO_SEED         # demo passwords/2FA keys are derived from this; read them with creds.py
+        generateValue: true
+      - key: UBF_PUBLIC_BASE_URL   # e.g. https://ubufakazi.onrender.com (turns on Secure cookies)
+        sync: false
+      - key: TELEGRAM_BOT_TOKEN    # optional, from @BotFather
+        sync: false
+      - key: GEMINI_API_KEY        # optional
+        sync: false

@@ -48,6 +48,7 @@ class Settings:
     max_files_per_report: int = 20
     session_hours: int = 8
     demo_mode: bool = True                           # all data fictional; UI shows DEMO banners
+    storage_backend: str = "file"                   # file (local disk) | db (inside the database, for hosts without disks)
     demo_seed: str = ""                              # optional: derive demo passwords/2FA secrets (see creds.py)
 
 
@@ -70,6 +71,9 @@ def get_settings() -> Settings:
         if not storage.is_absolute():
             storage = (SERVER_DIR / storage).resolve()
         db_url = os.environ.get("DATABASE_URL") or f"sqlite:///{data_dir() / 'ubufakazi.db'}"
+        for prefix in ("postgres://", "postgresql://"):       # Neon/Supabase/Render style URLs -> psycopg 3 driver
+            if db_url.startswith(prefix):
+                db_url = "postgresql+psycopg://" + db_url[len(prefix):]
         if db_url.startswith("sqlite:///./"):
             db_url = "sqlite:///" + str((SERVER_DIR / db_url[len("sqlite:///./"):]).resolve())
         _settings = Settings(
@@ -84,6 +88,7 @@ def get_settings() -> Settings:
             gemini_api_key=os.environ.get("GEMINI_API_KEY", ""),
             gemini_model=os.environ.get("GEMINI_MODEL") or "gemini-2.0-flash",
             demo_seed=os.environ.get("UBF_DEMO_SEED", ""),
+            storage_backend=(os.environ.get("UBF_STORAGE") or ("db" if db_url.startswith("postgresql") else "file")).lower(),
         )
     return _settings
 

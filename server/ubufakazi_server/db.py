@@ -28,6 +28,8 @@ def engine():
     if _engine is None:
         url = get_settings().database_url
         kwargs = {}
+        if url.startswith("postgresql"):
+            kwargs.update(pool_pre_ping=True, pool_recycle=280, pool_size=5, max_overflow=5)   # serverless DBs drop idle connections
         if url.startswith("sqlite"):
             kwargs["connect_args"] = {"check_same_thread": False, "timeout": 30}
         _engine = create_engine(url, future=True, **kwargs)

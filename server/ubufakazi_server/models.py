@@ -9,8 +9,8 @@ from __future__ import annotations
 import datetime as dt
 from typing import Optional
 
-from sqlalchemy import (JSON, Boolean, DateTime, Float, ForeignKey, Integer, String, Text,
-                        UniqueConstraint, Index)
+from sqlalchemy import (JSON, Boolean, DateTime, Float, ForeignKey, Integer, LargeBinary, String, Text,
+                        UniqueConstraint, Index, DDL, event)
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from .db import Base
@@ -281,3 +281,22 @@ class BankAlert(Base):
     status: Mapped[str] = mapped_column(String(20), default="new")    # new | under_review | reviewed | escalated
     created_at: Mapped[dt.datetime] = mapped_column(DateTime, default=utcnow)
     updated_at: Mapped[dt.datetime] = mapped_column(DateTime, default=utcnow, onupdate=utcnow)
+
+
+class EvidenceBlob(Base):
+    """Original file bytes, when evidence is kept in the database (hosted mode, UBF_STORAGE=db).
+    Insert-only: database triggers reject UPDATE, so an original cannot be silently replaced through SQL."""
+    __tablename__ = "evidence_blobs"
+    uid: Mapped[str] = mapped_column(String(40), primary_key=True)
+    data: Mapped[bytes] = mapped_column(LargeBinary)
+    created_at: Mapped[dt.datetime] = mapped_column(DateTime, default=utcnow)
+
+
+event.listen(EvidenceBlob.__table__, "after_create", DDL(
+    "CREATE TRIGGER evidence_blobs_no_update BEFORE UPDATE ON evidence_blobs "
+    "BEGIN SELECT RAISE(ABORT, 'evidence originals are read-only'); END").execute_if(dialect="sqlite"))
+event.listen(EvidenceBlob.__table__, "after_create", DDL(
+    "CREATE OR REPLACE FUNCTION ubf_evidence_read_only() RETURNS trigger AS $$ BEGIN "
+    "RAISE EXCEPTION 'evidence originals are read-only'; END; $$ LANGUAGE plpgsql; "
+    "CREATE TRIGGER evidence_blobs_no_update BEFORE UPDATE ON evidence_blobs "
+    "FOR EACH ROW EXECUTE FUNCTION ubf_evidence_read_only()").execute_if(dialect="postgresql"))

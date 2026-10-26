@@ -18,7 +18,7 @@ import stat
 import pyotp
 import pytest
 
-from conftest import KIT, SERVER
+from conftest import KIT, SERVER, db_backend
 
 REF = re.compile(r"^UBF-26-[A-Z2-9]{6}$")
 
@@ -128,6 +128,8 @@ class TestA_Chatbot:
 class TestB_Evidence:
     def test_originals_unchanged_hashed_and_read_only(self, lerato):
         from ubufakazi_server import storage
+        if db_backend():
+            pytest.skip("file backend only (see test_db_originals_are_insert_only)")
         names = ["case1-lerato-whatsapp-chat.txt", "case1-lerato-proof-of-payment-1.pdf",
                  "case1-lerato-proof-of-payment-2.pdf", "case1-recruiter-profile-screenshot.png"]
         for ev, name in zip(lerato["report"].evidence, names):
@@ -164,16 +166,44 @@ class TestB_Evidence:
     ])
     def test_unsupported_files_rejected(self, env, data, name):
         from ubufakazi_server import storage
+        from ubufakazi_server.db import SessionLocal
+        db = SessionLocal()
         with pytest.raises(storage.RejectedFile):
-            storage.store_original(data, name)
+            storage.store_original(data, name, db=db)
+        db.rollback()
+        db.close()
 
     def test_path_traversal_names_are_neutralised(self, env):
         from ubufakazi_server import storage
-        info = storage.store_original(b"hello there this is text", "../../etc/passwd")
+        from ubufakazi_server.db import SessionLocal
+        db = SessionLocal()
+        info = storage.store_original(b"hello there this is text", "../../etc/passwd", db=db)
+        db.rollback()
+        db.close()
         assert info["original_name"] == "passwd" and re.fullmatch(r"[0-9a-f]{32}", info["uid"])
+
+    def test_db_originals_are_insert_only(self, lerato):
+        """Database backend: stored bytes equal the originals, and UPDATE is refused by a trigger."""
+        if not db_backend():
+            pytest.skip("database backend only")
+        from sqlalchemy import text
+        from ubufakazi_server import storage
+        from ubufakazi_server.db import SessionLocal
+        ev = lerato["report"].evidence[0]
+        assert storage.read_original(ev.uid) == kit("case1-lerato-whatsapp-chat.txt")
+        assert storage.rehash(ev.uid) == ev.sha256
+        db = SessionLocal()
+        with pytest.raises(Exception, match="read-only"):
+            db.execute(text("UPDATE evidence_blobs SET data = :d WHERE uid = :u"), {"d": b"forged", "u": ev.uid})
+            db.commit()
+        db.rollback()
+        db.close()
+        assert storage.rehash(ev.uid) == ev.sha256
 
     def test_tampering_with_a_stored_original_is_detected(self, lerato, login):
         from ubufakazi_server import storage
+        if db_backend():
+            pytest.skip("file backend only: in the database backend tampering is blocked by a trigger")
         ev = lerato["report"].evidence[0]
         c, _ = login("officer.mthatha")
         assert c.post(f"/api/police/evidence/{ev.id}/verify").json()["match"] is True

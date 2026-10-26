@@ -138,7 +138,7 @@ def add_evidence(db: Session, report: Report, data: bytes, name: str, *, declare
                  ip: str = "", actor: str = "complainant") -> EvidenceFile:
     if len(report.evidence) >= storage_limit():
         raise storage.RejectedFile(f"A report can hold at most {storage_limit()} files.")
-    info = storage.store_original(data, name)
+    info = storage.store_original(data, name, db=db)
     ev = EvidenceFile(uid=info["uid"], original_name=info["original_name"],
                       declared_mime=(declared_mime or "")[:100], detected_type=info["detected_type"], size=info["size"],
                       sha256=info["sha256"], channel=channel)

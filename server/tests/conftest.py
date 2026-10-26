@@ -14,15 +14,21 @@ sys.path.insert(0, str(SERVER))
 @pytest.fixture(scope="session")
 def env(tmp_path_factory):
     tmp = tmp_path_factory.mktemp("ubf")
+    # Set UBF_TEST_DATABASE_URL=postgresql://... to run the whole suite on Postgres with evidence stored in the DB.
+    pg = os.environ.get("UBF_TEST_DATABASE_URL", "")
     os.environ.update({
         "UBF_SECRET_KEY": secrets.token_urlsafe(40), "UBF_HMAC_KEY": secrets.token_urlsafe(40),
-        "DATABASE_URL": f"sqlite:///{tmp}/test.db", "UBF_STORAGE_DIR": str(tmp / "evidence"),
+        "DATABASE_URL": pg or f"sqlite:///{tmp}/test.db", "UBF_STORAGE_DIR": str(tmp / "evidence"), "UBF_STORAGE": "",
         "TELEGRAM_BOT_TOKEN": "", "GEMINI_API_KEY": "", "UBF_RUN_BOT": "0",
     })
     from ubufakazi_server import config, db, services
     config.reset_settings()
     db.reset_engine()
     services.SYNC_PROCESSING = True
+    if pg:
+        from ubufakazi_server.db import Base, engine
+        from ubufakazi_server import models  # noqa: F401
+        Base.metadata.drop_all(engine())
     db.init_db()
     from ubufakazi_server import seed
     from ubufakazi_server.models import User
@@ -85,3 +91,8 @@ def login(app, env):
 
 
 KIT = SERVER.parent / "site" / "demo-kit"
+
+
+def db_backend():
+    from ubufakazi_server.config import get_settings
+    return get_settings().storage_backend == "db"
