@@ -45,7 +45,7 @@ FOOTER = f'''<footer class="site-foot">
     </div>
     <div><h4>For victims</h4><ul><li><a href="/report">Report a scam</a></li><li><a href="/track">Track a case</a></li><li><a href="/share">Share a warning</a></li><li><a href="/verify">Verify a file</a></li><li><a href="/resources">Get help now</a></li></ul></div>
     <div><h4>For investigators</h4><ul><li><a href="/police">Investigator dashboard</a></li><li><a href="/bank-demo">Bank review (fictional)</a></li><li><a href="/integrations">System status</a></li></ul></div>
-    <div><h4>Project</h4><ul><li><a href="/about">About Ubufakazi</a></li><li><a href="{GITHUB}" target="_blank" rel="noopener">Source code</a></li><li><a href="/mvp">Original MVP (offline)</a></li></ul></div>
+    <div><h4>Project</h4><ul><li><a href="/about">About Ubufakazi</a></li><li><a href="{GITHUB}" target="_blank" rel="noopener">Source code</a></li><li><a href="/privacy">Privacy &amp; data deletion</a></li><li><a href="/mvp">Original MVP (offline)</a></li></ul></div>
   </div>
   <div class="legal"><span>Demonstration prototype by Team CyberThreat · HackSecure 2026. Fictional stations, fictional bank and synthetic data.</span><span>Not affiliated with SAPS or any bank. In danger now? Call 10111.</span></div>
 </footer>'''
@@ -111,6 +111,9 @@ PAGES = {
     "about.html": dict(path="/about", title="About · Ubufakazi", scripts=[],
         desc="Why Ubufakazi exists, how it protects evidence and privacy, and what it does not claim.",
         body=open(pathlib.Path(__file__).with_name("about_body.html"), encoding="utf-8").read() if pathlib.Path(__file__).with_name("about_body.html").exists() else ""),
+    "privacy.html": dict(path="/privacy", title="Privacy policy · Ubufakazi", scripts=[],
+        desc="How Ubufakazi handles reports and evidence sent through the website, Telegram and WhatsApp, and how to delete your data.",
+        body=open(pathlib.Path(__file__).with_name("privacy_body.html"), encoding="utf-8").read()),
     "demo-logins.html": dict(path="/demo-logins", title="Demo logins helper · Ubufakazi", scripts=["demologins.js"],
         desc="Private helper for the demonstration accounts. Runs in your browser only.",
         body=SIMPLE.format(kicker="Team helper", h1="Demo <span class=\"grad\">logins</span>",

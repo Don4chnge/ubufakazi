@@ -732,7 +732,7 @@ def bank_alert_status(alert_id: int, body: AlertStatusIn, request: Request, p: P
 # ------------------------------------------------------------------ pages + website
 PAGES = {"/": "home.html", "/demo-logins": "demo-logins.html", "/share": "share.html", "/resources": "resources.html", "/about": "about.html",
          "/police": "police.html", "/bank-demo": "bank.html", "/report": "report.html", "/track": "track.html",
-         "/verify": "verify.html", "/integrations": "integrations.html"}
+         "/verify": "verify.html", "/integrations": "integrations.html", "/privacy": "privacy.html"}
 
 
 def _page(name: str):
