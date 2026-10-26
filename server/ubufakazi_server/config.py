@@ -55,6 +55,7 @@ class Settings:
     whatsapp_verify_token: str = ""
     whatsapp_app_secret: str = ""
     whatsapp_api_version: str = "v23.0"
+    whatsapp_waba_id: str = ""                       # optional: WhatsApp Business Account ID, to subscribe the app at startup
 
 
 _settings: Settings | None = None
@@ -97,6 +98,7 @@ def get_settings() -> Settings:
             whatsapp_phone_id=os.environ.get("WHATSAPP_PHONE_NUMBER_ID", "").strip(),
             whatsapp_verify_token=os.environ.get("WHATSAPP_VERIFY_TOKEN", "").strip(),
             whatsapp_app_secret=os.environ.get("WHATSAPP_APP_SECRET", "").strip(),
+            whatsapp_waba_id=os.environ.get("WHATSAPP_BUSINESS_ACCOUNT_ID", "").strip(),
             whatsapp_api_version=os.environ.get("WHATSAPP_API_VERSION", "").strip() or "v23.0",
             storage_backend=(os.environ.get("UBF_STORAGE") or ("db" if db_url.startswith("postgresql") else "file")).lower(),
         )

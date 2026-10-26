@@ -133,7 +133,9 @@ async def whatsapp_webhook(request: Request):
     raw = await request.body()
     if len(raw) > 1_000_000:
         raise HTTPException(413, "Too large.")
+    whatsapp.STATE["webhook_calls"] += 1
     if not whatsapp.verify_signature(raw, request.headers.get("X-Hub-Signature-256")):
+        whatsapp.STATE["bad_signatures"] += 1
         raise HTTPException(403, "Bad signature.")
     try:
         payload = json.loads(raw)

@@ -33,3 +33,5 @@ services:
         sync: false
       - key: WHATSAPP_APP_SECRET
         sync: false
+      - key: WHATSAPP_BUSINESS_ACCOUNT_ID   # optional: subscribes the app to the account at startup
+        sync: false

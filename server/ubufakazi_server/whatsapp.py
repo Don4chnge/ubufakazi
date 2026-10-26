@@ -35,7 +35,8 @@ MEDIA_LIMIT = 20 * 1024 * 1024
 IDLE_SECONDS = 2 * 3600
 SYNC = False                     # tests: handle webhook messages before the HTTP response
 
-STATE = {"checked": False, "ok": False, "phone": None, "name": None, "error": None, "last_message_at": None}
+STATE = {"checked": False, "ok": False, "phone": None, "name": None, "error": None, "last_message_at": None,
+         "webhook_calls": 0, "bad_signatures": 0, "subscription": None}
 MEDIA_TYPES = ("image", "document", "audio", "video", "sticker")
 EXT = {"image/jpeg": "jpg", "image/png": "png", "image/webp": "webp", "application/pdf": "pdf", "audio/ogg": "ogg",
        "audio/mpeg": "mp3", "audio/mp4": "m4a", "audio/aac": "aac", "audio/amr": "amr", "video/mp4": "mp4",
@@ -82,10 +83,21 @@ def status() -> dict:
         return {"configured": False, "running": False,
                 "note": "Not configured: set " + ", ".join(missing()) + " (Meta WhatsApp Cloud API)."}
     if STATE["ok"]:
-        last = f" Last message received {STATE['last_message_at'][:16]} UTC." if STATE["last_message_at"] else ""
-        warn = f" Last send problem: {STATE['error']}" if STATE["error"] else ""
+        parts = [f"Connected as {STATE['name'] or 'WhatsApp Business'} ({STATE['phone']}). Webhook: {hook}."]
+        if STATE["subscription"]:
+            parts.append(STATE["subscription"])
+        if STATE["bad_signatures"]:
+            parts.append(f"{STATE['bad_signatures']} webhook call(s) REJECTED because the signature did not match: "
+                         "WHATSAPP_APP_SECRET in Render is not this app's App secret.")
+        if STATE["last_message_at"]:
+            parts.append(f"Last message received {STATE['last_message_at'][:16]} UTC.")
+        elif not STATE["webhook_calls"]:
+            parts.append("No webhook calls from Meta since the last restart: check that the app is published and "
+                         "subscribed to the 'messages' field.")
+        if STATE["error"]:
+            parts.append(f"Last send problem: {STATE['error']}")
         return {"configured": True, "running": True, "phone": STATE["phone"], "name": STATE["name"],
-                "note": f"Connected as {STATE['name'] or 'WhatsApp Business'} ({STATE['phone']}). Webhook: {hook}.{last}{warn}"}
+                "webhook_calls": STATE["webhook_calls"], "note": " ".join(parts)}
     if not STATE["checked"]:
         return {"configured": True, "running": False, "note": "Settings present; checking the connection with Meta…"}
     return {"configured": True, "running": False, "note": STATE["error"] or "Meta did not accept the settings."}
@@ -139,6 +151,21 @@ async def check_connection() -> None:
         STATE.update(ok=False, error=f"Could not reach Meta ({type(e).__name__}).")
     finally:
         STATE["checked"] = True
+    await subscribe_app()
+
+
+async def subscribe_app() -> None:
+    """Links this app to the WhatsApp Business Account so Meta delivers its messages (safe to repeat)."""
+    waba = get_settings().whatsapp_waba_id
+    if not waba or not STATE["ok"]:
+        return
+    try:
+        async with httpx.AsyncClient(timeout=15) as c:
+            r = await c.post(_url(f"{waba}/subscribed_apps"), headers=_auth())
+        STATE["subscription"] = ("App subscribed to the WhatsApp Business Account." if r.status_code == 200
+                                 else "Could not subscribe the app to the WhatsApp Business Account: " + _meta_error(r))
+    except httpx.HTTPError as e:
+        STATE["subscription"] = f"Could not subscribe the app ({type(e).__name__})."
 
 
 async def _post_json(path: str, body: dict) -> dict | None:

@@ -175,3 +175,13 @@ def test_meta_errors_never_show_numbers(app):
     r = httpx.Response(400, json={"error": {"code": 100, "message": "Object with ID '0698330557' does not exist"}})
     msg = _meta_error(r)
     assert "0698330557" not in msg and "Phone number ID" in msg
+
+
+def test_status_reports_rejected_signatures(client, wa, monkeypatch):
+    st = wa["mod"].STATE
+    monkeypatch.setitem(st, "ok", True)
+    monkeypatch.setitem(st, "bad_signatures", 0)
+    monkeypatch.setitem(st, "webhook_calls", 0)
+    _post(client, {"type": "text", "text": {"body": "hi"}}, secret="wrong-secret")
+    note = client.get("/api/integrations").json()["whatsapp"]["note"]
+    assert "REJECTED" in note and "WHATSAPP_APP_SECRET" in note
