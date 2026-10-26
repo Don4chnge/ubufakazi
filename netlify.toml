@@ -3,3 +3,11 @@
 [build]
   publish = "site"
   command = ""
+
+# The MVP has grown into the full platform on Render. Forward every old link (keeping the path) to it.
+# 302 (temporary) so this is easy to undo.
+[[redirects]]
+  from = "/*"
+  to = "https://ubufakazi.onrender.com/:splat"
+  status = 302
+  force = true

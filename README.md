@@ -6,10 +6,10 @@
 
 **From scam victim to police-ready case file in 60 seconds.**
 
-[![Live demo](https://img.shields.io/badge/Live%20demo-ubufakazi.netlify.app-5CF2D6?style=for-the-badge&labelColor=0B1016)](https://ubufakazi.netlify.app)
+[![Live platform](https://img.shields.io/badge/Live-ubufakazi.onrender.com-2EE6D6?style=for-the-badge&labelColor=030812)](https://ubufakazi.onrender.com)
 [![Pitch deck](https://img.shields.io/badge/Pitch%20deck-PDF-FF8F72?style=for-the-badge&labelColor=0B1016)](docs/Ubufakazi_Hackathon_Deck.pdf)
 
-[![Netlify](https://img.shields.io/badge/hosted%20on-Netlify-00C7B7?logo=netlify&logoColor=white)](https://ubufakazi.netlify.app)
+[![Render](https://img.shields.io/badge/hosted%20on-Render%20%2B%20Neon-2EE6D6)](https://ubufakazi.onrender.com)
 ![HackSecure 2026](https://img.shields.io/badge/HackSecure-2026-0B1016)
 ![Track](https://img.shields.io/badge/Track%204-Digital%20Forensics%20Lite-0B1016)
 ![Languages](https://img.shields.io/badge/statements-5%20SA%20languages-0B1016)
@@ -19,18 +19,23 @@
 
 </div>
 
-![Ubufakazi landing screen](docs/screenshot-landing.jpg)
+![Ubufakazi home page](docs/screenshot-home.jpg)
 
 ## Quick links
 
 | What | Link |
 |---|---|
-| Live app | **https://ubufakazi.netlify.app** |
+| Live platform | **https://ubufakazi.onrender.com** |
+| Report a scam · Track a case | [https://ubufakazi.onrender.com/report](https://ubufakazi.onrender.com/report) · [https://ubufakazi.onrender.com/track](https://ubufakazi.onrender.com/track) |
+| Share a scam warning | [https://ubufakazi.onrender.com/share](https://ubufakazi.onrender.com/share) |
+| Investigator dashboard (demo logins on request) | [https://ubufakazi.onrender.com/police](https://ubufakazi.onrender.com/police) |
+| What is connected | [https://ubufakazi.onrender.com/integrations](https://ubufakazi.onrender.com/integrations) |
 | Pitch deck (PDF) | [docs/Ubufakazi_Hackathon_Deck.pdf](docs/Ubufakazi_Hackathon_Deck.pdf) |
-| Demo scammer to investigate | [ubufakazi.netlify.app/scam-demo](https://ubufakazi.netlify.app/scam-demo/) |
-| Demo evidence kit (3 victims, zip) | [ubufakazi-demo-evidence-kit.zip](https://ubufakazi.netlify.app/demo-kit/ubufakazi-demo-evidence-kit.zip) |
-| Test pack for judges (70 cases, zip) | [ubufakazi-test-pack.zip](https://ubufakazi.netlify.app/test-pack/ubufakazi-test-pack.zip) |
-| Test pack guide (PDF) | [READ-ME-FIRST_test-pack-guide.pdf](https://ubufakazi.netlify.app/test-pack/READ-ME-FIRST_test-pack-guide.pdf) |
+| Demo evidence kit (3 victims, zip) | [ubufakazi-demo-evidence-kit.zip](https://ubufakazi.onrender.com/demo-kit/ubufakazi-demo-evidence-kit.zip) |
+| Test pack for judges (70 cases, zip) | [ubufakazi-test-pack.zip](https://ubufakazi.onrender.com/test-pack/ubufakazi-test-pack.zip) |
+| Original offline MVP | [https://ubufakazi.onrender.com/mvp](https://ubufakazi.onrender.com/mvp) |
+
+The old address, ubufakazi.netlify.app, forwards to the live platform.
 
 ## The problem
 
@@ -51,9 +56,11 @@ South Africans lose billions of rand a year to scams: fake job offers, fake cour
 
 ![A case file showing victim #7 linked to 6 earlier reports](docs/screenshot-case-file.jpg)
 
-## Try the 60-second demo
+![Scam fingerprint network in the investigator dashboard](docs/screenshot-network.jpg)
 
-1. Open **https://ubufakazi.netlify.app** and click **Build a case file**.
+## Try the original 60-second MVP
+
+1. Open **https://ubufakazi.onrender.com/mvp** and click **Build a case file**.
 2. Click **"Fake job offer"**, then **Build my case file**.
 3. The red card says **"You are victim #7"**: 6 earlier reports and R84 000 lost, linked by the **same bank account** even though the scammer used a **new phone number**.
 4. Scroll through the evidence fingerprints, scammer details, timeline, statement (switch languages with the tabs) and bank report. Click **Download case pack (PDF)**.
@@ -62,7 +69,7 @@ South Africans lose billions of rand a year to scams: fake job offers, fake cour
 
 Click **Reset demo data** in the footer before presenting, so the count starts at #7 again.
 
-**Test it with your own files:** download the [test pack](https://ubufakazi.netlify.app/test-pack/ubufakazi-test-pack.zip). It has 70 fictional cases, each with a WhatsApp chat export and proof-of-payment PDFs: 50 in English and 5 each in isiZulu, isiXhosa, Afrikaans and Sesotho. The language is in every file name. Upload any case and compare the result with the guide PDF.
+**Test it with your own files:** download the [test pack](https://ubufakazi.onrender.com/test-pack/ubufakazi-test-pack.zip). It has 70 fictional cases, each with a WhatsApp chat export and proof-of-payment PDFs: 50 in English and 5 each in isiZulu, isiXhosa, Afrikaans and Sesotho. The language is in every file name. Upload any case and compare the result with the guide PDF.
 
 ## What's real in this prototype
 
@@ -128,7 +135,7 @@ python3 -m http.server 8000
 # open http://localhost:8000
 ```
 
-**Deploy:** Netlify reads `netlify.toml` and publishes the `site` folder. Every push to `main` deploys automatically to https://ubufakazi.netlify.app.
+**Deploy:** the full platform runs on Render (`render.yaml`, branch `ubufakazi-2`) with a Neon Postgres database. `netlify.toml` now forwards the old ubufakazi.netlify.app address to it.
 
 ## Project structure
 
