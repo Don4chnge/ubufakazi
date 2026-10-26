@@ -40,6 +40,24 @@ You can also scan the `otpauth://` link from the credentials file into an authen
 cd server && python -m pytest -q
 ```
 
+## Host it online (Railway)
+
+The server runs as one Docker container that serves the website, the police and bank consoles, the API and the
+Telegram bot. It needs a **persistent volume** for the database and evidence. Free tiers that sleep or wipe the disk
+(for example Render Free) lose reports and stop the bot.
+
+1. Create a seed for the demo accounts on your laptop: `python -m ubufakazi_server.creds --new-seed`, and put it in your
+   local `server/.env` as `UBF_DEMO_SEED=...`.
+2. On [railway.com](https://railway.com): **New Project → Deploy from GitHub repo → Don4chnge/ubufakazi**. In the service's
+   **Settings → Source**, set the branch to `ubufakazi-2`. Railway reads `railway.json` and builds the `Dockerfile`.
+3. Right-click the service → **Attach volume**, mount path **`/data`**.
+4. **Variables:** `UBF_DEMO_SEED` (same value as step 1); later `TELEGRAM_BOT_TOKEN`, optional `GEMINI_API_KEY`.
+5. **Settings → Networking → Generate domain.** Add `UBF_PUBLIC_BASE_URL=https://<that domain>` (turns on Secure cookies).
+6. On your laptop: `python -m ubufakazi_server.creds` prints each account's password, 2FA setup key and current code.
+
+The first start creates secrets on the volume, the database, the demo accounts and the 80 synthetic reports. Later
+restarts and redeploys keep everything. `/api/health` is the health check.
+
 ## Demo script (5 minutes)
 
 1. **Telegram or `/report`.** Report as "Lerato" in Mthatha, Eastern Cape, using `site/demo-kit/case1-*` files.
@@ -129,6 +147,7 @@ Web form (/report) ──────┼─► conversation.py / app.py ─► s
 - **Not SAPS, not a bank.** These are fictional stations and a fictional bank. A real deployment needs SAPS approval, verified receiving channels and a POPIA impact assessment.
 - **Timestamps.** "Received" is the server clock. Trusted RFC 3161 timestamps are not configured.
 - **Tamper evidence, not tamper-proofing.** The hash chain and file hashes make changes detectable. An attacker with full server access could still delete data. Hourly anchoring of the audit head to an external log would harden this.
+- **Hosting.** One container with one volume. Back up `/data` if real use ever follows; the demo data is synthetic.
 - **Single process.** The rate limiter is in memory. The audit chain relies on one server process (the bot runs inside it). Multi-instance deployment needs a database-level lock or sequence for the chain.
 - **No migrations tool yet.** The schema is created with `create_all`. For changes during the demo, use `setup --reset`.
 - **Media.** Images, voice notes and scans are read only when `GEMINI_API_KEY` is set, and the output is always labelled AI-generated and unverified.

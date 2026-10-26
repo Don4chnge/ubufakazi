@@ -13,7 +13,9 @@ import secrets
 import shutil
 import sys
 
-from .config import SERVER_DIR, get_settings, reset_settings
+import os
+
+from .config import SERVER_DIR, data_dir, get_settings, reset_settings
 
 USERS = [
     # username, display name, role, station codes
@@ -23,7 +25,8 @@ USERS = [
     ("officer.durban", "Demo Officer (Durban)", "officer", ["DBN"]),
     ("bank.reviewer", "DemoBank Fraud Reviewer (fictional bank)", "bank_reviewer", []),
 ]
-ENV_FILE = SERVER_DIR / ".env"
+# On a host with a persistent volume (UBF_DATA_DIR), generated secrets are kept on the volume so they survive restarts.
+ENV_FILE = (data_dir() / ".env") if os.environ.get("UBF_DATA_DIR") else SERVER_DIR / ".env"
 CREDS_FILE = SERVER_DIR / "DEMO-CREDENTIALS.txt"
 
 
@@ -35,6 +38,13 @@ def _password() -> str:
 def write_env() -> bool:
     if ENV_FILE.exists():
         return False
+    if os.environ.get("UBF_DATA_DIR"):
+        # hosted: only generate what the host's variables do not already provide
+        ENV_FILE.parent.mkdir(parents=True, exist_ok=True)
+        lines = [f"{k}={secrets.token_urlsafe(48)}" for k in ("UBF_SECRET_KEY", "UBF_HMAC_KEY") if not os.environ.get(k)]
+        ENV_FILE.write_text("\n".join(lines) + "\n", encoding="utf-8")
+        ENV_FILE.chmod(0o600)
+        return True
     example = (SERVER_DIR / ".env.example").read_text(encoding="utf-8")
     lines = []
     for line in example.splitlines():
@@ -58,18 +68,22 @@ def main(argv=None) -> int:
         print(f"Created {ENV_FILE.name} with new random secrets.")
     reset_settings()
     s = get_settings()
-    data_dir = SERVER_DIR / "data"
-    if args.reset and data_dir.exists():
-        shutil.rmtree(data_dir, onerror=lambda f, p, e: (__import__("os").chmod(p, 0o600), f(p)))
+    ddir = data_dir()
+    if args.reset and ddir.exists():
+        for child in ddir.iterdir():
+            if child.name == ".env":
+                continue          # keep the secrets
+            shutil.rmtree(child, onerror=lambda f, p, e: (os.chmod(p, 0o600), f(p))) if child.is_dir() else child.unlink()
         CREDS_FILE.unlink(missing_ok=True)
-        print("Deleted ./data")
-    data_dir.mkdir(exist_ok=True)
+        print(f"Deleted demo data in {ddir}")
+    ddir.mkdir(parents=True, exist_ok=True)
     s.storage_dir.mkdir(parents=True, exist_ok=True)
 
     from .db import init_db, session_scope, write_lock
     from .models import Station, User
     from .security import hash_password, new_totp_secret, totp_uri
     from . import audit, seed
+    from .creds import password_for, totp_secret_for
 
     init_db()
     created_users = []
@@ -78,8 +92,10 @@ def main(argv=None) -> int:
         for username, display, role, codes in USERS:
             if db.query(User).filter_by(username=username).first():
                 continue
-            pw = _password()
-            secret = new_totp_secret()
+            if s.demo_seed:
+                pw, secret = password_for(s.demo_seed, username), totp_secret_for(s.demo_seed, username)
+            else:
+                pw, secret = _password(), new_totp_secret()
             u = User(username=username, display_name=display, role=role, password_hash=hash_password(pw), totp_secret=secret)
             u.stations = [stations[c] for c in codes]
             db.add(u)
@@ -90,7 +106,9 @@ def main(argv=None) -> int:
             audit.record(db, "setup.users", actor="setup", detail={"created": [u[0] for u in created_users]})
         st_count = db.query(Station).count()
 
-    if created_users:
+    if created_users and s.demo_seed:
+        print(f"Created {len(created_users)} demo accounts from UBF_DEMO_SEED. See them with: python -m ubufakazi_server.creds")
+    elif created_users:
         with CREDS_FILE.open("a", encoding="utf-8") as f:
             f.write("UBUFAKAZI 2.0 DEMO ACCOUNTS (fictional, local demo only, do not commit)\n")
             f.write("Two-factor code:  python -m ubufakazi_server.totp <username>   (or scan the otpauth link)\n\n")
@@ -102,9 +120,9 @@ def main(argv=None) -> int:
     print(f"Stations: {st_count} fictional demo stations. Seed reports added: {n}.")
     print("Start the server:  uvicorn ubufakazi_server.app:app --port 8000   then open http://localhost:8000")
     if s.telegram_token:
-        print("Telegram token found. Start the bot:  python -m ubufakazi_server.bot")
+        print("Telegram token found: the bot starts together with the server.")
     else:
-        print("Telegram: not configured (add TELEGRAM_BOT_TOKEN to .env to enable the bot).")
+        print("Telegram: not configured (set TELEGRAM_BOT_TOKEN in .env or your host's variables to enable the bot).")
     return 0
 
 
