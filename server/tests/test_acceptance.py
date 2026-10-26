@@ -428,7 +428,7 @@ class TestF_Audit:
 # ====================================================================== G
 class TestG_WebsiteAndPublic:
     @pytest.mark.parametrize("path", ["/", "/police", "/bank-demo", "/report", "/track", "/verify", "/integrations",
-                                      "/share", "/resources", "/about", "/mvp", "/scam-demo/"])
+                                      "/share", "/resources", "/about", "/mvp", "/demo-logins", "/scam-demo/"])
     def test_pages(self, client, path):
         r = client.get(path)
         assert r.status_code == 200 and "text/html" in r.headers["content-type"]

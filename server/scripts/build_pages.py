@@ -60,7 +60,7 @@ def page(path: str, title: str, desc: str, body: str, scripts: list[str], quick_
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="referrer" content="no-referrer">
-<meta name="theme-color" content="#030812">
+<meta name="theme-color" content="#030812">{'\n<meta name="robots" content="noindex, nofollow">' if path == "/demo-logins" else ""}
 <title>{title}</title>
 <meta name="description" content="{desc}">
 <link rel="icon" href="/app/favicon.svg" type="image/svg+xml">{css}
@@ -111,6 +111,10 @@ PAGES = {
     "about.html": dict(path="/about", title="About · Ubufakazi", scripts=[],
         desc="Why Ubufakazi exists, how it protects evidence and privacy, and what it does not claim.",
         body=open(pathlib.Path(__file__).with_name("about_body.html"), encoding="utf-8").read() if pathlib.Path(__file__).with_name("about_body.html").exists() else ""),
+    "demo-logins.html": dict(path="/demo-logins", title="Demo logins helper · Ubufakazi", scripts=["demologins.js"],
+        desc="Private helper for the demonstration accounts. Runs in your browser only.",
+        body=SIMPLE.format(kicker="Team helper", h1="Demo <span class=\"grad\">logins</span>",
+            lead="For Team CyberThreat: shows the demonstration accounts' passwords and live two-factor codes from the secret seed. Calculated in your browser; nothing leaves this device.", pre="")),
     "home.html": dict(path="/", title="Ubufakazi · Turn digital evidence into real justice", scripts=["land.js", "globe.js", "share.js", "home.js"],
         extra_css=["home.css"],
         desc="Ubufakazi helps scam victims in South Africa preserve digital evidence, prepare a case pack for the police and connect reports about the same scammer.",
