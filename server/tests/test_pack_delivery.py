@@ -4,7 +4,7 @@ from __future__ import annotations
 
 def _submit(conv, category):
     conv.data = {"category": category, "language": "en", "province": "Gauteng", "town": "Johannesburg",
-                 "station": "x", "description": "Someone keeps sending me threatening messages."}
+                 "station": "x", "description": "A recruiter took a fee for a job that did not exist."}
     conv.step = "consent"
     return conv.handle("I agree, submit")
 
@@ -12,8 +12,9 @@ def _submit(conv, category):
 def test_sensitive_report_pdf_answers(app):
     from ubufakazi_server.conversation import Conversation
     c = Conversation(channel="telegram", contact_ref="tg:1")
-    outs = _submit(c, "threats")
-    assert c.step == "pack_choice" and "/pack" in outs[0].text and "/track" in outs[0].text
+    outs = _submit(c, "scam")
+    assert "/pack" in outs[0].text and "/track" in outs[0].text
+    c.step = "pack_choice"                                                # the "send it here?" question
     assert c.handle("hmm")[0].options == ["Yes, send it", "No"]          # unclear: ask again, never assume "no"
     out = c.handle("PDF")[0]                                             # typed before/after the question
     assert out.action == {"type": "send_pack", "reference": c.submitted[-1]}
@@ -22,7 +23,8 @@ def test_sensitive_report_pdf_answers(app):
 def test_no_then_pack_later(app):
     from ubufakazi_server.conversation import Conversation
     c = Conversation(channel="telegram", contact_ref="tg:2")
-    _submit(c, "threats")
+    _submit(c, "scam")
+    c.step = "pack_choice"
     assert "/pack" in c.handle("No")[0].text and c.step == "submitted"
     assert c.handle("/pack")[0].action["type"] == "send_pack"
 

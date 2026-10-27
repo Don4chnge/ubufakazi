@@ -484,3 +484,63 @@ legend .n { display: inline-grid; place-items: center; width: 22px; height: 22px
 .legend .dot.off { background: var(--warn); box-shadow: 0 0 0 3px var(--warn-dim); margin-left: 10px; }
 .bank-resp + .bank-resp { border-top: 1px solid var(--line); margin-top: 10px; padding-top: 10px; }
 .st-bank-frozen { color: var(--alert); }
+
+/* ---------------------------------------------------------------- syndicate jurisdiction board */
+.tiles.tiles-5 { grid-template-columns: repeat(5, minmax(0, 1fr)); }
+.syn-grid { display: grid; grid-template-columns: 270px minmax(0, 1fr); gap: 16px; align-items: start; margin-bottom: 16px; }
+.side-h { font: 600 11px/1 var(--mono); letter-spacing: .16em; text-transform: uppercase; color: var(--muted); margin: 4px 0 10px; }
+.syn-list { display: flex; flex-direction: column; gap: 10px; position: sticky; top: 76px; }
+.syn-item { text-align: left; display: grid; gap: 4px; padding: 14px 16px; border-radius: 14px; border: 1px solid var(--line); background: var(--panel);
+  color: var(--ink); cursor: pointer; font: inherit; transition: border-color .15s, background .15s, box-shadow .15s; }
+.syn-item:hover { border-color: var(--line-2); background: var(--panel-2); }
+.syn-item.active { border-color: var(--line-3); box-shadow: var(--glow); background: var(--panel-2); }
+.syn-item b { font: 600 15px/1.25 var(--display); color: var(--text); }
+.syn-code { font: 600 11px/1 var(--mono); letter-spacing: .14em; color: var(--accent); }
+.syn-amt { font: 600 18px/1.1 var(--display); color: #FF8B96; margin-top: 2px; }
+.syn-panel h2 { margin: 2px 0 4px; font: 700 26px/1.15 var(--display); }
+.versus { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 16px 0 12px; }
+.versus > div { border-radius: 12px; padding: 14px 16px; border: 1px solid var(--line); display: grid; gap: 4px; }
+.versus span { font: 600 10.5px/1 var(--mono); letter-spacing: .16em; text-transform: uppercase; color: var(--muted); }
+.versus b { font: 700 19px/1.25 var(--display); color: var(--text); }
+.versus small { color: var(--muted); font-size: 13px; }
+.vs-a { background: var(--alert-dim); border-color: rgba(255, 93, 108, .35) !important; }
+.vs-b { background: var(--accent-dim); border-color: var(--line-3) !important; }
+.jmap-wrap { border: 1px solid var(--line); border-radius: 14px; background: rgba(3, 8, 18, .55); padding: 8px; }
+svg.jmap { width: 100%; height: auto; display: block; font-family: var(--ui); }
+.jtile rect { fill: rgba(16, 33, 60, .55); stroke: var(--line-2); stroke-width: 1; transition: fill .2s; }
+.jtile.h1 rect { fill: rgba(46, 230, 214, .10); stroke: rgba(46, 230, 214, .35); }
+.jtile.h2 rect { fill: rgba(46, 230, 214, .18); stroke: rgba(46, 230, 214, .5); }
+.jtile.h3 rect { fill: rgba(255, 93, 108, .16); stroke: rgba(255, 93, 108, .55); }
+.jtile.h4 rect { fill: rgba(255, 93, 108, .26); stroke: rgba(255, 93, 108, .8); }
+.jtile.dim { opacity: .45; }
+.jab { font: 700 21px var(--display); fill: var(--text); }
+.jname { font: 500 12px var(--ui); fill: var(--muted); }
+.jnum { font: 700 30px var(--display); fill: var(--text); }
+.jcode { font: 600 10px var(--mono); fill: var(--faint); letter-spacing: .02em; }
+.jst circle { fill: rgba(143, 166, 196, .35); stroke: rgba(143, 166, 196, .5); }
+.jst.on circle { fill: var(--accent); stroke: #fff; stroke-width: 1.2; filter: drop-shadow(0 0 5px rgba(46, 230, 214, .8)); }
+.jst.on .jcode { fill: var(--text); }
+.jst.own:not(.on) circle { stroke: var(--accent); }
+.jst .ring { fill: none !important; stroke: var(--warn) !important; stroke-width: 2 !important; stroke-dasharray: 4 3; filter: none !important; animation: ringspin 6s linear infinite; transform-box: fill-box; transform-origin: center; }
+@keyframes ringspin { to { transform: rotate(360deg); } }
+.jflow { fill: none; stroke: rgba(255, 93, 108, .55); stroke-width: 1.6; stroke-dasharray: 6 6; animation: flow 1.4s linear infinite; }
+.jflow.frozen { stroke: rgba(52, 211, 153, .7); animation: none; stroke-dasharray: none; }
+@keyframes flow { to { stroke-dashoffset: -24; } }
+.jhead { font: 600 12px var(--mono); letter-spacing: .18em; fill: var(--muted); }
+.jacc rect { fill: #0E1B33; stroke: rgba(255, 93, 108, .6); }
+.jacc.frozen rect { stroke: var(--ok); fill: rgba(52, 211, 153, .08); }
+.jacc.manual rect { stroke: var(--warn); }
+.jaccno { font: 600 16px var(--mono); fill: var(--text); }
+.jtag { font: 700 11px var(--mono); letter-spacing: .12em; fill: #FF8B96; }
+.jacc.frozen .jtag { fill: var(--ok); }
+.jacc.manual .jtag { fill: var(--warn); }
+.jfoot { font: 500 10px var(--ui); fill: var(--faint); }
+.jtable tr.lead-row td { background: rgba(251, 191, 36, .07); }
+.jtable tr.lead-row td:first-child { box-shadow: inset 3px 0 0 var(--warn); }
+.jtable tr.restricted { cursor: default; }
+ol.actions { margin: 6px 0 0; padding-left: 20px; display: grid; gap: 10px; color: var(--ink); line-height: 1.5; }
+ol.actions b { color: var(--text); }
+.panel h3.mt { margin-top: 20px; }
+.st-frozen { color: var(--ok); border-color: rgba(52, 211, 153, .45); background: var(--ok-dim); }
+tr.nat-row { cursor: default; }
+@media (max-width: 1100px) { .syn-grid { grid-template-columns: 1fr; } .syn-list { position: static; flex-direction: row; overflow-x: auto; } .syn-item { min-width: 220px; } .tiles.tiles-5 { grid-template-columns: repeat(2, minmax(0, 1fr)); } .versus { grid-template-columns: 1fr; } }

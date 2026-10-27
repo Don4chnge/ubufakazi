@@ -108,7 +108,7 @@ def main(argv=None) -> int:
             db.add(u)
             created_users.append((username, role, codes, pw, secret))
         db.flush()
-        n = 0 if args.no_seed else seed.seed_reports(db)
+        n = 0 if args.no_seed else seed.refresh_seed(db)
         if created_users:
             audit.record(db, "setup.users", actor="setup", detail={"created": [u[0] for u in created_users]})
         st_count = db.query(Station).count()

@@ -21,7 +21,7 @@ from sqlalchemy.orm import Session
 
 from . import handover, timestamps
 from .extract import money
-from .models import CATEGORIES, STATUS_LABELS, AuditEvent, Note, Report, Station, StationHandover, StatusChange
+from .models import CATEGORY_LABELS, STATUS_LABELS, AuditEvent, Note, Report, Station, StationHandover, StatusChange
 from .writing import LANG_NAMES
 
 INK = colors.HexColor("#0B1016")
@@ -143,7 +143,7 @@ def build_case_pack(db: Session, r: Report, audience: str = "complainant", viewe
     f.append(Spacer(1, 4))
     facts = r.facts or {}
     cover = [
-        ["Category", CATEGORIES.get(r.category, r.category)],
+        ["Category", CATEGORY_LABELS.get(r.category, r.category)],
         ["Type (detected)", facts.get("scam_type_label") or "-"],
         ["Demo station", f"{r.station.name} (fictional, for demonstration only)"],
         ["Area", ", ".join(x for x in (r.town, r.province) if x) or "-"],

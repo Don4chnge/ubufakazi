@@ -6,7 +6,7 @@ import pytest
 from conftest import KIT
 
 SAMPLES = KIT / "samples"
-CATS = {"01": "scam", "02": "banking_fraud", "03": "theft", "04": "abuse", "05": "threats", "06": "misconduct", "07": "other"}
+CATS = {"01": "scam", "02": "banking_fraud", "03": "scam", "04": "scam"}
 
 
 @pytest.mark.skipif(not SAMPLES.exists(), reason="sample kit not built (python3 tools/make_sample_kit.py)")

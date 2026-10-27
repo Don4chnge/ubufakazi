@@ -18,6 +18,7 @@
     files: ["M6 3h8l4 4v14H6z", "M14 3v4h4", "M9 12h6M9 16h4"],
     net: ["M12 5a2 2 0 1 0 0 .01M5 18a2 2 0 1 0 0 .01M19 18a2 2 0 1 0 0 .01M11 7l-5 9M13 7l5 9M7 18h10"],
     side: ["M4 5h16v14H4z", "M9 5v14"],
+    board: ["M3 6l6-2 6 2 6-2v14l-6 2-6-2-6 2z", "M9 4v14M15 6v14"],
   };
   const COLLAPSE_KEY = "ubf-rail-collapsed";
   let collapsed = false;
@@ -61,6 +62,7 @@
     const shellEl = el("div", { class: "shell" + (collapsed ? " collapsed" : "") },
       el("nav", { class: "rail", "aria-label": "Console" },
         nav("overview", "Overview", I.home, "#/overview"),
+        nav("board", "Syndicate board", I.board, "#/board"),
         nav("queue", "Case queue", I.queue, "#/queue"),
         nav("evidence", "Evidence", I.files, "#/evidence"),
         nav("network", "Scam network", I.net, "#/network"),
@@ -86,6 +88,8 @@
     const n = h.match(/^#\/network(?:\/([A-Z0-9-]{6,24}))?/);
     if (n) return showNetwork(n[1]);
     if (h.startsWith("#/intel")) return showNetwork();
+    const b = h.match(/^#\/board(?:\/(SYN-[A-Z0-9]+))?/);
+    if (b) return showBoard(b[1]);
     if (h.startsWith("#/queue")) return showQueue();
     if (h.startsWith("#/evidence")) return showEvidence();
     if (h.startsWith("#/audit") && me.role === "admin") return showAudit();
@@ -111,7 +115,7 @@
       el("div", { class: "page-head" }, el("div", null, el("div", { class: "kicker" }, stationTxt),
         el("h1", null, `Good ${new Date().getHours() < 12 ? "morning" : new Date().getHours() < 18 ? "afternoon" : "evening"}, ${me.display_name.replace(/^Demo /, "")}`),
         el("p", null, "Your case overview. Counts include only reports your station may see. All data in this demo is synthetic.")),
-        el("div", { class: "row-btns" }, el("a", { class: "btn btn-primary", href: "#/queue" }, "Open case queue"), el("a", { class: "btn btn-ghost", href: "#/network" }, "Scam network"))),
+        el("div", { class: "row-btns" }, el("a", { class: "btn btn-primary", href: "#/board" }, "Syndicate board"), el("a", { class: "btn btn-ghost", href: "#/queue" }, "Open case queue"))),
       el("div", { class: "tiles" },
         tile(s.total, "Total cases", false), tile(s.awaiting, "Awaiting review", true),
         tile(s.linked_reports, "Cases with possible connections", true), tile(money(s.reported_loss), "Reported losses", false, spark(s.per_day))),
@@ -131,6 +135,87 @@
             el("span", { class: "lead-badge" }, money(c.visible_amount)))))
             : el("p", { class: "muted" }, "No linked reports yet."))),
     ]);
+  }
+
+
+  // ------------------------------------------------------------------ syndicate jurisdiction board
+  function leadWhy(syn) {
+    const rest = Math.max(0, ...syn.jurisdictions.filter((j) => j.code !== syn.lead.code).map((j) => j.victims));
+    return syn.lead.victims > rest
+      ? `Its jurisdiction holds the most victims (${syn.lead.victims}); first report there ${date(syn.lead.first)}.`
+      : `Victims are spread evenly (${syn.lead.victims} per jurisdiction at most), so the station with the earliest report (${date(syn.lead.first)}) leads.`;
+  }
+
+  async function showBoard(code) {
+    shell("board", el("div", { class: "empty" }, "Loading…"));
+    let d;
+    try { d = await api("GET", "/api/police/intel/board"); } catch (e) { shell("board", el("div", { class: "notice" }, e.message)); return; }
+    const syn = d.syndicates.find((x) => x.code === code) || d.syndicates[0] || null;
+    const t = d.totals, plural = (n, w) => `${n} ${w}${n === 1 ? "" : "s"}`;
+    const who = me.role === "admin" ? "SAPS · national command view (demo)" : me.stations.map((x) => x.name).join(" · ");
+    const list = el("div", { class: "syn-list", role: "list" }, d.syndicates.map((x) => el("button", {
+      class: "syn-item" + (syn && x.code === syn.code ? " active" : ""), role: "listitem", onclick: () => { location.hash = "#/board/" + x.code; } },
+      el("span", { class: "syn-code" }, x.code), el("b", null, x.label),
+      el("span", { class: "sub" }, `${plural(x.victims, "victim")} · ${plural(x.stations, "station")} · ${plural(x.provinces.length, "province")}`),
+      x.total_amount !== null ? el("span", { class: "syn-amt" }, money(x.total_amount)) : el("span", { class: "syn-amt" }, `${x.your_victims} at your station`))));
+    const content = [
+      el("div", { class: "page-head" }, el("div", null, el("div", { class: "kicker" }, who), el("h1", null, "Syndicate jurisdiction board"),
+        el("p", null, "One syndicate, many dockets. When reports at different stations share a mule account, phone number, website or message script, Ubufakazi joins them so SAPS can run one investigation instead of many small ones, and the bank can freeze the account while the money is still there."))),
+      el("div", { class: "tiles tiles-5" },
+        tile(t.syndicates, "Syndicates detected", true), tile(t.victims, "Victims linked"),
+        tile(t.stations, "Station jurisdictions involved"), tile(`${t.provinces}/9`, "Provinces affected"),
+        t.amount !== null ? tile(money(t.amount), "Linked losses", true) : tile(d.syndicates.reduce((a, x) => a + x.your_victims, 0), "Linked victims at your station", true)),
+    ];
+    if (!syn) {
+      content.push(el("section", { class: "panel" }, el("p", { class: "muted" }, "No syndicates detected yet: no group of three or more linked reports.")));
+    } else {
+      const docketsTxt = `${plural(syn.stations, "separate docket")} at ${plural(syn.stations, "station")} in ${plural(syn.provinces.length, "province")}`;
+      const others = syn.jurisdictions.filter((j) => j.code !== syn.lead.code).map((j) => j.code);
+      const mulesTxt = syn.mules.map((m) => m.account).join(", ");
+      const jt = el("table", { class: "data jtable" }, el("thead", null, el("tr", null, ["Province", "Station (jurisdiction)", "Where victims were scammed", "Victims", "Reported loss"].map((h, i) => el("th", { scope: "col", class: i > 2 ? "num" : null }, h)))),
+        el("tbody", null, syn.jurisdictions.map((j) => el("tr", { class: (j.code === syn.lead.code ? "lead-row" : "") + (j.visible ? "" : " restricted"), tabindex: j.references.length ? "0" : null,
+          onclick: j.references.length ? () => { location.hash = "#/report/" + j.references[j.references.length - 1]; } : null },
+          el("td", null, j.province), el("td", null, el("b", null, j.station.replace("Demo Station · ", "")), el("span", { class: "sub" }, j.code + (j.code === syn.lead.code ? " · suggested lead" : "") + (j.own ? " · your station" : ""))),
+          el("td", null, j.visible ? j.towns.join(", ") : el("span", { class: "muted" }, "Restricted: another station's jurisdiction")),
+          el("td", { class: "num" }, String(j.victims)), el("td", { class: "num" }, j.amount !== null ? money(j.amount) : "–")))));
+      const mt = el("table", { class: "data" }, el("thead", null, el("tr", null, ["Mule account", "Bank", "Reports", "Bank decision"].map((h, i) => el("th", { scope: "col", class: i === 2 ? "num" : null }, h)))),
+        el("tbody", null, syn.mules.map((m) => el("tr", null, el("td", { class: "mono" }, m.account), el("td", null, m.bank || "Not stated", el("span", { class: "sub" }, plural(m.provinces.length, "province"))),
+          el("td", { class: "num" }, String(m.reports)),
+          el("td", null, m.bank_status === "frozen" ? el("span", { class: "st st-frozen" }, "Frozen") : m.bank_connected
+            ? el("span", { class: "st st-under_review" }, m.bank_status ? m.bank_status.replace(/_/g, " ") : "Alert sent")
+            : el("span", { class: "st st-more_info_required" }, "Not connected: send manually"),
+            m.bank_note ? el("span", { class: "sub" }, m.bank_note) : null)))));
+      content.push(el("div", { class: "syn-grid" },
+        el("aside", null, el("h3", { class: "side-h" }, "Detected syndicates"), list),
+        el("div", null,
+          el("section", { class: "panel syn-panel" },
+            el("div", { class: "lead-top" }, el("div", null, el("div", { class: "kicker" }, `${syn.code} · ${date(syn.first)} – ${date(syn.last)}`),
+              el("h2", null, syn.label), el("p", { class: "muted" }, "Linked by " + [syn.mules.length && plural(syn.mules.length, "receiving account"), syn.phones && plural(syn.phones, "phone number"), syn.websites && plural(syn.websites, "website"), syn.scripted && "a repeated message script"].filter(Boolean).join(", ").replace(/, ([^,]*)$/, " and $1") + ".")),
+              syn.anchor ? el("a", { class: "btn btn-ghost btn-small", href: "#/network/" + syn.anchor }, "Open network graph") : null),
+            el("div", { class: "versus" },
+              el("div", { class: "vs-a" }, el("span", null, "Without Ubufakazi"), el("b", null, docketsTxt), el("small", null, "Each looks like a small, separate case.")),
+              el("div", { class: "vs-b" }, el("span", null, "With Ubufakazi"), el("b", null, `1 linked investigation · ${plural(syn.victims, "victim")}`),
+                el("small", null, syn.total_amount !== null ? `${money(syn.total_amount)} reported lost in total` : `${money(syn.your_amount)} reported at your station`))),
+            el("div", { class: "jmap-wrap" }, UBFBoard.map(d, syn))),
+          el("section", { class: "panel" }, el("h3", null, "Jurisdictions holding pieces of this syndicate"), el("div", { class: "table-wrap" }, jt)),
+          el("div", { class: "grid-2" },
+            el("section", { class: "panel" }, el("h3", null, "Recommended actions"), el("ol", { class: "actions" },
+              el("li", null, el("b", null, `${syn.lead.station.replace("Demo Station · ", "")} (${syn.lead.code}) leads. `), leadWhy(syn)),
+              others.length ? el("li", null, el("b", null, "Link the other dockets to one investigation: "), others.join(", ") + ".") : null,
+              el("li", null, el("b", null, "Freeze the money trail: "), `ask the bank to act on ${mulesTxt || "the receiving accounts"} while funds can still be stopped.`),
+              el("li", null, el("b", null, "Use the evidence as is: "), "every file is SHA-256 fingerprinted and independently timestamped; case packs carry a QR code for the station handover."))),
+            el("section", { class: "panel" }, el("h3", null, "Mule accounts and bank decisions"), el("div", { class: "table-wrap" }, mt))))));
+    }
+    const nat = el("table", { class: "data" }, el("thead", null, el("tr", null, ["Province", "Demo stations", "Towns covered", "Reports", "Linked to a syndicate"].map((h, i) => el("th", { scope: "col", class: i > 0 ? "num" : null }, h)))),
+      el("tbody", null, d.provinces.map((p) => el("tr", { class: "nat-row" },
+        el("td", null, el("b", null, p.province), el("span", { class: "sub" }, p.stations.map((s) => `${s.code}: ${s.towns.join(", ")}`).join(" · "))),
+        el("td", { class: "num" }, String(p.station_count)), el("td", { class: "num" }, String(p.towns)),
+        el("td", { class: "num" }, String(p.reports)), el("td", { class: "num" }, String(p.linked))))));
+    content.push(el("section", { class: "panel" }, el("h3", null, "Stations and jurisdictions in every province"),
+      el("p", { class: "muted" }, "Each report goes to the demo station whose jurisdiction covers the town where the victim was scammed. Counts include every report, so a station can see how busy each jurisdiction is."),
+      el("div", { class: "table-wrap" }, nat)),
+      el("p", { class: "foot-note" }, d.note));
+    shell("board", content);
   }
 
   // ------------------------------------------------------------------ evidence inventory

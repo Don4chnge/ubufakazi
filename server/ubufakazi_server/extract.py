@@ -274,10 +274,12 @@ SCAM_WORDS = {
     "investment": r"\b(invest(ment)?|returns?|profit|crypto|bitcoin|forex|trading|double your|belegging|wins|peeletso|phaello)\b",
     "parcel": r"\b(parcel|package|courier|delivery|customs|clearance|tracking|shipment|iphasela|ipasile|pakkie|phasela|doeane)\b",
     "sars": r"\b(sars|tax refund|efiling|refund|terugbetaling|ebuyiselwayo|e busetswang)\b",
+    "bank_impersonation": r"\b(one-time pin|otp|fraud (department|desk|team)|holding account|secure hold|new device|"
+                          r"unauthori[sz]ed|suspicious transaction|block your account|bank app)\b",
 }
 TYPE_LABEL = {"job": "Fake job offer", "marketplace": "Online seller / Marketplace", "romance": "Romance scam",
               "investment": "Investment / crypto scam", "parcel": "Courier / parcel fee", "sars": "Fake SARS refund",
-              "other": "Scam"}
+              "bank_impersonation": "Bank impersonation / OTP fraud", "other": "Scam"}
 
 
 def detect_type(text: str) -> str:

@@ -15,7 +15,7 @@ from sqlalchemy.orm import Query, Session
 
 from . import intel
 from .extract import TYPE_LABEL
-from .models import CATEGORIES, STATUS_LABELS, Identifier, IntelMatch, Report, Station
+from .models import CATEGORIES, CATEGORY_LABELS, STATUS_LABELS, Identifier, IntelMatch, Report, Station
 from .security import Principal
 
 
@@ -35,7 +35,7 @@ def get_report(db: Session, p: Principal, reference: str) -> Report:
 
 
 def summary(r: Report) -> dict:
-    return {"reference": r.reference, "category": r.category, "category_label": CATEGORIES.get(r.category, r.category),
+    return {"reference": r.reference, "category": r.category, "category_label": CATEGORY_LABELS.get(r.category, r.category),
             "scam_type": r.scam_type, "scam_type_label": TYPE_LABEL.get(r.scam_type or "", None),
             "status": r.status, "status_label": STATUS_LABELS.get(r.status, r.status),
             "processing_status": r.processing_status, "station": r.station.name, "station_code": r.station.code,
@@ -182,3 +182,118 @@ def search(q: Query, text: str) -> Query:
     like = f"%{text.strip()[:80]}%"
     return q.filter(or_(Report.reference.ilike(like), Report.description.ilike(like), Report.town.ilike(like),
                         Report.complainant_name.ilike(like)))
+
+
+# ------------------------------------------------------------------ syndicate jurisdiction board
+def _components(db: Session) -> list[set[int]]:
+    adj = defaultdict(set)
+    for a, b in db.query(IntelMatch.report_a, IntelMatch.report_b).all():
+        adj[a].add(b)
+        adj[b].add(a)
+    seen, out = set(), []
+    for start in list(adj):
+        if start in seen:
+            continue
+        comp, stack = set(), [start]
+        while stack:
+            n = stack.pop()
+            if n not in comp:
+                comp.add(n)
+                stack.extend(adj[n] - comp)
+        seen |= comp
+        out.append(comp)
+    return out
+
+
+def board(db: Session, p: Principal, min_size: int = 3) -> dict:
+    """Scam syndicates seen as SAPS sees them: which provinces and which stations' jurisdictions hold pieces of the same
+    network, the mule accounts behind it and what the banks did. National command (admin) sees everything; a station
+    officer sees full detail for their own station and only counts for other stations."""
+    from .models import BankAlert, BankDelivery
+    from .extract import mask_acc
+    from .stations import jurisdictions
+    stations = {s.id: s for s in db.query(Station).all()}
+    full = p.is_admin
+    syndicates = []
+    for comp in _components(db):
+        if len(comp) < min_size:
+            continue
+        reps = db.query(Report).filter(Report.id.in_(comp)).all()
+        mine = [r for r in reps if p.can_see_station(r.station_id)]
+        if not mine and not full:
+            continue
+        by_station = defaultdict(list)
+        for r in reps:
+            by_station[r.station_id].append(r)
+        rows = []
+        for sid, rs in by_station.items():
+            st, vis = stations[sid], full or p.can_see_station(sid)
+            rows.append({"code": st.code, "station": st.name, "province": st.province, "victims": len(rs),
+                         "visible": vis, "own": sid in (p.station_ids or set()),
+                         "amount": sum(r.amount_paid or 0 for r in rs) if vis else None,
+                         "towns": sorted({r.town for r in rs if r.town}) if vis else [],
+                         "first": min(r.created_at for r in rs).date().isoformat(),
+                         "references": [r.reference for r in sorted(rs, key=lambda r: r.created_at)] if vis else []})
+        # suggested lead: the jurisdiction with the most victims; ties go to the earliest report
+        lead = sorted(rows, key=lambda x: (-x["victims"], x["first"]))[0]
+        provinces = defaultdict(lambda: {"victims": 0, "stations": 0})
+        for x in rows:
+            provinces[x["province"]]["victims"] += x["victims"]
+            provinces[x["province"]]["stations"] += 1
+        idents = db.query(Identifier).filter(Identifier.report_id.in_(comp)).all()
+        acc_reports, acc_info = defaultdict(set), {}
+        kinds = defaultdict(set)
+        for i in idents:
+            kinds[i.kind].add(i.hmac)
+            if i.kind == "account":
+                acc_reports[i.hmac].add(i.report_id)
+                acc_info.setdefault(i.hmac, (mask_acc(i.value), i.bank or ""))
+        mules = []
+        for hm, rids in sorted(acc_reports.items(), key=lambda kv: -len(kv[1])):
+            al = db.query(BankAlert).filter_by(account_hmac=hm).first()
+            dl = db.query(BankDelivery).filter_by(alert_id=al.id).first() if al else None
+            prov_hit = sorted({stations[r.station_id].province for r in reps if r.id in rids})
+            mules.append({"account": acc_info[hm][0], "bank": acc_info[hm][1], "reports": len(rids), "provinces": prov_hit,
+                          "bank_connected": bool(dl), "bank_status": (dl.bank_status if dl else None),
+                          "bank_note": (dl.bank_note if dl else None)})
+        types = Counter(r.scam_type for r in reps if r.scam_type)
+        dates = sorted(r.created_at for r in reps)
+        top = types.most_common(1)[0][0] if types else None
+        syndicates.append({
+            "anchor": sorted(mine or reps, key=lambda r: r.created_at)[-1].reference if (mine or full) else None,
+            "label": TYPE_LABEL.get(top or "", "Scam") + " network",
+            "scam_type": top, "victims": len(reps), "your_victims": len(mine),
+            "stations": len(rows), "provinces": [{"province": k, **v} for k, v in sorted(provinces.items())],
+            "total_amount": sum(r.amount_paid or 0 for r in reps) if full else None,
+            "your_amount": sum(r.amount_paid or 0 for r in mine),
+            "first": dates[0].date().isoformat(), "last": dates[-1].date().isoformat(),
+            "jurisdictions": sorted(rows, key=lambda x: (x["province"], -x["victims"])),
+            "lead": {"code": lead["code"], "station": lead["station"], "province": lead["province"],
+                     "victims": lead["victims"], "first": lead["first"]},
+            "mules": mules, "phones": len(kinds["phone"]), "websites": len(kinds["domain"]),
+            "scripted": any(r.script_text for r in reps)})
+    syndicates.sort(key=lambda s: (-s["stations"], -(sum(j["amount"] or 0 for j in s["jurisdictions"])), s["first"]))
+    for n, s in enumerate(syndicates):
+        s["code"] = "SYN-" + chr(65 + n) if n < 26 else f"SYN-{n + 1}"
+    # national picture: every province, its demo stations and their jurisdictions, with report counts
+    counts = dict(db.query(Report.station_id, func.count()).group_by(Report.station_id).all())
+    linked_ids = {i for c in _components(db) for i in c}
+    linked = Counter(sid for (rid, sid) in db.query(Report.id, Report.station_id).all() if rid in linked_ids)
+    code_to_id = {s.code: s.id for s in stations.values()}
+    nat = []
+    for prov in jurisdictions():
+        sts = []
+        for s in prov["stations"]:
+            sid = code_to_id.get(s["code"])
+            sts.append({**s, "reports": counts.get(sid, 0), "linked": linked.get(sid, 0),
+                        "own": bool(sid and sid in (p.station_ids or set()))})
+        nat.append({"province": prov["province"], "stations": sts, "station_count": len(sts),
+                    "towns": sum(len(s["towns"]) for s in sts), "reports": sum(s["reports"] for s in sts),
+                    "linked": sum(s["linked"] for s in sts)})
+    return {"full": full, "syndicates": syndicates, "provinces": nat,
+            "totals": {"syndicates": len(syndicates), "victims": sum(s["victims"] for s in syndicates),
+                       "stations": len({j["code"] for s in syndicates for j in s["jurisdictions"]}),
+                       "provinces": len({pr["province"] for s in syndicates for pr in s["provinces"]}),
+                       "amount": sum(s["total_amount"] or 0 for s in syndicates) if full else None},
+            "note": "Demo stations and jurisdictions are fictional, not SAPS precinct boundaries. A link is an "
+                    "investigative lead, not proof: an account may belong to a money mule or a compromised holder."}

@@ -13,8 +13,8 @@ WEB = pathlib.Path(__file__).resolve().parent.parent / "ubufakazi_server" / "web
 BRAND_SVG = ('<svg viewBox="0 0 32 32" aria-hidden="true"><path d="M16 3l10 4v8.2c0 6.6-4.3 11.3-10 13.8C10.3 26.5 6 21.8 6 15.2V7z"/>'
              '<path d="M11 17.2c.5-3.2 2.5-5.4 5-5.4s4.5 2.2 5 5.4"/><path d="M13.2 20.6c0-2.6 1.2-4.4 2.8-4.4s2.8 1.8 2.8 4.4"/>'
              '<path d="M16 19.4v4.2"/></svg>')
-NAV = [("/", "Home"), ("/report", "Report a Scam"), ("/track", "Track a Case"), ("/share", "Share a Warning"),
-       ("/resources", "Resources"), ("/about", "About")]
+NAV = [("/", "Home"), ("/police#/board", "For SAPS"), ("/bank", "For Banks"), ("/report", "Report a Scam"),
+       ("/track", "Track a Case"), ("/about", "About")]
 GITHUB = "https://github.com/Don4chnge/ubufakazi"
 
 
@@ -24,7 +24,7 @@ def header(active: str, quick_exit: bool = False) -> str:
                 'title="Leave this page immediately (Shift+Esc)">Quick exit</button>') if quick_exit else ""
     return f'''<a class="skip" href="#main">Skip to content</a>
 <header class="topbar">
-  <a class="brand" href="/" aria-label="Ubufakazi home">{BRAND_SVG}<span class="brand-text"><b>Ubufakazi</b><small>Evidence. Justice. Safer communities.</small></span></a>
+  <a class="brand" href="/" aria-label="Ubufakazi home">{BRAND_SVG}<span class="brand-text"><b>Ubufakazi</b><small>Scam-syndicate forensics for SAPS &amp; banks</small></span></a>
   <nav class="pubnav" id="pubnav" aria-label="Main">{links}</nav>
   <span class="spacer"></span>
   <div class="nav-actions">
@@ -39,12 +39,12 @@ def header(active: str, quick_exit: bool = False) -> str:
 FOOTER = f'''<footer class="site-foot">
   <div class="in">
     <div>
-      <a class="brand" href="/">{BRAND_SVG}<span class="brand-text"><b>Ubufakazi</b><small>Evidence. Justice. Safer communities.</small></span></a>
-      <p class="muted small foot-blurb">Helps scam victims in South Africa preserve evidence, prepare a case pack for the police station and connect reports about the same scammer.</p>
+      <a class="brand" href="/">{BRAND_SVG}<span class="brand-text"><b>Ubufakazi</b><small>Scam-syndicate forensics for SAPS &amp; banks</small></span></a>
+      <p class="muted small foot-blurb">Digital forensics for SAPS and banks: tamper-evident scam evidence, routed by station jurisdiction and linked into syndicates across provinces.</p>
       <div class="social"><a href="{GITHUB}" target="_blank" rel="noopener" aria-label="Source code on GitHub"><svg viewBox="0 0 24 24"><path d="M12 .5a11.5 11.5 0 0 0-3.64 22.41c.58.1.79-.25.79-.56v-2c-3.2.7-3.88-1.37-3.88-1.37-.52-1.33-1.28-1.69-1.28-1.69-1.05-.71.08-.7.08-.7 1.16.08 1.77 1.19 1.77 1.19 1.03 1.77 2.7 1.26 3.36.96.1-.75.4-1.26.73-1.55-2.55-.29-5.24-1.28-5.24-5.69 0-1.26.45-2.29 1.19-3.1-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.17 1.18a11 11 0 0 1 5.78 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.76.11 3.05.74.81 1.19 1.84 1.19 3.1 0 4.42-2.7 5.39-5.26 5.68.41.36.78 1.06.78 2.14v3.17c0 .31.21.67.8.56A11.5 11.5 0 0 0 12 .5z"/></svg></a></div>
     </div>
-    <div><h4>For victims</h4><ul><li><a href="/report">Report a scam</a></li><li><a href="/track">Track a case</a></li><li><a href="/share">Share a warning</a></li><li><a href="/verify">Verify a file</a></li><li><a href="/resources">Get help now</a></li></ul></div>
-    <div><h4>For investigators</h4><ul><li><a href="/police">Investigator dashboard</a></li><li><a href="/bank">Ubuntu Trust Bank (fictional)</a></li><li><a href="/integrations">System status</a></li></ul></div>
+    <div><h4>For victims (free)</h4><ul><li><a href="/report">Report a scam</a></li><li><a href="/track">Track a case</a></li><li><a href="/verify">Verify a file</a></li><li><a href="/demo-kit/samples/">Sample evidence</a></li></ul></div>
+    <div><h4>For SAPS &amp; banks</h4><ul><li><a href="/police#/board">Syndicate jurisdiction board</a></li><li><a href="/police">Investigator dashboard</a></li><li><a href="/bank">Ubuntu Trust Bank (fictional)</a></li><li><a href="/integrations">System status</a></li></ul></div>
     <div><h4>Project</h4><ul><li><a href="/about">About Ubufakazi</a></li><li><a href="{GITHUB}" target="_blank" rel="noopener">Source code</a></li><li><a href="/privacy">Privacy &amp; data deletion</a></li><li><a href="/mvp">Original MVP (offline)</a></li></ul></div>
   </div>
   <div class="legal"><span>Demonstration prototype by Team CyberThreat · HackSecure 2026. Fictional stations, fictional bank and synthetic data.</span><span>Not affiliated with SAPS or any bank. In danger now? Call 10111.</span></div>
@@ -85,10 +85,10 @@ SIMPLE = '''<main class="public" id="main">
 
 PAGES = {
     "report.html": dict(path="/report", title="Report a scam · Ubufakazi", quick_exit=True, scripts=["share.js", "report.js"],
-        desc="Report a scam or crime, attach evidence, and get a draft statement and case pack to take to the police station.",
+        desc="Report an online scam or banking fraud, attach evidence, and get a case pack routed to the station jurisdiction where it happened.",
         body=SIMPLE.format(kicker="Step 1 · Collect", h1="Tell us what <span class=\"grad\">happened</span>",
-            lead="Ubufakazi organises your evidence, fingerprints every file and prepares a draft statement and case pack for you to take to a police station. It is a demonstration: it is not SAPS and it does not open a case.",
-            pre='<div class="notice"><b>In danger right now?</b>&nbsp;Call 10111. Gender-based violence: GBV Command Centre 0800 428 428 (free, 24 hours).</div>\n  <p class="hint">No real evidence to test with? Use the <a href="/demo-kit/samples/">sample evidence kit</a>: fictional chats, screenshots, PDFs, voice notes and videos for every category.</p>\n  <p class="hint">Prefer chatting? The same report can be made on Telegram or WhatsApp when those are connected (see <a href="/integrations">System status</a>).</p>\n  ')),
+            lead="Report an online scam or banking fraud. Ubufakazi fingerprints every file, prepares a case pack and sends the report to the demo station whose jurisdiction covers where you were scammed. If the scammer's account, number or script matches other reports, investigators see the syndicate. It is a demonstration: it is not SAPS and it does not open a case.",
+            pre='<div class="notice info"><b>Lost money just now?</b>&nbsp;Call your bank\'s fraud line first: the faster the bank acts, the more likely the money can be stopped.</div>\n  <p class="hint">No real evidence to test with? Use the <a href="/demo-kit/samples/">sample evidence kit</a>: fictional scam and banking-fraud chats, screenshots, PDFs, voice notes and videos, each linked to a demo syndicate.</p>\n  <p class="hint">Prefer chatting? The same report can be made on Telegram or WhatsApp when those are connected (see <a href="/integrations">System status</a>).</p>\n  ')),
     "track.html": dict(path="/track", title="Track a case · Ubufakazi", scripts=["share.js", "track.js"],
         desc="Check the progress of your Ubufakazi report, see your evidence fingerprints, download your case pack and share a warning.",
         body=SIMPLE.format(kicker="Track", h1="Track your <span class=\"grad\">case</span>",
@@ -118,9 +118,9 @@ PAGES = {
         desc="Private helper for the demonstration accounts. Runs in your browser only.",
         body=SIMPLE.format(kicker="Team helper", h1="Demo <span class=\"grad\">logins</span>",
             lead="For Team CyberThreat: shows the demonstration accounts' passwords and live two-factor codes from the secret seed. Calculated in your browser; nothing leaves this device.", pre="")),
-    "home.html": dict(path="/", title="Ubufakazi · Turn digital evidence into real justice", scripts=["land.js", "globe.js", "share.js", "home.js"],
+    "home.html": dict(path="/", title="Ubufakazi · Scam-syndicate forensics for SAPS and banks", scripts=["land.js", "globe.js", "share.js", "home.js"],
         extra_css=["home.css"],
-        desc="Ubufakazi helps scam victims in South Africa preserve digital evidence, prepare a case pack for the police and connect reports about the same scammer.",
+        desc="Ubufakazi turns scam evidence into tamper-evident case files, routes them by station jurisdiction and links syndicates across provinces for SAPS and banks.",
         body=open(pathlib.Path(__file__).with_name("home_body.html"), encoding="utf-8").read() if pathlib.Path(__file__).with_name("home_body.html").exists() else ""),
 }
 

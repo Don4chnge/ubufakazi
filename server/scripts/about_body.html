@@ -2,14 +2,24 @@
   <div class="page-hero">
     <div class="kicker">About Ubufakazi</div>
     <h1>Ubufakazi means <span class="grad">evidence</span></h1>
-    <p class="lead-in">In isiZulu, <i>ubufakazi</i> means evidence or testimony. Scam victims often arrive at the police station with a phone full of chats and no case. We help them arrive with a case file.</p>
+    <p class="lead-in">In isiZulu, <i>ubufakazi</i> means evidence or testimony. Ubufakazi is a digital-forensics tool for SAPS and banks: it turns scam victims' evidence into tamper-evident case files and links them across station jurisdictions, so investigators see the syndicate and banks can freeze the mule account.</p>
   </div>
 
   <div class="grid3">
-    <section class="panel reveal"><div class="kicker">The problem</div><h3>One report gets ignored</h3><p class="muted">Most scam victims never report it, and when they do, each report is handled alone. Seven reports about the same account is a syndicate. One report is "your word against theirs".</p></section>
+    <section class="panel reveal"><div class="kicker">The problem</div><h3>One syndicate, many dockets</h3><p class="muted">A syndicate scams victims in many provinces. Each victim opens a small docket at their own station, so no single station sees the network, and the mule account stays open.</p></section>
     <section class="panel reveal"><div class="kicker">What we do</div><h3>Evidence that holds up</h3><p class="muted">Every file is fingerprinted with SHA-256 the moment it arrives and kept read-only. Facts are extracted, a timeline built, and a draft statement written in the victim's language.</p></section>
-    <section class="panel reveal"><div class="kicker">Why it matters</div><h3>Seven victims is a case</h3><p class="muted">When reports share a bank account, phone number, website or message script, investigators see a possible connection, with the reason shown.</p></section>
+    <section class="panel reveal"><div class="kicker">Why it matters</div><h3>Ten victims is a syndicate case</h3><p class="muted">When reports in different jurisdictions share a mule account, phone number, website or message script, the syndicate board shows the stations involved, a suggested lead station and the bank's decision.</p></section>
   </div>
+
+  <h2 class="section-title" id="model">Who it serves and who pays</h2>
+  <div class="grid3">
+    <section class="panel reveal"><div class="kicker">SAPS</div><h3>Investigators</h3><p class="muted">Structured, tamper-evident cases linked to the same scammer across station jurisdictions, even when phone numbers change.</p></section>
+    <section class="panel reveal"><div class="kicker">Banks · paying customers</div><h3>Fraud teams</h3><p class="muted">Banks and fintechs subscribe to syndicate alerts and a fraud-report API: early warning when many victims paid the same mule account, while it can still be frozen.</p></section>
+    <section class="panel reveal"><div class="kicker">Funding the free service</div><h3>Insurers, grants, CSI</h3><p class="muted">Insurers can licence data for scam claims. Grants, CSI and sponsors fund the free victim reporting that feeds the evidence.</p></section>
+  </div>
+
+  <h2 class="section-title" id="jurisdiction">Jurisdiction routing</h2>
+  <section class="panel reveal"><p class="muted">Every report goes to the demo station whose jurisdiction covers the town where the victim was scammed (each province has three or four demo stations, each covering its own towns). If the town is unknown, the province's default station receives it. The demo stations and their jurisdictions are fictional, not official SAPS precinct boundaries; a real deployment would use SAPS's own boundaries.</p></section>
 
   <h2 class="section-title" id="how">How linking works</h2>
   <section class="panel reveal">
@@ -35,16 +45,16 @@
   <h2 class="section-title">Privacy and safety</h2>
   <div class="grid3">
     <section class="panel reveal"><h3>Station-isolated</h3><p class="muted">Officers see only their own station's reports. Other stations' reports appear as "restricted", with no details.</p></section>
-    <section class="panel reveal"><h3>No ID, no GPS</h3><p class="muted">We never ask for ID numbers. Location is optional and rounded to about 1 km. Abuse reports start with a safety check and a quick exit.</p></section>
+    <section class="panel reveal"><h3>No ID, no GPS</h3><p class="muted">We never ask for ID numbers. Location is optional and rounded to about 1 km. Banks receive account-level alerts only, never victims' names or statements.</p></section>
     <section class="panel reveal"><h3>Audited</h3><p class="muted">Every view, download, verification and status change is written to a hash-chained audit log, so changes to history are detectable.</p></section>
   </div>
 
   <h2 class="section-title">What Ubufakazi is not</h2>
   <section class="panel reveal">
     <ul class="checks">
-      <li>Not SAPS, and not connected to SAPS or any bank. No CAS numbers are issued: the case is registered when you visit a police station.</li>
+      <li>Not SAPS, and not connected to SAPS or any real bank. No CAS numbers are issued: an officer enters the CAS number when the case is registered, and it is not checked with SAPS.</li>
       <li>Not proof of guilt. Automatic extraction can miss or misread details; officers must check every fact against the original files.</li>
-      <li>Not tamper-proof. It makes changes detectable. Trusted third-party timestamps are not configured in this demo.</li>
+      <li>Not tamper-proof. It makes changes detectable: SHA-256 fingerprints plus independent RFC 3161 timestamps from FreeTSA.</li>
       <li>A demonstration: stations, the bank (Ubuntu Trust Bank) and earlier reports are fictional, synthetic data.</li>
     </ul>
   </section>

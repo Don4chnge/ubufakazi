@@ -104,24 +104,9 @@ class TestA_Chatbot:
         c, outs = run_conversation(LERATO_STEPS[:14] + ["9001015009087"])
         assert "don't send an ID number" in outs[-1].text and "name" not in c.data
 
-    def test_abuse_path_is_safety_first_and_asks_before_sending_pack(self, env):
-        c, outs = run_conversation(["/start", "isiZulu", "Physical abuse / domestic violence"])
-        assert "are you safe" in outs[-1].text.lower()
-        c, outs = run_conversation(["I'm not safe / not sure"], c)
-        assert "10111" in outs[-1].text and "0800 428 428" in outs[-1].text and "/stop" in outs[-1].text
-        c, outs = run_conversation(["Continue my report", "Gauteng", "Soweto", "Skip", "yesterday",
-                                    "My partner hit me and threatened me again last night.", "Done",
-                                    "Prefer not to say", "Skip", "Looks right, continue", "I agree, submit"], c)
-        types = [o.action["type"] for o in outs if o.action]
-        assert "submitted" in types and "ask_send_pack" in types and "send_pack" not in types
-        sub = next(o.action for o in outs if o.action and o.action["type"] == "submitted")
-        assert sub["sensitive"] is True
-        from ubufakazi_server.db import SessionLocal
-        from ubufakazi_server.models import Report
-        db = SessionLocal()
-        r = db.query(Report).filter_by(reference=sub["reference"]).one()
-        assert r.safety == {"unsafe": True} and r.station.code == "JHB" and r.language == "zu"
-        db.close()
+    def test_only_scam_and_banking_fraud_are_offered(self, env):
+        c, outs = run_conversation(["/start", "English"])
+        assert outs[-1].options == ["Online scam / fraudulent job offer", "Digital banking fraud / suspicious payment"]
 
 
 # ====================================================================== B
@@ -503,7 +488,7 @@ class TestG_WebsiteAndPublic:
 
     def test_home_is_the_platform_and_mvp_is_separate(self, client):
         home = client.get("/").text
-        assert "Turn digital evidence into" in home and 'id="globe"' in home and "Build a case file" not in home
+        assert "One syndicate. Many dockets." in home and 'id="globe"' in home and "Build a case file" not in home
         assert "Build a case file" in client.get("/mvp").text
 
     def test_public_stats_are_aggregates_only(self, client):

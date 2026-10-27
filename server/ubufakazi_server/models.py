@@ -87,15 +87,15 @@ STATUS_LABELS = {
     "registered_at_station": "Registered at a police station",
     "closed": "Closed in Ubufakazi's workflow",
 }
+# Ubufakazi focuses on scam syndicates for SAPS and banks: only these two categories can be reported.
 CATEGORIES = {
     "scam": "Online scam / fraudulent job offer",
     "banking_fraud": "Digital banking fraud / suspicious payment",
-    "theft": "Theft or property incident",
-    "abuse": "Physical abuse / domestic violence",
-    "threats": "Threats or harassment",
-    "misconduct": "Suspected evidence tampering or misconduct",
-    "other": "Other reportable incident",
 }
+# Labels for categories that older records may still carry (no longer offered).
+CATEGORY_LABELS = {**CATEGORIES, "theft": "Theft or property incident", "abuse": "Physical abuse / domestic violence",
+                   "threats": "Threats or harassment", "misconduct": "Suspected evidence tampering or misconduct",
+                   "other": "Other reportable incident"}
 FINANCIAL_CATEGORIES = ("scam", "banking_fraud")
 
 

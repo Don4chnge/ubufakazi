@@ -25,7 +25,7 @@ from .casepack import build_case_pack
 from .config import SITE_DIR, WEB_DIR, get_settings
 from .db import get_db, init_db, write_lock
 from .extract import TYPE_LABEL, norm_phone, reg_domain
-from .models import (CATEGORIES, STATUS_LABELS, STATUSES, AuditEvent, BankAlert, EvidenceFile, Identifier, IntelMatch,
+from .models import (CATEGORIES, CATEGORY_LABELS, STATUS_LABELS, STATUSES, AuditEvent, BankAlert, EvidenceFile, Identifier, IntelMatch,
                      Note, Report, Station, StationHandover, StatusChange, User, utcnow)
 from .security import (Principal, clear_session_cookie, client_ip, create_session, current_principal, hash_password,
                        identifier_hmac, load_session, rate_limit, require_roles, set_session_cookie, verify_password,
@@ -305,7 +305,7 @@ def public_warning(body: TrackIn, request: Request, db: Session = Depends(get_db
     with write_lock:
         audit.record(db, "warning.prepared", actor="complainant", target_type="report", target_id=r.reference,
                      station_id=r.station_id, ip=client_ip(request))
-    return {"category": r.category, "category_label": CATEGORIES.get(r.category, r.category),
+    return {"category": r.category, "category_label": CATEGORY_LABELS.get(r.category, r.category),
             "scam_type": r.scam_type, "scam_type_label": TYPE_LABEL.get(r.scam_type or "", None),
             "red_flags": flags, "optional": {"websites": domains, "phones_masked": masked},
             "province": r.province}
@@ -466,7 +466,7 @@ def police_reports(status: str = "", category: str = "", station: str = "", q: s
         query = query.filter(Report.status == status)
     elif status == "open":
         query = query.filter(Report.status != "closed")
-    if category in CATEGORIES:
+    if category in CATEGORY_LABELS:
         query = query.filter(Report.category == category)
     if station:
         query = query.join(Report.station).filter_by(code=station[:12])
@@ -650,7 +650,7 @@ def handover_preview(reference: str, token: str, request: Request, p: Principal 
                      target_id=r.reference, station_id=r.station_id, ip=client_ip(request))
     mine = [{"id": st.id, "name": st.name} for st in (db.query(Station).order_by(Station.name).all() if p.is_admin
                                                       else p.user.stations)]
-    return {"reference": r.reference, "category_label": CATEGORIES.get(r.category, r.category),
+    return {"reference": r.reference, "category_label": CATEGORY_LABELS.get(r.category, r.category),
             "received": r.created_at.isoformat() + "Z", "routed_station": r.station.name,
             "routed_station_id": r.station_id, "complainant_name": r.complainant_name,
             "town": r.town, "province": r.province, "evidence_count": len(r.evidence),
@@ -793,6 +793,11 @@ def report_audit(reference: str, p: Principal = Depends(officer), db: Session = 
 @app.get("/api/police/intel/clusters")
 def intel_clusters(p: Principal = Depends(officer), db: Session = Depends(get_db)):
     return police.clusters(db, p)
+
+
+@app.get("/api/police/intel/board")
+def police_board(p: Principal = Depends(officer), db: Session = Depends(get_db)):
+    return police.board(db, p)
 
 
 @app.get("/api/police/audit/verify")

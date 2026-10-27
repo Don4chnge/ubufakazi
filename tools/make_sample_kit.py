@@ -1,9 +1,9 @@
-"""Builds the Ubufakazi SAMPLE evidence kit: fictional evidence for every report category, in every format the
+"""Builds the Ubufakazi SAMPLE evidence kit: fictional scam and banking-fraud evidence, in every format the
 system accepts (WhatsApp chat exports, screenshots, PDFs, MP3 voice notes and MP4 videos).
 
 Everything is invented. People, numbers, accounts and websites are made up; "Ubuntu Trust Bank" is a fictional bank;
 every image, PDF and video is marked SAMPLE, and every voice note ends by saying it is a fictional sample.
-Nothing here depicts a real person or a real crime. Abuse and threat samples are deliberately non-graphic.
+Nothing here depicts a real person or a real crime. 
 
 Needs: Pillow, reportlab, ffmpeg and espeak-ng (voices). Playwright is optional (website screen recording).
 Run:   python3 tools/make_sample_kit.py
@@ -297,126 +297,62 @@ def cat_banking(d: pathlib.Path):
         "21/10/2026, 09:40 - Sizwe: Hello??\n", encoding="utf-8")
 
 
-@category("03-theft-property", "Theft or property incident",
-          "A laptop bag was taken from Ayanda's parked car. Evidence: a CCTV-style clip from the parking bay (a drawn "
-          "illustration), a photo of the broken window, proof of purchase of the laptop with its serial number, and a "
-          "list of what was taken. Report it in KwaZulu-Natal, Durban.")
-def cat_theft(d: pathlib.Path):
-    cctv_video(d / "parking-cctv-clip.mp4")
-
-    def car(dr):
-        dr.rounded_rectangle([200, 260, 1000, 640], 60, fill="#2C3A4B")
-        dr.rectangle([300, 300, 620, 470], fill="#7E8A97")
-        for i in range(14):
-            dr.line([460, 385, 300 + i * 23, 300 if i % 2 else 470], fill="#E8ECF0", width=3)
-        dr.ellipse([270, 600, 400, 730], fill="#111")
-        dr.ellipse([800, 600, 930, 730], fill="#111")
-        dr.text((300, 760), "broken rear window (drawn illustration)", font=font(34, True), fill="#16223A")
-    illustration(d / "broken-car-window-photo.jpg", "Photo · 20 Oct 2026 21:31 · Durban", car)
-    letter_pdf(d / "laptop-proof-of-purchase.pdf", "TechHub Stores (fictional)", "Tax invoice", [
-        ("Invoice", "TH-55821"), ("Date", "03 Mar 2026"), ("Customer", "A NAIDOO"),
-        ("Item", "Laptop 14-inch, model TH-Pro 5"), ("Serial number", "THP5-7Q2X-88410"), ("Price", "R12 999,00"),
-    ], ["Keep this invoice: the serial number helps police identify the laptop if it is recovered."], color="#0F5E57")
-    (d / "list-of-stolen-items.txt").write_text(
-        "Items taken from my car, 20 October 2026, about 21:14, parking bay at the shopping centre, Durban:\n"
-        "- Laptop (TH-Pro 5, serial THP5-7Q2X-88410), value R12 999\n"
-        "- Black laptop bag with charger, value about R650\n"
-        "- Work access card\n"
-        "The rear window was broken. Centre security has CCTV from camera 02.\n", encoding="utf-8")
-
-
-@category("04-abuse-domestic-violence", "Physical abuse / domestic violence",
-          "Non-graphic sample only. Thuli recorded what happened in her own words, kept the messages, and photographed "
-          "the damaged door. In a real situation, safety comes first: call 10111 or the GBV Command Centre on "
-          "0800 428 428. This category starts with a safety question and offers a quick exit.")
-def cat_abuse(d: pathlib.Path):
-    voice(d / "my-own-voice-memo.mp3", [("en-gb+f2",
-        "This is my own note, recorded on Saturday the eighteenth of October. Last night my partner came home angry, "
-        "shouted at me and pushed me against the wall in the passage. He broke the bedroom door when I locked myself in. "
-        "I left with the children and stayed with my sister. I want this written down in case I need it later.")])
-
-    def door(dr):
-        dr.rectangle([400, 120, 800, 840], fill="#A07A52")
-        dr.line([600, 240, 520, 520], fill="#3B2A1A", width=8)
-        dr.line([520, 520, 640, 700], fill="#3B2A1A", width=6)
-        dr.ellipse([760, 470, 784, 494], fill="#D4AF37")
-        dr.text((60, 420), "damaged bedroom door\n(drawn illustration)", font=font(32, True), fill="#16223A")
-    illustration(d / "damaged-door-photo.jpg", "Photo · 17 Oct 2026 23:40", door)
-    (d / "messages-from-partner.txt").write_text(
-        "17/10/2026, 22:58 - Partner: Where are you? Open this door now\n"
-        "17/10/2026, 23:05 - Partner: You think you can hide from me\n"
-        "18/10/2026, 07:30 - Partner: Come back home today or you will see what happens\n"
-        "18/10/2026, 07:31 - Thuli: I am safe at my sister. Please leave me alone\n", encoding="utf-8")
-
-
-@category("05-threats-harassment", "Threats or harassment",
-          "Bongani is being harassed online after a dispute. Evidence: a screenshot of comments from a fake profile, a "
-          "threatening voice note, and the WhatsApp messages. Non-graphic sample. Report it in Western Cape, Cape Town.")
-def cat_threats(d: pathlib.Path):
-    phone_screenshot(d / "harassing-comments-screenshot.png", "Comments", "on Bongani's post · 23 Oct 2026", [
-        ("in", "@cpt_truth_2026: Everyone, this guy is a thief. Don't buy from him.", "19:02"),
-        ("in", "@cpt_truth_2026: I know where you work in Bellville. See you soon.", "19:05"),
-        ("in", "@cpt_truth_2026: Delete your page or I will post your address.", "19:20"),
-        ("out", "Bongani: Please stop. I have reported this account.", "19:31"),
-    ], theme="social")
-    voice(d / "threatening-voice-note.mp3", [("en-us+m4",
-        "Bongani, you think you are clever reporting my account. I know where you work and I know your car. "
-        "Pay back the two thousand rand by Friday or you will regret it.")])
-    (d / "whatsapp-messages.txt").write_text(
-        "23/10/2026, 21:10 - +27 74 552 1093: You have until Friday to pay the R2 000\n"
-        "23/10/2026, 21:12 - +27 74 552 1093: I know your car, the white Polo\n"
-        "24/10/2026, 06:45 - Bongani: Who is this? Stop messaging me\n"
-        "24/10/2026, 06:50 - +27 74 552 1093: You will see who\n", encoding="utf-8")
-
-
-@category("06-evidence-tampering-misconduct", "Suspected evidence tampering or misconduct",
-          "Two copies of the same proof of payment: the original and an altered one where the amount was changed. "
-          "Upload both on the Verify page or in a report: their SHA-256 fingerprints differ, which is how tampering is "
-          "detected. Also a voice note in which someone asks for money to 'speed up' a case (fictional, no real station).")
-def cat_misconduct(d: pathlib.Path):
-    rows = [("Date", "16 Oct 2026, 11:05"), ("Beneficiary", "Pretoria Car Sales"), ("Account", "4471 2093 18"),
-            ("Reference", "DEPOSIT VW"), ("Transaction", "UTB-5P1X-7720")]
-    letter_pdf(d / "proof-of-payment-ORIGINAL.pdf", "Ubuntu Trust Bank", "Proof of payment",
-               rows[:1] + [("Amount", "R15 000,00")] + rows[1:], ["Status: Successful."])
-    letter_pdf(d / "proof-of-payment-ALTERED.pdf", "Ubuntu Trust Bank", "Proof of payment",
-               rows[:1] + [("Amount", "R1 500,00")] + rows[1:], ["Status: Successful."])
-    voice(d / "request-for-money-voice-note.mp3", [("en-gb+m2",
-        "Ja, about your case. These things take long, you know. If you want it to move faster, "
-        "bring something small for cold drinks when you come on Monday. Two hundred rand will help a lot.")])
-    (d / "what-happened.txt").write_text(
-        "I paid a R15 000 deposit for a car. The seller now shows a proof of payment that says R1 500 and says I still owe him.\n"
-        "My original proof of payment and his copy are both attached. They look the same except for the amount.\n"
-        "Separately, someone who said he works on my case asked me for money to make it go faster (voice note attached).\n",
-        encoding="utf-8")
-
-
-@category("07-other-incident", "Other reportable incident",
-          "Someone used Pieter's identity to open a store account. Evidence: the store's letter about an account he never "
-          "opened, an SMS about the new account, and his own voice note in Afrikaans. Report it in Free State, Bloemfontein.")
-def cat_other(d: pathlib.Path):
-    letter_pdf(d / "store-account-letter.pdf", "Karoo Furnishers (fictional)", "Welcome to your new store account", [
-        ("Account holder", "P VAN WYK"), ("Account number", "KF-0093-1186"), ("Opened", "09 Oct 2026, Bloemfontein branch"),
-        ("Credit limit", "R18 000,00"), ("First purchase", "R16 450,00 - lounge suite"),
-    ], ["Thank you for opening an account with us. Your first instalment of R1 120,00 is due on 1 November 2026."],
-        color="#5B3A1D")
-    phone_screenshot(d / "new-account-sms-screenshot.png", "Messages", "KAROO FURN", [
-        ("in", "Welcome to Karoo Furnishers! Your account KF-0093-1186 is open. First instalment R1 120 due 01/11.", "10:42"),
-        ("out", "I did not open any account with you. Who opened this?", "10:50"),
+@category("03-courier-fee-syndicate", "Online scam · SwiftParcel courier-fee syndicate",
+          "SwiftParcel courier-fee syndicate. Naledi paid a 'customs clearance fee' for a parcel that never existed. The same "
+          "SMS wording, website and receiving account appear in reports across several provinces. Choose 'Online scam', and "
+          "report it in Polokwane, Limpopo: watch the syndicate board light up a new jurisdiction.")
+def cat_parcel(d: pathlib.Path):
+    phone_screenshot(d / "swiftparcel-sms-screenshot.png", "Messages", "SWIFTPARCEL", [
+        ("in", "SwiftParcel: your parcel is held at our depot because customs duty is unpaid. Pay the clearance fee within "
+               "24 hours or the parcel will be returned. Pay securely on our clearance page and send proof of payment. "
+               "swiftparcel-clearance.online", "11:20"),
+        ("out", "How much is the fee?", "11:31"),
+        ("in", "R1 150. Pay to SwiftParcel Clearance, account 5530199012, then reply with proof. Contact 072 556 1190.", "11:33"),
     ])
-    voice(d / "my-voice-note-afrikaans.mp3", [("af",
-        "Hallo, dit is Pieter van Wyk. Ek het vandag 'n brief gekry oor 'n winkelrekening wat ek nooit oopgemaak het nie. "
-        "Iemand het my naam en my besonderhede gebruik. Ek wil dit aanmeld."),
-        ("en-gb", "In English: someone used my name and details to open a store account. I want to report it.")])
+    letter_pdf(d / "proof-of-payment-clearance-fee.pdf", "Fictional Bank B", "Proof of payment", [
+        ("Date", "22 Oct 2026 11:40"), ("From", "N MOLOI ...3307"), ("Beneficiary", "SwiftParcel Clearance"),
+        ("Beneficiary account", "5530199012"), ("Reference", "PARCEL-HOLD-7781"), ("Amount", "R1 150,00"),
+    ], ["Fictional bank. Sample document made for the Ubufakazi demonstration."], color="#22405E")
+    (d / "whatsapp-chat-swiftparcel.txt").write_text(
+        "22/10/2026, 11:35 - +27 72 556 1190: SwiftParcel: your parcel is held at our depot because customs duty is unpaid. "
+        "Pay the clearance fee within 24 hours or the parcel will be returned. Pay securely on our clearance page and send proof of payment.\n"
+        "22/10/2026, 11:41 - Naledi: I paid R1 150 to 5530199012. Proof attached.\n"
+        "22/10/2026, 12:10 - Naledi: When will my parcel be delivered?\n"
+        "23/10/2026, 08:02 - Naledi: Hello? The tracking link no longer opens.\n", encoding="utf-8")
+
+
+@category("04-crypto-doubling-syndicate", "Online scam · crypto doubling syndicate",
+          "Crypto 'doubling' investment syndicate. Thabo was promised ten times his money in 7 days and paid twice into the "
+          "same receiving account other victims named. Choose 'Online scam', and report it in Durban, KwaZulu-Natal.")
+def cat_invest(d: pathlib.Path):
+    phone_screenshot(d / "investment-platform-chat-screenshot.png", "WhatsApp", "Account Manager Grace", [
+        ("in", "Good day, invest today and receive ten times your money in 7 days with our crypto trading platform. "
+               "Returns are guaranteed and our account manager will guide you.", "19:02"),
+        ("in", "Register on doublemyrands-invest.site and pay your starter package to account 7718203345.", "19:04"),
+        ("out", "I paid R4 000. My dashboard shows R40 000 but I can't withdraw.", "21:15"),
+        ("in", "Withdrawals need an activation fee of R6 500 first.", "21:20"),
+    ])
+    letter_pdf(d / "proof-of-payment-starter-package.pdf", "Fictional Bank C", "Proof of payment", [
+        ("Date", "18 Oct 2026 19:30"), ("From", "T DLAMINI ...9014"), ("Beneficiary", "DMR Trading"),
+        ("Beneficiary account", "7718203345"), ("Reference", "STARTER-4000"), ("Amount", "R4 000,00"),
+    ], ["Fictional bank. Sample document made for the Ubufakazi demonstration."], color="#3A2B5E")
+    (d / "whatsapp-chat-investment.txt").write_text(
+        "18/10/2026, 19:02 - +27 79 331 2684: Good day, invest today and receive ten times your money in 7 days with our crypto "
+        "trading platform. Returns are guaranteed and our account manager will guide you. Register on the link below and send proof of payment.\n"
+        "18/10/2026, 19:04 - +27 79 331 2684: doublemyrands-invest.site . Pay to account 7718203345.\n"
+        "18/10/2026, 19:31 - Thabo: Paid R4 000.\n"
+        "21/10/2026, 21:20 - +27 79 331 2684: To withdraw you must first pay the activation fee of R6 500.\n"
+        "22/10/2026, 07:45 - Thabo: I want my R4 000 back.\n", encoding="utf-8")
 
 
 def readme_pdf(path: pathlib.Path) -> None:
     body = ["Every file in this kit is FICTIONAL and made for the Ubufakazi demonstration. People, phone numbers, "
-            "accounts and websites are invented. Ubuntu Trust Bank, TechHub Stores and Karoo Furnishers are not real.",
+            "accounts and websites are invented. Ubuntu Trust Bank and Fictional Banks B and C are not real.",
             "How to use: open ubufakazi.onrender.com/report (or the Telegram bot), choose the category that matches the "
             "folder, and attach the files from that folder. Voice notes (MP3) and videos (MP4) are accepted; with AI "
             "reading switched on, voice notes are transcribed and marked as unverified.",
-            "Abuse and threat samples are deliberately non-graphic. In a real emergency call 10111. Gender-based "
-            "violence: GBV Command Centre 0800 428 428."]
+            "Every sample is a scam or banking-fraud case: the two crime types Ubufakazi turns into syndicate "
+            "intelligence for SAPS and banks. Folders 01, 03 and 04 belong to fictional syndicates already in the demo data."]
     rows = [(f"{k[:2]}  {v[0]}", "") for k, v in CATEGORIES.items()]
     letter_pdf(path, "Ubufakazi sample evidence kit", "Read me first", rows, body, color="#0B1B2B")
 
@@ -441,12 +377,12 @@ def write_index() -> None:
 <link rel="stylesheet" href="/app/console.css"></head>
 <body><main class="public" id="main">
 <div class="page-hero"><div class="kicker">Demo · fictional</div><h1>Sample evidence kit</h1>
-<p class="lead-in">Fictional evidence for every report category: chats, screenshots, PDFs, voice notes (MP3) and videos (MP4).
-Use them on <a href="/report">Report a Scam</a> or with the Telegram bot. Everything is invented and marked SAMPLE.</p>
+<p class="lead-in">Fictional scam and banking-fraud evidence: chats, screenshots, PDFs, voice notes (MP3) and videos (MP4).
+Each folder says which town to report it in, so you can watch it link to a syndicate across jurisdictions. Use them on <a href="/report">Report a Scam</a> or with the Telegram bot. Everything is invented and marked SAMPLE.</p>
 <p><a class="btn btn-primary" href="../ubufakazi-sample-evidence-all-categories.zip" download>Download everything (ZIP)</a>
 <a class="btn btn-ghost" href="READ-ME-FIRST.pdf" download>Read me first (PDF)</a></p></div>
 <div class="stack">{''.join(sections)}</div>
-<p class="foot-note">In a real emergency call 10111. Gender-based violence: GBV Command Centre 0800 428 428.</p>
+<p class="foot-note">All files are fictional. Report real fraud to your bank immediately and at a SAPS station.</p>
 </main></body></html>
 """, encoding="utf-8")
 

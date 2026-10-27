@@ -10,7 +10,7 @@ import re
 from dataclasses import dataclass, field
 from typing import Callable
 
-from .models import CATEGORIES, FINANCIAL_CATEGORIES
+from .models import CATEGORIES, CATEGORY_LABELS, FINANCIAL_CATEGORIES
 from .stations import DEMO_STATIONS, PROVINCES, route, towns_by_province
 from .writing import LANG_NAMES
 from . import services
@@ -281,7 +281,7 @@ class Conversation:
         ev = f"{len(self.files)} file(s)" + (f" + {len(self.pasted)} pasted message block(s)" if self.pasted else "")
         lines = [
             "Please check your report:",
-            f"- What happened: {CATEGORIES[d['category']]}",
+            f"- What happened: {CATEGORY_LABELS.get(d['category'], d['category'])}",
             f"- Where: {d['town']}, {d['province']}",
             f"- Will be sent to: {d['station']} (fictional demo station)",
             f"- When: {d.get('when') or 'not sure'}",

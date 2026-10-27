@@ -26,21 +26,23 @@ ACTIONS = {   # action -> (new case status, new account status or None, message 
 }
 
 # Accounts named in the synthetic demo data and in the demo evidence kit, plus filler accounts.
-KNOWN = ["1047228359", "5530187264", "5530199012", "7718203345", "2290118476"]
+KNOWN = ["1047228359", "5530187264", "5530199012", "7718203345", "2290118476", "6230441802", "6230457719"]
 
 
 def seed_registry(db) -> int:
     """Creates the bank's fictional account register once (idempotent)."""
     from .models import UtbAccount
-    if db.query(UtbAccount).first():
-        return 0
     from .seed import _rows
     rng = random.Random(4242)
     # The fictional world is shared: accounts that the synthetic reports say are at this bank exist here too.
     synthetic = [a for row in _rows() if row["bank"] == NAME for a in row["acc"]]
-    numbers = list(dict.fromkeys(KNOWN + synthetic + ["".join(str(rng.randint(0, 9)) for _ in range(10))
-                                                      for _ in range(20)]))
-    for n, num in enumerate(numbers):
+    have = {n for (n,) in db.query(UtbAccount.number).all()}
+    filler = [] if have else ["".join(str(rng.randint(0, 9)) for _ in range(10)) for _ in range(20)]
+    numbers = [x for x in dict.fromkeys(KNOWN + synthetic + filler) if x not in have]
+    if not numbers:
+        return 0
+    start = len(have)
+    for n, num in enumerate(numbers, start):
         db.add(UtbAccount(number=num, customer_ref=f"UTB-C-{10421 + n * 7}",
                           product=rng.choice(["Everyday account", "Savings account", "Business account"]),
                           balance=round(rng.uniform(1500, 95000), 2),
