@@ -37,6 +37,18 @@
     return { password, secret: b32(sec), secretBytes: sec };
   }
 
+  // One-click sign-in: the normal password + two-factor login, done by this browser with the derived values.
+  // Nothing is bypassed; the server checks both exactly as on the login page.
+  const next = (() => { const n = new URLSearchParams(location.search).get("next") || ""; return /^\/(police|bank)(#\/[A-Za-z0-9/_-]*)?$/.test(n) ? n : ""; })();
+  function signInBtn(r) {
+    const dest = next || (r.u === "bank.reviewer" ? "/bank" : "/police");
+    const b = el("button", { class: "btn btn-primary btn-small", type: "button", onclick: async () => {
+      b.disabled = true;
+      try { await UBF.api("POST", "/api/auth/logout", {}).catch(() => {}); await UBF.signIn(r.u, r.password, await totp(r.secretBytes)); location.href = dest; }
+      catch (e) { toast(e.message, true); b.disabled = false; } } }, "Sign in");
+    return b;
+  }
+
   const app = document.getElementById("app");
   const seedIn = el("input", { type: "password", id: "seed", placeholder: "Paste UBF_DEMO_SEED from Render › Environment", autocomplete: "off", spellcheck: "false" });
   const out = el("div");
@@ -49,13 +61,14 @@
     const codeEls = [];
     const copy = (txt, what) => navigator.clipboard.writeText(txt).then(() => toast(what + " copied."));
     out.replaceChildren(el("div", { class: "table-wrap" }, el("table", { class: "data" },
-      el("thead", null, el("tr", null, ["Username", "Password", "Code now", "Authenticator setup key"].map((h) => el("th", null, h)))),
+      el("thead", null, el("tr", null, ["Username", "Password", "Code now", "", "Authenticator setup key"].map((h) => el("th", null, h)))),
       el("tbody", null, rows.map((r) => {
         const code = el("b", { class: "mono otp-now" }, "······"); codeEls.push([code, r.secretBytes]);
         return el("tr", null,
           el("td", null, el("span", { class: "ref" }, r.u), el("span", { class: "sub" }, r.role)),
           el("td", null, el("button", { class: "btn btn-ghost btn-small", type: "button", onclick: () => copy(r.password, "Password") }, r.password)),
           el("td", null, code),
+          el("td", null, signInBtn(r)),
           el("td", null, el("button", { class: "btn btn-ghost btn-small mono", type: "button", onclick: () => copy(r.secret, "Setup key") }, r.secret)));
       })))),
       el("p", { class: "hint" }, "Codes change every 30 seconds. Click a password or key to copy it. To use a phone instead: Google or Microsoft Authenticator › + › Enter a setup key › time-based."));

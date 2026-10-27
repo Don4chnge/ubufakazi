@@ -100,7 +100,8 @@ def _handover_box(r: Report, S):
         "Scanning it lets the officer open your Ubufakazi report <i>after</i> signing in with their own password and "
         "two-factor code, and accept the case at that station, even if it is not the station Ubufakazi suggested. "
         "It does not register the case by itself: the station registers it in its own system and gives you a CAS "
-        f"number.<br/><font size='7'>Reference {escape(r.reference)}. Keep this pack private.</font>", S["small"])
+        f"number.<br/><font size='7'>Reference {escape(r.reference)}. Keep this pack private. On a computer, the officer can "
+        f"also open <a href='{escape(handover.url_for(r.reference))}' color='#0A7C74'>this handover link</a>.</font>", S["small"])
     tb = Table([[d, text]], colWidths=[38 * mm, 136 * mm])
     tb.setStyle(TableStyle([("VALIGN", (0, 0), (-1, -1), "MIDDLE"), ("BOX", (0, 0), (-1, -1), 0.6, LINE),
                             ("LEFTPADDING", (0, 0), (-1, -1), 6), ("RIGHTPADDING", (0, 0), (-1, -1), 6),

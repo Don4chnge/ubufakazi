@@ -96,7 +96,7 @@ const UBF = (() => {
       e.preventDefault(); err.textContent = ""; btn.disabled = true;
       try {
         if (!mfa) {
-          const r = await api("POST", "/api/auth/login", { username: user.value.trim(), password: pass.value });
+          const r = await api("POST", "/api/auth/login", { username: user.value.trim(), password: pass.value.trim() });
           setCsrf(r.csrf);
           if (r.mfa_required) { mfa = true; step1.hidden = true; step2.hidden = false; btn.textContent = "Verify"; code.focus(); }
           else { setCsrf(r.me.csrf); onDone(r.me); }
@@ -139,5 +139,15 @@ const UBF = (() => {
   }
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", chrome); else chrome();
 
-  return { el, icon, api, setCsrf, toast, money, date, dateTime, size, download, sha256, loginForm, session, logout };
+  /** Signs in with a password and a two-factor code in one go (used by the demo-logins helper). */
+  async function signIn(username, password, code) {
+    const r = await api("POST", "/api/auth/login", { username, password });
+    setCsrf(r.csrf);
+    if (!r.mfa_required) return r.me;
+    const m = await api("POST", "/api/auth/mfa", { code });
+    setCsrf(m.me.csrf);
+    return m.me;
+  }
+
+  return { el, icon, api, setCsrf, toast, money, date, dateTime, size, download, sha256, loginForm, session, logout, signIn };
 })();

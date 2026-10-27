@@ -29,9 +29,12 @@
   async function boot() {
     me = await UBF.session();
     if (!me || !["admin", "officer"].includes(me.role)) {
-      if (me) { root.replaceChildren(el("div", { class: "public" }, el("div", { class: "notice" }, "This account cannot use the police console. ", el("a", { href: "/bank-demo" }, "Open the bank demo")))); showWho(); return; }
+      if (me) { root.replaceChildren(el("div", { class: "public" }, el("div", { class: "notice" }, "This account cannot use the police console. ", el("a", { href: "/bank" }, "Open Ubuntu Trust Bank")))); showWho(); return; }
       UBF.loginForm(root, { title: "Police console", subtitle: "Signed-in officers see reports for their own station only. Two-factor code required.",
         onDone: (m) => { me = m; start(); } });
+      const panel = root.querySelector(".login");
+      if (panel) panel.appendChild(el("p", { class: "hint" }, "Demo team: ", el("a", { href: "/demo-logins?next=" + encodeURIComponent("/police" + location.hash) }, "sign in with the demo-logins helper"),
+        location.hash.startsWith("#/handover/") ? " (you will come straight back to this handover)." : "."));
       return;
     }
     start();

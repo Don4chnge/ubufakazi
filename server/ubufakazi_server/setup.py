@@ -90,7 +90,14 @@ def main(argv=None) -> int:
     with write_lock, session_scope() as db:
         stations = seed.seed_stations(db)
         for username, display, role, codes in USERS:
-            if db.query(User).filter_by(username=username).first():
+            existing = db.query(User).filter_by(username=username).first()
+            if existing:
+                if s.demo_seed:      # demo accounts always follow the seed: changing UBF_DEMO_SEED rotates them
+                    from .security import verify_password
+                    pw = password_for(s.demo_seed, username)
+                    if not verify_password(existing.password_hash, pw):
+                        existing.password_hash = hash_password(pw)
+                    existing.totp_secret = totp_secret_for(s.demo_seed, username)
                 continue
             if s.demo_seed:
                 pw, secret = password_for(s.demo_seed, username), totp_secret_for(s.demo_seed, username)
