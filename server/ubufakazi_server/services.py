@@ -8,6 +8,7 @@ from __future__ import annotations
 
 import datetime as dt
 import logging
+import threading
 import re
 import secrets
 from concurrent.futures import ThreadPoolExecutor
@@ -35,6 +36,7 @@ CONSENT_TEXT = (
 )
 REF_ALPHABET = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789"
 LANGS = tuple(LANG_NAMES)
+_ai_retried: set[int] = set()
 SYNC_PROCESSING = False          # tests set this to True
 _executor = ThreadPoolExecutor(max_workers=1, thread_name_prefix="ubf-process")
 
@@ -227,8 +229,25 @@ def _facts(analysis: dict, scam_type: str, extra_sources: dict) -> dict:
     }
 
 
+def track_url() -> str:
+    from .config import get_settings
+    return get_settings().public_base_url + "/track"
+
+
+_proc_locks: dict[int, threading.Lock] = {}
+_proc_guard = threading.Lock()
+
+
 def process_report(report_id: int) -> None:
-    """Run the processing pipeline for one report. Safe to re-run: originals are never touched."""
+    """Run the processing pipeline for one report. Safe to re-run: originals are never touched.
+    Two runs for the same report (e.g. background processing and a Telegram /pack) never overlap."""
+    with _proc_guard:
+        lock = _proc_locks.setdefault(report_id, threading.Lock())
+    with lock:
+        _process_report(report_id)
+
+
+def _process_report(report_id: int) -> None:
     with write_lock, session_scope() as db:
         r = db.get(Report, report_id)
         if r is None:
@@ -238,7 +257,9 @@ def process_report(report_id: int) -> None:
         db.add(job)
         db.flush()
         job_id = job.id
-        todo = [(ev.id, ev.uid, ev.sha256, ev.detected_type) for ev in r.evidence if not ev.derivatives]
+        # New files, plus files whose AI reading failed earlier (a re-run retries them).
+        todo = [(ev.id, ev.uid, ev.sha256, ev.detected_type) for ev in r.evidence
+                if not ev.derivatives or all(d.kind == "not-processed" for d in ev.derivatives)]
         to_stamp = [(ev.id, ev.sha256) for ev in r.evidence if not ev.trusted_timestamp]
     try:
         derived = {ev_id: _derive_rows(uid, sha, typ) for ev_id, uid, sha, typ in todo}   # slow part, no lock held
@@ -246,6 +267,9 @@ def process_report(report_id: int) -> None:
         with write_lock, session_scope() as db:
             r = db.get(Report, report_id)
             for ev in r.evidence:
+                if ev.id in derived:
+                    for old_d in [d for d in ev.derivatives if d.kind == "not-processed"]:
+                        ev.derivatives.remove(old_d)      # derived material only; the original is never touched
                 for d in derived.get(ev.id, []):
                     ev.derivatives.append(EvidenceDerivative(**d))
                 if stamps.get(ev.id) and not ev.trusted_timestamp:
@@ -265,6 +289,10 @@ def process_report(report_id: int) -> None:
             audit.record(db, "report.processed", actor="system", target_type="report", target_id=r.reference,
                          station_id=r.station_id, detail={"identifiers": len(r.identifiers), "evidence": len(r.evidence)})
         banklink.run_later(banklink.deliver_for_report, report_id)     # tell the connected bank (fictional)
+        failed = any(d["kind"] == "not-processed" and d["method"].startswith("gemini") for rows in derived.values() for d in rows)
+        if failed and report_id not in _ai_retried and not SYNC_PROCESSING:
+            _ai_retried.add(report_id)                                  # one automatic retry, two minutes later
+            threading.Timer(120, enqueue, args=(report_id,)).start()
     except Exception as e:
         log.exception("processing failed for report %s", report_id)
         with write_lock, session_scope() as db:

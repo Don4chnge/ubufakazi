@@ -59,7 +59,14 @@ def build_application(token: str):
         return ReplyKeyboardMarkup(rows, resize_keyboard=True, one_time_keyboard=True)
 
     async def send_pack(update: Update, report_id: int, reference: str):
-        await asyncio.to_thread(services.process_report, report_id)
+        await update.effective_chat.send_action("upload_document")
+        db = SessionLocal()
+        try:
+            ready = db.get(Report, report_id).processing_status == "ready"
+        finally:
+            db.close()
+        if not ready:
+            await asyncio.to_thread(services.process_report, report_id)
         db = SessionLocal()
         try:
             r = db.get(Report, report_id)
@@ -100,7 +107,8 @@ def build_application(token: str):
                 if rid:
                     await send_pack(update, rid, a["reference"])
             elif a.get("type") == "submitted" and a.get("sensitive"):
-                await asyncio.to_thread(services.process_report, a["id"])
+                # Ask about the PDF straight away; prepare the report in the background meanwhile.
+                asyncio.get_running_loop().run_in_executor(None, services.process_report, a["id"])
 
     async def on_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
         msg = update.effective_message

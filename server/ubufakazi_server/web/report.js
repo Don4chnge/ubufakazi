@@ -169,8 +169,10 @@
         }
         if (t.processing_status === "error") { packBtn.textContent = "Could not prepare the pack automatically. Your report is safe."; return; }
       } catch (_) { /* try again */ }
-      if (tries < 40) setTimeout(poll, 1500);
-      else packBtn.textContent = "Still preparing: use the Track page later.";
+      if (tries > 8) packBtn.textContent = "Reading your evidence (voice notes and screenshots can take a minute or two)…";
+      if (tries < 140) setTimeout(poll, tries < 20 ? 1500 : 3000);
+      else { packBtn.textContent = "Still preparing. Open the Track page later with your reference and key.";
+             stack.append(el("p", null, el("a", { class: "btn btn-ghost", href: "/track" }, "Open the Track page"))); }
     };
     setTimeout(poll, 800);
   }

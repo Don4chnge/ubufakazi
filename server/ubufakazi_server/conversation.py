@@ -64,6 +64,10 @@ class Conversation:
             return [Out(self._help())]
         if low == "/status":
             return [Out(self._status_text())]
+        if low in ("/pack", "/pdf", "pdf", "case pack", "send pdf", "send the pdf") and self.submitted \
+                and self.step in ("submitted", "pack_choice", "new"):
+            self.step = "submitted"
+            return [Out("Preparing your case pack (PDF)…", action={"type": "send_pack", "reference": self.submitted[-1]})]
         if self.step in ("new", "submitted"):
             if self.step == "submitted":
                 return [Out(f"Your report {self.submitted[-1]} has been submitted. Send /new to report something else, "
@@ -97,6 +101,7 @@ class Conversation:
 
     def _help(self) -> str:
         return ("/new: start a report\n/stop: stop and clear the draft (quick exit)\n/status: see your submitted reports\n"
+                "/pack: get the case pack (PDF) of your last report\n"
                 "This is a demonstration service. It is not SAPS. " + EMERGENCY)
 
     def _status_text(self) -> str:
@@ -319,7 +324,8 @@ class Conversation:
         rejected = "".join(f"\nNot accepted: {x['name']} ({x['reason']})" for x in res.get("rejected", []))
         out = [Out(f"Report submitted.\n\nReference: {res['reference']}\nReceipt key: {res['receipt_key']}\n\n"
                    "Keep the receipt key private. With the reference it lets you check progress and download your case "
-                   "pack on the Ubufakazi Track page.\n"
+                   f"pack on the Ubufakazi Track page: {services.track_url()}\n"
+                   "Send /pack at any time to get the case pack (PDF) in this chat.\n"
                    f"Your report was sent to {res['station']} (a fictional demo station). No SAPS case number exists yet: "
                    "take your case pack to a police station to register the case." + rejected,
                    action={"type": "submitted", "id": res["id"], "reference": res["reference"],
@@ -332,7 +338,12 @@ class Conversation:
         return out
 
     def _on_pack_choice(self, t, file, loc):
-        self.step = "submitted"
-        if t.lower().startswith("yes") or t == "1":
-            return [Out("Preparing your case pack…", action={"type": "send_pack", "reference": self.submitted[-1]})]
-        return [Out("OK, I won't send it here. Use the Track page with your reference and receipt key when it's safe.")]
+        low = t.lower().strip()
+        if low.startswith(("yes", "send", "pdf", "ok", "please")) or low == "1":
+            self.step = "submitted"
+            return [Out("Preparing your case pack (PDF)…", action={"type": "send_pack", "reference": self.submitted[-1]})]
+        if low.startswith(("no", "don't", "dont", "not now")) or low == "2":
+            self.step = "submitted"
+            return [Out("OK, I won't send it here. When it's safe, send /pack to get it in this chat, or use the "
+                        "Track page with your reference and receipt key.")]
+        return [Out("Should I send your case pack (PDF) here? Tap 'Yes, send it' or 'No'.", ["Yes, send it", "No"])]

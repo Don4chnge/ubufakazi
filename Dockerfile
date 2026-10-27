@@ -3,7 +3,7 @@
 # On Railway/Render: mount a persistent volume at /data. Optional variables: UBF_DEMO_SEED, TELEGRAM_BOT_TOKEN,
 # GEMINI_API_KEY, UBF_PUBLIC_BASE_URL (https://... turns on Secure cookies).
 FROM python:3.12-slim
-ENV PYTHONDONTWRITEBYTECODE=1 PYTHONUNBUFFERED=1 UBF_DATA_DIR=/data
+ENV PYTHONDONTWRITEBYTECODE=1 PYTHONUNBUFFERED=1 UBF_DATA_DIR=/data PORT=8000
 WORKDIR /app
 COPY server/requirements.txt server/requirements.txt
 RUN pip install --no-cache-dir -r server/requirements.txt

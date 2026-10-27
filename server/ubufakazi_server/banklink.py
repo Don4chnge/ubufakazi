@@ -17,6 +17,7 @@ import hashlib
 import hmac
 import json
 import logging
+import os
 import threading
 import time
 
@@ -62,13 +63,21 @@ def verify(raw: bytes, header: str | None) -> bool:
     return hmac.compare_digest(expected, parts.get("v1", ""))
 
 
+def _local_base() -> str:
+    """The built-in fictional bank runs in this server: reach it over HTTP on the server's own port, so delivery
+    does not depend on the public address (which, during a deploy, may still point at the previous instance)."""
+    port = os.environ.get("PORT")
+    return f"http://127.0.0.1:{port}" if port else get_settings().public_base_url
+
+
 def api_url() -> str:
     s = get_settings()
-    return s.utb_api_url or f"{s.public_base_url}/utb/api/v1"
+    return s.utb_api_url or f"{_local_base()}/utb/api/v1"
 
 
 def callback_url() -> str:
-    return f"{get_settings().public_base_url}/api/bank-link/callback"
+    s = get_settings()
+    return f"{s.public_base_url if s.utb_api_url else _local_base()}/api/bank-link/callback"
 
 
 def _post(url: str, raw: bytes, headers: dict) -> tuple[int, dict]:
@@ -168,6 +177,18 @@ def deliver_for_report(report_id: int) -> None:
     except Exception as e:                                  # noqa: BLE001
         STATE["last_error"] = f"delivery failed ({type(e).__name__})"
         log.exception("bank delivery failed for report %s", report_id)
+
+
+def keep_delivering(first_delay: float = 20, every: float = 600) -> None:
+    """Background loop: deliver anything the bank has not received yet (after a deploy, after a network hiccup)."""
+    time.sleep(first_delay)
+    while True:
+        try:
+            deliver_pending()
+        except Exception as e:                              # noqa: BLE001
+            STATE["last_error"] = f"retry loop: {type(e).__name__}"
+            log.exception("bank delivery retry failed")
+        time.sleep(every)
 
 
 def deliver_pending() -> int:

@@ -8,6 +8,7 @@ import datetime as dt
 import json
 import os
 import re
+import threading
 from contextlib import asynccontextmanager
 from typing import Optional
 
@@ -56,7 +57,7 @@ async def lifespan(_app):
     get_settings().storage_dir.mkdir(parents=True, exist_ok=True)
     _bank_startup()
     if os.environ.get("UBF_RUN_BOT", "1") == "1":
-        banklink.run_later(banklink.deliver_pending)
+        threading.Thread(target=banklink.keep_delivering, daemon=True).start()
         await bot.start_bot()
         await whatsapp.check_connection()
     yield
