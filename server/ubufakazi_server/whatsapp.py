@@ -94,6 +94,8 @@ def status() -> dict:
         elif not STATE["webhook_calls"]:
             parts.append("No webhook calls from Meta since the last restart: check that the app is published and "
                          "subscribed to the 'messages' field.")
+        if STATE.get("sent"):
+            parts.append(f"Replies accepted by Meta: {STATE['sent']}; delivered to phones: {STATE.get('delivered', 0)}.")
         if STATE["error"]:
             parts.append(f"Last send problem: {STATE['error']}")
         return {"configured": True, "running": True, "phone": STATE["phone"], "name": STATE["name"],
@@ -175,6 +177,7 @@ async def _post_json(path: str, body: dict) -> dict | None:
         STATE["error"] = _meta_error(r)
         log.warning("WhatsApp send failed: %s", STATE["error"])
         return None
+    STATE["sent"] = STATE.get("sent", 0) + 1
     return r.json()
 
 
@@ -354,6 +357,17 @@ def messages_from(payload: dict) -> list[dict]:
             if (v.get("metadata") or {}).get("phone_number_id") != pid:
                 continue
             found.extend(m for m in v.get("messages") or [] if isinstance(m, dict))
+            for st in v.get("statuses") or []:            # delivery reports for messages WE sent
+                if not isinstance(st, dict):
+                    continue
+                if st.get("status") in ("delivered", "read"):
+                    STATE["delivered"] = STATE.get("delivered", 0) + 1
+                elif st.get("status") == "failed":
+                    err = (st.get("errors") or [{}])[0]
+                    detail = (err.get("error_data") or {}).get("details") or err.get("message") or err.get("title") or ""
+                    STATE["error"] = re.sub(r"\d{6,}", "[number hidden]",
+                                            f"Meta could not deliver a reply (error {err.get('code')}: {detail})")[:300]
+                    log.warning("WhatsApp delivery failed: %s", STATE["error"])
     return found
 
 
