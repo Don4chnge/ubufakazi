@@ -76,6 +76,8 @@
 
   function route() {
     const h = location.hash || "#/overview";
+    const ho = h.match(/^#\/handover\/([A-Z0-9-]{6,24})\/([a-f0-9]{24})$/);
+    if (ho) return showHandover(ho[1], ho[2]);
     const m = h.match(/^#\/report\/([A-Z0-9-]{6,24})(?:\/(\w+))?/);
     if (m) return showReport(m[1], m[2] || "overview");
     const n = h.match(/^#\/network(?:\/([A-Z0-9-]{6,24}))?/);
@@ -246,7 +248,7 @@
     try { r = await api("GET", "/api/police/reports/" + encodeURIComponent(ref)); }
     catch (e) { shell("queue", [backBtn(), el("div", { class: "empty" }, e.status === 404 ? "Report not found, or it belongs to another station." : e.message)]); return; }
 
-    const statusSel = el("select", { id: "st-sel", "aria-label": "New status" }, Object.entries(meta.statuses).map(([k, v]) => el("option", { value: k, selected: k === r.status ? true : null }, v)));
+    const statusSel = el("select", { id: "st-sel", "aria-label": "New status" }, Object.entries(meta.statuses).filter(([k]) => k !== "registered_at_station" || k === r.status).map(([k, v]) => el("option", { value: k, selected: k === r.status ? true : null }, v)));
     const statusNote = el("input", { type: "text", id: "st-note", placeholder: "Note for the record (optional)", maxlength: "1000" });
     const statusBtn = el("button", { class: "btn btn-primary btn-small", onclick: async () => {
       try { await api("POST", `/api/police/reports/${r.reference}/status`, { status: statusSel.value, note: statusNote.value }); toast("Status updated and recorded in the audit log."); refreshMeta(); showReport(ref, tab); }
@@ -310,6 +312,7 @@
           ids.length || f.total_paid ? facts : el("p", { class: "muted" }, "Nothing extracted automatically."),
           el("p", { class: "hint" }, f.method || ""))),
       el("div", null,
+        stationPanel(r),
         el("section", { class: "panel" }, el("h3", null, "Processing"),
           el("p", null, el("span", { class: "st" }, r.processing_status)),
           r.processing_note ? el("div", { class: "notice warn" }, r.processing_note) : el("p", { class: "muted small" }, "All evidence processed with the documented rules."),
@@ -320,6 +323,63 @@
             : el("p", { class: "muted" }, "No possible connections found.")),
         el("section", { class: "panel" }, el("h3", null, "Status history"),
           el("ul", { class: "steps-v" }, r.history.map((h) => el("li", { class: "done" }, el("b", null, h.to_label), el("div", { class: "muted small" }, `${dateTime(h.at)} · ${h.by}${h.note ? " · " + h.note : ""}`))))))));
+  }
+
+  function stationPanel(r) {
+    const h = r.handover;
+    const input = el("input", { type: "text", id: "cas-in", placeholder: "CAS 123/10/2026", maxlength: "40", autocomplete: "off", spellcheck: "false" });
+    const err = el("p", { class: "err", role: "alert" });
+    const save = el("button", { class: "btn btn-primary btn-small", onclick: async () => {
+      err.textContent = ""; save.disabled = true;
+      try { const v = await api("POST", `/api/police/reports/${r.reference}/cas`, { cas_number: input.value });
+            toast(v.cas_number + " recorded. Status: " + v.status_label + "."); refreshMeta(); showReport(r.reference, "overview"); }
+      catch (e) { err.textContent = e.message; } finally { save.disabled = false; } } }, "Record CAS number");
+    const form = el("div", { class: "stack" },
+      el("div", { class: "field" }, el("label", { for: "cas-in" }, h && h.cas_number ? "Correct the CAS number" : "CAS number issued by your station"), input),
+      err, el("div", { class: "row-btns" }, save),
+      el("p", { class: "hint" }, "Type it exactly as your station's system issued it. Ubufakazi never creates CAS numbers and cannot check them with SAPS; it is shown as “entered by officer”. In this demo the stations are fictional."));
+    return el("section", { class: "panel" }, el("h3", null, "Station registration"),
+      h ? el("dl", { class: "facts" },
+        el("dt", null, "Presented at"), el("dd", null, h.station + (h.moved ? ` (moved from ${h.from_station})` : "")),
+        el("dt", null, "Accepted by"), el("dd", null, `${h.accepted_by} · ${dateTime(h.accepted_at)}`),
+        h.cas_number ? [el("dt", null, "CAS number"), el("dd", null, el("b", { class: "mono" }, h.cas_number), el("span", { class: "tag" }, "entered by officer"),
+          el("div", { class: "muted small" }, `${h.cas_recorded_by} · ${dateTime(h.cas_recorded_at)} · not verified with SAPS`))] : null)
+        : el("p", { class: "muted" }, "Not yet presented at a station. The complainant's case pack has a QR code: scanning it opens the handover screen."),
+      form);
+  }
+
+  // ------------------------------------------------------------------ station handover (QR on the complainant's case pack)
+  async function showHandover(ref, token) {
+    shell("queue", el("div", { class: "empty" }, "Checking the handover code…"));
+    let h;
+    try { h = await api("GET", `/api/police/handover/${ref}/${token}`); }
+    catch (e) { shell("queue", [backBtn(), el("div", { class: "empty" }, e.message)]); return; }
+    const sel = el("select", { id: "ho-st", "aria-label": "Accept at station" }, h.my_stations.map((st) =>
+      el("option", { value: String(st.id), selected: st.id === h.routed_station_id ? true : null }, st.name)));
+    const btn = el("button", { class: "btn btn-primary", onclick: async () => {
+      btn.disabled = true;
+      try { await api("POST", `/api/police/handover/${ref}/${token}/accept`, { station_id: Number(sel.value) });
+            toast("Case accepted at your station. Recorded in the audit log."); refreshMeta(); location.hash = `#/report/${ref}/overview`; }
+      catch (e) { toast(e.message, true); btn.disabled = false; } } }, "Accept case at this station");
+    shell("queue", [
+      el("div", { class: "page-head" }, el("div", null, el("div", { class: "kicker" }, "Station handover"),
+        el("h1", null, h.reference),
+        el("p", null, "The complainant is showing you their Ubufakazi case pack. Check that this is their report, then accept it at your station."))),
+      el("div", { class: "cols" },
+        el("section", { class: "panel" }, el("h3", null, "Check with the complainant"),
+          el("dl", { class: "facts" },
+            el("dt", null, "Name on statement"), el("dd", null, h.complainant_name || "(not given; ask for it)"),
+            el("dt", null, "What happened"), el("dd", null, h.category_label),
+            el("dt", null, "Area"), el("dd", null, [h.town, h.province].filter(Boolean).join(", ") || "-"),
+            el("dt", null, "Reported"), el("dd", null, dateTime(h.received)),
+            el("dt", null, "Evidence files"), el("dd", null, String(h.evidence_count)),
+            el("dt", null, "Routed to"), el("dd", null, h.routed_station)),
+          h.handover ? el("div", { class: "notice info" }, `Already accepted at ${h.handover.station} by ${h.handover.accepted_by} (${dateTime(h.handover.accepted_at)}).`) : null),
+        el("section", { class: "panel" }, el("h3", null, "Accept the case"),
+          el("div", { class: "field" }, el("label", { for: "ho-st" }, "Your station"), sel),
+          el("div", { class: "row-btns" }, btn),
+          el("p", { class: "hint" }, "If the complainant came to a different station than the one Ubufakazi suggested, the case moves to yours and the move is written to the audit log. After your station registers the case, record the CAS number on the report."),
+          h.can_open ? el("a", { class: "btn btn-ghost btn-small", href: `#/report/${h.reference}/overview` }, "Open the report") : null))]);
   }
 
   function statement(r, body) {

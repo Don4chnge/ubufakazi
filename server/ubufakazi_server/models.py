@@ -75,6 +75,7 @@ STATUSES = (
     "under_review",           # Under review
     "more_info_required",     # More information required
     "prepared_for_visit",     # Prepared for complainant's visit
+    "registered_at_station",  # Registered at a police station (CAS number recorded by an officer)
     "closed",                 # Closed in Ubufakazi's workflow
 )
 STATUS_LABELS = {
@@ -83,6 +84,7 @@ STATUS_LABELS = {
     "under_review": "Under review",
     "more_info_required": "More information required",
     "prepared_for_visit": "Prepared for complainant's visit",
+    "registered_at_station": "Registered at a police station",
     "closed": "Closed in Ubufakazi's workflow",
 }
 CATEGORIES = {
@@ -269,6 +271,21 @@ class AuditEvent(Base):
     detail: Mapped[dict] = mapped_column(JSON, default=dict)
     prev_hash: Mapped[str] = mapped_column(String(64))
     hash: Mapped[str] = mapped_column(String(64))
+
+
+class StationHandover(Base):
+    """The complainant presented their case pack at a police station and an officer accepted the case there.
+    The CAS number is typed in by that officer from the station's own system; Ubufakazi never creates or verifies it."""
+    __tablename__ = "station_handovers"
+    id: Mapped[int] = mapped_column(primary_key=True)
+    report_id: Mapped[int] = mapped_column(ForeignKey("reports.id", ondelete="CASCADE"), unique=True, index=True)
+    station_id: Mapped[int] = mapped_column(ForeignKey("stations.id"))
+    from_station_id: Mapped[int] = mapped_column(ForeignKey("stations.id"))
+    accepted_by_user_id: Mapped[int] = mapped_column(ForeignKey("users.id"))
+    accepted_at: Mapped[dt.datetime] = mapped_column(DateTime, default=utcnow)
+    cas_number: Mapped[Optional[str]] = mapped_column(String(40), nullable=True)
+    cas_recorded_by_user_id: Mapped[Optional[int]] = mapped_column(ForeignKey("users.id"), nullable=True)
+    cas_recorded_at: Mapped[Optional[dt.datetime]] = mapped_column(DateTime, nullable=True)
 
 
 class BankAlert(Base):

@@ -52,6 +52,13 @@ evidence file, only its SHA-256 fingerprint is sent to the timestamp authority; 
 nonce, signature) and stored. Officers see it on the evidence card, "Verify" re-checks it, and the `.tsr` token can be
 downloaded and checked independently with `openssl ts -verify`. Failures never block a report.
 
+**Station handover (no SAPS connection).** The complainant's case pack carries a QR code
+(`/police#/handover/<reference>/<token>`, token = HMAC of the reference). An officer scans it, signs in (password + two-factor),
+checks the person and accepts the case at their own station; if that is not the station Ubufakazi routed to, the case moves
+there (audited as `report.transferred`). After the station registers the case in its own system, the officer types in the CAS
+number it issued. Ubufakazi validates the format only, labels it "entered by officer, not verified with SAPS", sets the status
+to "Registered at a police station" and shows it to the complainant on the Track page. It never creates CAS numbers.
+
 **AI reading of media (optional).** Set `GEMINI_API_KEY`. Without it, screenshots, voice notes and scans are still stored and hashed, but they are marked "not processed". Nothing is guessed.
 
 **Tests:**

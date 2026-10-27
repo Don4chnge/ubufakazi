@@ -19,9 +19,9 @@ from reportlab.lib.units import mm
 from reportlab.platypus import (PageBreak, Paragraph, SimpleDocTemplate, Spacer, Table, TableStyle)
 from sqlalchemy.orm import Session
 
-from . import timestamps
+from . import handover, timestamps
 from .extract import money
-from .models import CATEGORIES, STATUS_LABELS, AuditEvent, Note, Report, StatusChange
+from .models import CATEGORIES, STATUS_LABELS, AuditEvent, Note, Report, Station, StationHandover, StatusChange
 from .writing import LANG_NAMES
 
 INK = colors.HexColor("#0B1016")
@@ -86,6 +86,28 @@ def _fmt(d: dt.datetime | None) -> str:
     return d.strftime("%d %b %Y %H:%M UTC") if d else "-"
 
 
+def _handover_box(r: Report, S):
+    """QR code the complainant shows at the station. It only helps an officer find the report after signing in."""
+    from reportlab.graphics.barcode.qr import QrCodeWidget
+    from reportlab.graphics.shapes import Drawing
+    w = QrCodeWidget(handover.url_for(r.reference))
+    x0, y0, x1, y1 = w.getBounds()
+    size = 34 * mm
+    d = Drawing(size, size, transform=[size / (x1 - x0), 0, 0, size / (y1 - y0), 0, 0])
+    d.add(w)
+    text = Paragraph(
+        "<b>At the police station: show this code to the officer.</b><br/>"
+        "Scanning it lets the officer open your Ubufakazi report <i>after</i> signing in with their own password and "
+        "two-factor code, and accept the case at that station, even if it is not the station Ubufakazi suggested. "
+        "It does not register the case by itself: the station registers it in its own system and gives you a CAS "
+        f"number.<br/><font size='7'>Reference {escape(r.reference)}. Keep this pack private.</font>", S["small"])
+    tb = Table([[d, text]], colWidths=[38 * mm, 136 * mm])
+    tb.setStyle(TableStyle([("VALIGN", (0, 0), (-1, -1), "MIDDLE"), ("BOX", (0, 0), (-1, -1), 0.6, LINE),
+                            ("LEFTPADDING", (0, 0), (-1, -1), 6), ("RIGHTPADDING", (0, 0), (-1, -1), 6),
+                            ("TOPPADDING", (0, 0), (-1, -1), 6), ("BOTTOMPADDING", (0, 0), (-1, -1), 6)]))
+    return tb
+
+
 def build_case_pack(db: Session, r: Report, audience: str = "complainant", viewer=None, leads: list[dict] | None = None) -> bytes:
     """leads: pre-computed, already access-filtered possible connections (police audience only)."""
     S = _styles()
@@ -131,6 +153,10 @@ def build_case_pack(db: Session, r: Report, audience: str = "complainant", viewe
         ["Amount paid (extracted)", money(r.amount_paid) if r.amount_paid else "-"],
         ["Evidence files", str(len(r.evidence))],
     ]
+    ho = db.query(StationHandover).filter_by(report_id=r.id).first()
+    if ho and ho.cas_number:
+        cover.append(["Registered at station", f"{ho.cas_number} at {db.get(Station, ho.station_id).name} "
+                                               "(entered by the officer; not verified with SAPS)"])
     f.append(_kv(cover, S))
     f.append(Spacer(1, 8))
     f.append(_box(P(
@@ -149,6 +175,8 @@ def build_case_pack(db: Session, r: Report, audience: str = "complainant", viewe
             "In danger right now? Call 10111. Gender-based violence: GBV Command Centre 0800 428 428.",
         ], 1):
             f.append(P(f"<b>{i}.</b> {t(line)}"))
+        f.append(Spacer(1, 8))
+        f.append(_handover_box(r, S))
     if r.safety.get("unsafe") or r.category == "abuse":
         f.append(Spacer(1, 6))
         f.append(_box(P("<b>Sensitive report.</b> Handle with care: do not contact the complainant through shared devices "

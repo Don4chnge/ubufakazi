@@ -18,13 +18,13 @@ from pydantic import BaseModel, Field
 from sqlalchemy import func
 from sqlalchemy.orm import Session
 
-from . import ai, audit, bot, police, services, storage, timestamps, whatsapp
+from . import ai, audit, bot, handover, police, services, storage, timestamps, whatsapp
 from .casepack import build_case_pack
 from .config import SITE_DIR, WEB_DIR, get_settings
 from .db import get_db, init_db, write_lock
 from .extract import TYPE_LABEL, norm_phone, reg_domain
 from .models import (CATEGORIES, STATUS_LABELS, STATUSES, AuditEvent, BankAlert, EvidenceFile, Identifier, IntelMatch,
-                     Note, Report, StatusChange, User, utcnow)
+                     Note, Report, Station, StationHandover, StatusChange, User, utcnow)
 from .security import (Principal, clear_session_cookie, client_ip, create_session, current_principal, hash_password,
                        identifier_hmac, load_session, rate_limit, require_roles, set_session_cookie, verify_password,
                        verify_totp, _require_csrf)
@@ -107,7 +107,11 @@ def integrations():
         "whatsapp": whatsapp.status(),
         "ai_media_reading": ai.status(),
         "trusted_timestamps": timestamps.status(),
-        "saps": {"connected": False, "note": "Not connected. Fictional demo stations only; no CAS numbers are issued."},
+        "saps": {"connected": False, "note": "Not connected to SAPS systems, and never claimed to be. Station handover works "
+                                             "without it: the complainant shows the QR code on their case pack, an officer "
+                                             "accepts the case at their station and types in the CAS number the station "
+                                             "issued (marked 'entered by officer', not verified with SAPS). Ubufakazi never "
+                                             "creates CAS numbers. Stations in this demo are fictional."},
         "banks": {"connected": False, "note": "No bank is contacted. The bank dashboard is a fictional DemoBank simulation."},
         "database": "postgres" if s.database_url.startswith("postgres") else "sqlite",
     }
@@ -240,7 +244,9 @@ def track(body: TrackIn, request: Request, db: Session = Depends(get_db)):
             "history": [{"at": h.at.isoformat() + "Z", "label": STATUS_LABELS.get(h.to_status, h.to_status)} for h in hist],
             "evidence": [{"name": e.original_name, "sha256": e.sha256, "size": e.size, "type": e.detected_type,
                           "received": e.received_at.isoformat() + "Z"} for e in r.evidence],
-            "statement_ready": bool(r.statement)}
+            "statement_ready": bool(r.statement),
+            "registration": ({"station": h["station"], "cas_number": h["cas_number"], "at": h["cas_recorded_at"]}
+                             if (h := _handover_info(db, r)) and h["cas_number"] else None)}
 
 
 @app.post("/api/public/pack")
@@ -528,6 +534,7 @@ def police_report(reference: str, request: Request, p: Principal = Depends(offic
         "notes": [{"at": n.created_at.isoformat() + "Z", "by": n.author.display_name, "body": n.body}
                   for n in db.query(Note).filter_by(report_id=r.id).order_by(Note.created_at)],
         "leads": police.leads_for(db, r, p),
+        "handover": _handover_info(db, r),
     }
 
 
@@ -590,6 +597,108 @@ def evidence_timestamp(evidence_id: int, request: Request, p: Principal = Depend
                              "Content-Security-Policy": "default-src 'none'; sandbox"})
 
 
+# ------------------------------------------------------------------ station handover (no SAPS connection)
+def _handover_info(db: Session, r: Report) -> dict | None:
+    h = db.query(StationHandover).filter_by(report_id=r.id).first()
+    if not h:
+        return None
+    by = db.get(User, h.accepted_by_user_id)
+    cas_by = db.get(User, h.cas_recorded_by_user_id) if h.cas_recorded_by_user_id else None
+    return {"station": db.get(Station, h.station_id).name, "from_station": db.get(Station, h.from_station_id).name,
+            "moved": h.station_id != h.from_station_id, "accepted_by": by.display_name if by else "-",
+            "accepted_at": h.accepted_at.isoformat() + "Z", "cas_number": h.cas_number,
+            "cas_recorded_by": cas_by.display_name if cas_by else None,
+            "cas_recorded_at": h.cas_recorded_at.isoformat() + "Z" if h.cas_recorded_at else None}
+
+
+def _handover_report(db: Session, request: Request, reference: str, token: str) -> Report:
+    rate_limit(request, "handover", 20, 300)
+    r = db.query(Report).filter_by(reference=reference).first()
+    if not r or not handover.check_token(reference, token):
+        _err(404, "This handover code is not valid. Ask the complainant for their Ubufakazi case pack.")
+    return r
+
+
+@app.get("/api/police/handover/{reference}/{token}")
+def handover_preview(reference: str, token: str, request: Request, p: Principal = Depends(officer),
+                     db: Session = Depends(get_db)):
+    """What an officer sees after scanning a complainant's QR code, before accepting the case at their station."""
+    r = _handover_report(db, request, reference, token)
+    with write_lock:
+        audit.record(db, "handover.viewed", actor=_actor(p), actor_user_id=p.user.id, target_type="report",
+                     target_id=r.reference, station_id=r.station_id, ip=client_ip(request))
+    mine = [{"id": st.id, "name": st.name} for st in (db.query(Station).order_by(Station.name).all() if p.is_admin
+                                                      else p.user.stations)]
+    return {"reference": r.reference, "category_label": CATEGORIES.get(r.category, r.category),
+            "received": r.created_at.isoformat() + "Z", "routed_station": r.station.name,
+            "routed_station_id": r.station_id, "complainant_name": r.complainant_name,
+            "town": r.town, "province": r.province, "evidence_count": len(r.evidence),
+            "can_open": p.can_see_station(r.station_id), "my_stations": mine, "handover": _handover_info(db, r)}
+
+
+class HandoverIn(BaseModel):
+    station_id: int
+
+
+@app.post("/api/police/handover/{reference}/{token}/accept")
+def handover_accept(reference: str, token: str, body: HandoverIn, request: Request, p: Principal = Depends(officer),
+                    db: Session = Depends(get_db)):
+    r = _handover_report(db, request, reference, token)
+    if not p.is_admin and body.station_id not in p.station_ids:
+        _err(403, "You can only accept a case at your own station.")
+    st = db.get(Station, body.station_id)
+    if not st:
+        _err(400, "Unknown station.")
+    with write_lock:
+        h = db.query(StationHandover).filter_by(report_id=r.id).first()
+        frm = r.station_id
+        if h is None:
+            h = StationHandover(report_id=r.id, station_id=st.id, from_station_id=frm, accepted_by_user_id=p.user.id)
+            db.add(h)
+        else:
+            h.station_id, h.accepted_by_user_id, h.accepted_at = st.id, p.user.id, utcnow()
+        if frm != st.id:
+            r.station_id = st.id
+            audit.record(db, "report.transferred", actor=_actor(p), actor_user_id=p.user.id, target_type="report",
+                         target_id=r.reference, station_id=st.id, ip=client_ip(request),
+                         detail={"from_station": frm, "to_station": st.id, "reason": "complainant presented case pack"})
+        audit.record(db, "handover.accepted", actor=_actor(p), actor_user_id=p.user.id, target_type="report",
+                     target_id=r.reference, station_id=st.id, ip=client_ip(request), detail={"station": st.code})
+        db.add(StatusChange(report_id=r.id, from_status=r.status, to_status=r.status, by_user_id=p.user.id,
+                            note=f"Complainant presented the case pack at {st.name}; case accepted there."))
+        db.commit()
+    return {"reference": r.reference, "station": st.name}
+
+
+class CasIn(BaseModel):
+    cas_number: str = Field(min_length=3, max_length=40)
+
+
+@app.post("/api/police/reports/{reference}/cas")
+def record_cas(reference: str, body: CasIn, request: Request, p: Principal = Depends(officer), db: Session = Depends(get_db)):
+    """Stores the CAS number the station issued. Typed in by an officer; never generated or checked against SAPS."""
+    r = police.get_report(db, p, reference)
+    try:
+        cas = handover.normalise_cas(body.cas_number)
+    except ValueError as e:
+        _err(400, str(e))
+    with write_lock:
+        h = db.query(StationHandover).filter_by(report_id=r.id).first()
+        if h is None:
+            h = StationHandover(report_id=r.id, station_id=r.station_id, from_station_id=r.station_id,
+                                accepted_by_user_id=p.user.id)
+            db.add(h)
+        h.cas_number, h.cas_recorded_by_user_id, h.cas_recorded_at = cas, p.user.id, utcnow()
+        audit.record(db, "report.cas_recorded", actor=_actor(p), actor_user_id=p.user.id, target_type="report",
+                     target_id=r.reference, station_id=r.station_id, ip=client_ip(request), detail={"cas_number": cas})
+        db.flush()
+    services.change_status(db, r, "registered_at_station", user_id=p.user.id, actor=_actor(p),
+                           note=f"{cas} recorded by the officer (issued by {r.station.name}; not verified with SAPS)",
+                           ip=client_ip(request))
+    db.commit()
+    return {"cas_number": cas, "status": r.status, "status_label": STATUS_LABELS[r.status]}
+
+
 class StatusIn(BaseModel):
     status: str
     note: str = Field("", max_length=1000)
@@ -599,6 +708,8 @@ class StatusIn(BaseModel):
 def set_status(reference: str, body: StatusIn, request: Request, p: Principal = Depends(officer),
                db: Session = Depends(get_db)):
     r = police.get_report(db, p, reference)
+    if body.status == "registered_at_station":
+        _err(400, "Record the CAS number the station issued to mark the case as registered.")
     try:
         services.change_status(db, r, body.status, user_id=p.user.id, actor=_actor(p), note=body.note, ip=client_ip(request))
     except services.ReportError as e:
