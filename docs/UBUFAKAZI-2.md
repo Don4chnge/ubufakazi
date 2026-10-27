@@ -171,5 +171,5 @@ Web form (/report) ──────┼─► conversation.py / app.py ─► s
 - **No migrations tool yet.** The schema is created with `create_all`. For changes during the demo, use `setup --reset`.
 - **Media.** Images, voice notes and scans are read only when `GEMINI_API_KEY` is set, and the output is always labelled AI-generated and unverified.
 - **No live online search.** Ubufakazi does not scrape social media, look up account holders or track anyone. It only compares identifiers that victims themselves reported.
-- **WhatsApp.** The adapter is not built. The conversation engine is channel-neutral, so it can be added later.
+- **WhatsApp.** The adapter is built and tested (signed webhook, same conversation as Telegram). Delivery depends on Meta: our new business account is awaiting Meta's review, and /integrations shows the current state.
 - **Interface language.** The chatbot interface is in English. Statements are drafted in English, isiZulu, isiXhosa, Afrikaans or Sesotho. The translations should be reviewed by native speakers.
