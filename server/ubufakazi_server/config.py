@@ -51,6 +51,8 @@ class Settings:
     storage_backend: str = "file"                   # file (local disk) | db (inside the database, for hosts without disks)
     demo_seed: str = ""                              # optional: derive demo passwords/2FA secrets (see creds.py)
     tsa_url: str = ""                                # RFC 3161 timestamp authority (see timestamps.py)
+    utb_shared_secret: str = ""                      # bank link key (default: derived from UBF_SECRET_KEY)
+    utb_api_url: str = ""                            # default: this server's /utb/api/v1 (the fictional bank)
     whatsapp_token: str = ""                         # Meta WhatsApp Cloud API (see whatsapp.py)
     whatsapp_phone_id: str = ""
     whatsapp_verify_token: str = ""
@@ -96,6 +98,8 @@ def get_settings() -> Settings:
             gemini_model=os.environ.get("GEMINI_MODEL") or "gemini-2.0-flash",
             demo_seed=os.environ.get("UBF_DEMO_SEED", ""),
             tsa_url=os.environ.get("UBF_TSA_URL", "").strip(),
+            utb_shared_secret=os.environ.get("UTB_SHARED_SECRET", "").strip(),
+            utb_api_url=os.environ.get("UTB_API_URL", "").strip().rstrip("/"),
             whatsapp_token=os.environ.get("WHATSAPP_TOKEN", "").strip(),
             whatsapp_phone_id=os.environ.get("WHATSAPP_PHONE_NUMBER_ID", "").strip(),
             whatsapp_verify_token=os.environ.get("WHATSAPP_VERIFY_TOKEN", "").strip(),

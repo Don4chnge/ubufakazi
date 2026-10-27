@@ -13,12 +13,13 @@ from typing import Optional
 
 from fastapi import Depends, FastAPI, File, Form, HTTPException, Request, UploadFile
 from fastapi.responses import FileResponse, JSONResponse, Response
+from fastapi.concurrency import run_in_threadpool
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, Field
 from sqlalchemy import func
 from sqlalchemy.orm import Session
 
-from . import ai, audit, bot, handover, police, services, storage, timestamps, whatsapp
+from . import ai, audit, banklink, bot, handover, police, services, storage, timestamps, utb, whatsapp
 from .casepack import build_case_pack
 from .config import SITE_DIR, WEB_DIR, get_settings
 from .db import get_db, init_db, write_lock
@@ -36,12 +37,26 @@ MAX_BODY = 110 * 1024 * 1024
 LOCK_AFTER = 5
 LOCK_MINUTES = 15
 
+def _bank_startup() -> None:
+    """The demo's fictional bank was called DemoBank before; it is now Ubuntu Trust Bank. Idempotent."""
+    from sqlalchemy import update
+    from .db import session_scope
+    with write_lock, session_scope() as db:
+        db.execute(update(Identifier).where(Identifier.bank == "DemoBank").values(bank=banklink.BANK_NAME))
+        db.execute(update(BankAlert).where(BankAlert.bank_stated == "DemoBank").values(bank_stated=banklink.BANK_NAME))
+        db.execute(update(User).where(User.username == "bank.reviewer")
+                   .values(display_name="Ubuntu Trust Bank fraud analyst (fictional bank)"))
+        utb.seed_registry(db)
+
+
 @asynccontextmanager
 async def lifespan(_app):
     get_settings()          # refuse to start without real secrets
     init_db()
     get_settings().storage_dir.mkdir(parents=True, exist_ok=True)
+    _bank_startup()
     if os.environ.get("UBF_RUN_BOT", "1") == "1":
+        banklink.run_later(banklink.deliver_pending)
         await bot.start_bot()
         await whatsapp.check_connection()
     yield
@@ -100,7 +115,7 @@ def _bot_status() -> dict:
 
 
 @app.get("/api/integrations")
-def integrations():
+def integrations(db: Session = Depends(get_db)):
     s = get_settings()
     return {
         "telegram": _bot_status(),
@@ -112,9 +127,9 @@ def integrations():
                                                       "the CAS number the station issued (shown as 'entered by officer')."},
         "saps": {"connected": False, "note": "Deliberately not connected to SAPS's own systems, and never claimed to be. "
                                              "Ubufakazi never creates or checks CAS numbers. Stations in this demo are fictional."},
-        "bank_simulation": {"working": True, "note": "Working as a simulation: DemoBank, a fictional bank, sees masked "
-                                                     "accounts named in several reports, with no victim details."},
-        "banks": {"connected": False, "note": "Deliberately not connected: no real bank is contacted."},
+        "bank_link": banklink.status(db),
+        "banks": {"connected": False, "note": "Deliberately not connected to any real bank. Ubuntu Trust Bank is fictional; "
+                                              "a real bank would need a partnership and data-sharing agreement."},
         "database": "postgres" if s.database_url.startswith("postgres") else "sqlite",
     }
 
@@ -247,6 +262,8 @@ def track(body: TrackIn, request: Request, db: Session = Depends(get_db)):
             "evidence": [{"name": e.original_name, "sha256": e.sha256, "size": e.size, "type": e.detected_type,
                           "received": e.received_at.isoformat() + "Z"} for e in r.evidence],
             "statement_ready": bool(r.statement),
+            "bank_responses": [{"bank": b["bank"], "status_label": b["status_label"], "note": b["note"], "at": b["at"]}
+                               for b in banklink.responses_for_report(db, r)],
             "registration": ({"station": h["station"], "cas_number": h["cas_number"], "at": h["cas_recorded_at"]}
                              if (h := _handover_info(db, r)) and h["cas_number"] else None)}
 
@@ -537,6 +554,7 @@ def police_report(reference: str, request: Request, p: Principal = Depends(offic
                   for n in db.query(Note).filter_by(report_id=r.id).order_by(Note.created_at)],
         "leads": police.leads_for(db, r, p),
         "handover": _handover_info(db, r),
+        "bank_responses": banklink.responses_for_report(db, r),
     }
 
 
@@ -790,87 +808,74 @@ def admin_audit(limit: int = 100, p: Principal = Depends(require_roles("admin"))
                         "hash": a.hash} for a in rows]}
 
 
-# ------------------------------------------------------------------ bank demo (fictional DemoBank)
+# ------------------------------------------------------------------ bank link (to the fictional Ubuntu Trust Bank)
 bank_role = require_roles("admin", "bank_reviewer")
-BANK_NAME = "DemoBank"
-ALERT_STATUSES = {"new": "New", "under_review": "Under review (simulated)", "reviewed": "Reviewed (simulated)",
-                  "escalated": "Escalated to fraud team (simulated)"}
 
 
-def _alerts_query(db: Session, p: Principal):
-    q = db.query(BankAlert)
-    if not p.is_admin:
-        q = q.filter(BankAlert.bank_stated == BANK_NAME)   # a bank sees only accounts said to be at that bank
-    return q
+@app.post("/api/bank-link/callback")
+async def bank_callback(request: Request):
+    """The bank reports a decision back to Ubufakazi. Signed; no session needed."""
+    raw = await request.body()
+    try:
+        return await run_in_threadpool(banklink.receive_callback, raw, request.headers.get("X-UBF-Signature"))
+    except PermissionError:
+        _err(401, "Bad signature.")
+    except (ValueError, KeyError):
+        _err(400, "Bad request.")
 
 
-def _alert_view(db: Session, a: BankAlert, detail: bool = False) -> dict:
-    reps = (db.query(Report).join(Identifier, Identifier.report_id == Report.id)
-            .filter(Identifier.kind == "account", Identifier.hmac == a.account_hmac).order_by(Report.created_at).all())
-    corroborated = 0
-    ids = [r.id for r in reps]
-    if ids:
-        corroborated = db.query(func.count(IntelMatch.id)).filter(
-            IntelMatch.report_a.in_(ids), IntelMatch.report_b.in_(ids), IntelMatch.strength == "corroborated").scalar()
-    out = {"id": a.id, "account": a.account_display, "bank_stated": a.bank_stated or "not stated",
-           "status": a.status, "status_label": ALERT_STATUSES.get(a.status, a.status), "reports": len(reps),
-           "total_reported": sum(r.amount_paid or 0 for r in reps),
-           "first_reported": reps[0].created_at.date().isoformat() if reps else None,
-           "last_reported": reps[-1].created_at.date().isoformat() if reps else None,
-           "provinces": len({r.province for r in reps if r.province}),
-           "scam_types": sorted({TYPE_LABEL.get(r.scam_type, "Other") for r in reps if r.scam_type}),
-           "corroborated_links": corroborated,
-           "priority": "high" if len(reps) >= 5 else "medium" if len(reps) >= 2 else "low"}
-    if detail:
-        # No names, references, descriptions or phone numbers: only what a bank needs to review an account.
-        out["reports_list"] = [{"n": i + 1, "date": r.created_at.date().isoformat(), "amount": r.amount_paid,
-                                "province": r.province, "scam_type": TYPE_LABEL.get(r.scam_type or "", "Other")}
-                               for i, r in enumerate(reps)]
-    return out
+# ------------------------------------------------------------------ Ubuntu Trust Bank (FICTIONAL bank, own API)
+@app.post("/utb/api/v1/fraud-alerts", status_code=202)
+async def utb_receive(request: Request):
+    raw = await request.body()
+    if len(raw) > 200_000:
+        _err(413, "Too large.")
+    try:
+        return await run_in_threadpool(utb.receive_alert, raw, request.headers.get("X-UBF-Signature"))
+    except PermissionError:
+        _err(401, "Bad signature.")
+    except (ValueError, KeyError):
+        _err(400, "Bad request.")
 
 
-@app.get("/api/bank/alerts")
-def bank_alerts(p: Principal = Depends(bank_role), db: Session = Depends(get_db)):
-    items = [_alert_view(db, a) for a in _alerts_query(db, p).all()]
-    items.sort(key=lambda x: (-x["reports"], -x["total_reported"]))
-    return {"bank": "All banks (admin view)" if p.is_admin else BANK_NAME, "statuses": ALERT_STATUSES,
-            "notice": "Fictional DemoBank simulation. No real bank, account or person is involved, and no bank has been contacted.",
-            "items": items}
+@app.get("/api/utb/cases")
+def utb_cases(p: Principal = Depends(bank_role), db: Session = Depends(get_db)):
+    from .models import UtbCase
+    utb.seed_registry(db)
+    items = [utb.case_row(db, c) for c in db.query(UtbCase).all()]
+    items.sort(key=lambda x: ({"received": 0, "investigating": 1, "frozen": 2}.get(x["status"], 3), -x["reports"],
+                              -x["total_reported"]))
+    return {"bank": utb.NAME, "statuses": utb.STATUS, "items": items,
+            "notice": "Ubuntu Trust Bank is a fictional bank. These alerts arrived from Ubufakazi over its signed API. "
+                      "No real bank, account or person is involved."}
 
 
-@app.get("/api/bank/alerts/{alert_id}")
-def bank_alert(alert_id: int, request: Request, p: Principal = Depends(bank_role), db: Session = Depends(get_db)):
-    a = _alerts_query(db, p).filter(BankAlert.id == alert_id).first()
-    if not a:
+@app.get("/api/utb/cases/{case_id}")
+def utb_case(case_id: int, p: Principal = Depends(bank_role), db: Session = Depends(get_db)):
+    from .models import UtbCase
+    c = db.get(UtbCase, case_id)
+    if not c:
         _err(404, "Not found.")
-    with write_lock:
-        audit.record(db, "bank.alert_viewed", actor=_actor(p), actor_user_id=p.user.id, target_type="bank_alert",
-                     target_id=a.id, ip=client_ip(request))
-    return _alert_view(db, a, detail=True)
+    return utb.case_detail(db, c)
 
 
-class AlertStatusIn(BaseModel):
-    status: str
+class UtbActionIn(BaseModel):
+    action: str
 
 
-@app.post("/api/bank/alerts/{alert_id}/status")
-def bank_alert_status(alert_id: int, body: AlertStatusIn, request: Request, p: Principal = Depends(bank_role),
-                      db: Session = Depends(get_db)):
-    a = _alerts_query(db, p).filter(BankAlert.id == alert_id).first()
-    if not a:
+@app.post("/api/utb/cases/{case_id}/action")
+def utb_action(case_id: int, body: UtbActionIn, request: Request, p: Principal = Depends(bank_role)):
+    try:
+        return utb.act(case_id, body.action, by=p.user.display_name)
+    except LookupError:
         _err(404, "Not found.")
-    if body.status not in ALERT_STATUSES:
-        _err(400, "Unknown status.")
-    with write_lock:
-        frm, a.status = a.status, body.status
-        audit.record(db, "bank.alert_status", actor=_actor(p), actor_user_id=p.user.id, target_type="bank_alert",
-                     target_id=a.id, ip=client_ip(request), detail={"from": frm, "to": body.status, "simulated": True})
-    return {"status": a.status, "status_label": ALERT_STATUSES[a.status]}
+    except ValueError as e:
+        _err(400, str(e))
 
 
 # ------------------------------------------------------------------ pages + website
 PAGES = {"/": "home.html", "/demo-logins": "demo-logins.html", "/share": "share.html", "/resources": "resources.html", "/about": "about.html",
-         "/police": "police.html", "/bank-demo": "bank.html", "/report": "report.html", "/track": "track.html",
+         "/police": "police.html", "/bank-demo": "bank.html", "/bank": "bank.html", "/report": "report.html", "/track": "track.html",
          "/verify": "verify.html", "/integrations": "integrations.html", "/privacy": "privacy.html"}
 
 

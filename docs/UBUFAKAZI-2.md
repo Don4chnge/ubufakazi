@@ -59,6 +59,16 @@ there (audited as `report.transferred`). After the station registers the case in
 number it issued. Ubufakazi validates the format only, labels it "entered by officer, not verified with SAPS", sets the status
 to "Registered at a police station" and shows it to the complainant on the Track page. It never creates CAS numbers.
 
+**Bank link: Ubuntu Trust Bank (a fictional bank).** The bank runs inside this demo with its own tables (`utb_*`), its
+own fictional account register and its own API, so the integration is real HTTP end to end. When a report names an
+account stated to be at Ubuntu Trust Bank, Ubufakazi POSTs a signed alert to `/utb/api/v1/fraud-alerts`
+(`X-UBF-Signature: t=<unix>,v1=<HMAC-SHA256>`, 5-minute replay window): account number, number of reports, amounts,
+dates, provinces and scam types, never names, references, statements or evidence. The bank's fraud analyst
+(`/bank`, account `bank.reviewer`) investigates, freezes or closes; each decision is POSTed back, signed, to
+`/api/bank-link/callback` and shown to the officer and, on the Track page, to the victim. Set `UTB_API_URL` to point
+at an external bank instead; the shared key defaults to one derived from `UBF_SECRET_KEY` (`UTB_SHARED_SECRET` overrides).
+No real bank is contacted.
+
 **AI reading of media (optional).** Set `GEMINI_API_KEY`. Without it, screenshots, voice notes and scans are still stored and hashed, but they are marked "not processed". Nothing is guessed.
 
 **Tests:**

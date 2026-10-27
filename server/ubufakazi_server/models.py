@@ -300,6 +300,60 @@ class BankAlert(Base):
     updated_at: Mapped[dt.datetime] = mapped_column(DateTime, default=utcnow, onupdate=utcnow)
 
 
+class BankDelivery(Base):
+    """Ubufakazi's side of the bank link: an alert sent to the (fictional) bank and the bank's latest response."""
+    __tablename__ = "bank_deliveries"
+    id: Mapped[int] = mapped_column(primary_key=True)
+    alert_id: Mapped[int] = mapped_column(ForeignKey("bank_alerts.id", ondelete="CASCADE"), unique=True, index=True)
+    bank: Mapped[str] = mapped_column(String(60))
+    bank_case_ref: Mapped[Optional[str]] = mapped_column(String(40), nullable=True)
+    payload_hash: Mapped[str] = mapped_column(String(64), default="")       # re-send only when the picture changes
+    delivered_at: Mapped[Optional[dt.datetime]] = mapped_column(DateTime, nullable=True)
+    attempts: Mapped[int] = mapped_column(Integer, default=0)
+    last_error: Mapped[Optional[str]] = mapped_column(String(300), nullable=True)
+    bank_status: Mapped[Optional[str]] = mapped_column(String(20), nullable=True)
+    bank_note: Mapped[Optional[str]] = mapped_column(String(300), nullable=True)
+    bank_updated_at: Mapped[Optional[dt.datetime]] = mapped_column(DateTime, nullable=True)
+
+
+# ---------------------------------------------------------------------------------------------------------------
+# Ubuntu Trust Bank: a FICTIONAL bank used to demonstrate a real API integration. Its tables are its own "core
+# banking" system; Ubufakazi never reads them directly, only talks to the bank over the signed API.
+class UtbAccount(Base):
+    __tablename__ = "utb_accounts"
+    id: Mapped[int] = mapped_column(primary_key=True)
+    number: Mapped[str] = mapped_column(String(20), unique=True, index=True)
+    customer_ref: Mapped[str] = mapped_column(String(20))                   # never a name: fictional customers
+    product: Mapped[str] = mapped_column(String(30), default="Everyday account")
+    balance: Mapped[float] = mapped_column(Float, default=0)
+    status: Mapped[str] = mapped_column(String(12), default="active")      # active | frozen
+    opened_at: Mapped[dt.datetime] = mapped_column(DateTime, default=utcnow)
+
+
+class UtbCase(Base):
+    __tablename__ = "utb_cases"
+    id: Mapped[int] = mapped_column(primary_key=True)
+    case_ref: Mapped[str] = mapped_column(String(24), unique=True)
+    source_alert_id: Mapped[int] = mapped_column(Integer, unique=True, index=True)   # Ubufakazi's alert id
+    account_number: Mapped[str] = mapped_column(String(20), index=True)
+    account_id: Mapped[Optional[int]] = mapped_column(ForeignKey("utb_accounts.id"), nullable=True)
+    summary: Mapped[dict] = mapped_column(JSON, default=dict)               # counts, totals, provinces, timeline
+    status: Mapped[str] = mapped_column(String(16), default="received")
+    callback_url: Mapped[str] = mapped_column(String(300), default="")
+    created_at: Mapped[dt.datetime] = mapped_column(DateTime, default=utcnow)
+    updated_at: Mapped[dt.datetime] = mapped_column(DateTime, default=utcnow, onupdate=utcnow)
+
+
+class UtbEvent(Base):
+    __tablename__ = "utb_events"
+    id: Mapped[int] = mapped_column(primary_key=True)
+    case_id: Mapped[int] = mapped_column(ForeignKey("utb_cases.id", ondelete="CASCADE"), index=True)
+    at: Mapped[dt.datetime] = mapped_column(DateTime, default=utcnow)
+    action: Mapped[str] = mapped_column(String(30))
+    by: Mapped[str] = mapped_column(String(60))
+    note: Mapped[str] = mapped_column(String(300), default="")
+
+
 class EvidenceBlob(Base):
     """Original file bytes, when evidence is kept in the database (hosted mode, UBF_STORAGE=db).
     Insert-only: database triggers reject UPDATE, so an original cannot be silently replaced through SQL."""

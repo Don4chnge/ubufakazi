@@ -4,7 +4,7 @@ A  Chatbot reporting flow (channel-neutral engine used by Telegram), quick exit,
 B  Evidence integrity: originals, hashes, rejection of unsupported files, derivatives, case pack
 C  Police dashboard security: sign-in, two-factor, lockout, CSRF, station isolation, roles
 D  Scam intelligence: explainable leads, restricted cross-station stubs, graph, identifier search
-E  Fictional bank dashboard: masked accounts, no victim data, simulated actions
+E  Bank link: signed API to the fictional Ubuntu Trust Bank, no victim data, decisions flow back
 F  Hash-chained audit log: actions recorded, tampering detected
 G  Website, public web reporting, track page, honest integration status
 H  MVP regression: the Python engine reproduces the MVP's results on the 70-case test pack
@@ -236,7 +236,7 @@ class TestB_Evidence:
 # ====================================================================== C
 class TestC_PoliceSecurity:
     def test_requires_sign_in(self, client):
-        for url in ("/api/police/reports", "/api/police/overview", "/api/bank/alerts", "/api/admin/audit"):
+        for url in ("/api/police/reports", "/api/police/overview", "/api/utb/cases", "/api/admin/audit"):
             assert client.get(url).status_code == 401
 
     def test_wrong_password_and_lockout(self, client, env):
@@ -297,7 +297,7 @@ class TestC_PoliceSecurity:
         bank, _ = login("bank.reviewer")
         assert bank.get("/api/police/reports").status_code == 403
         officer, _ = login("officer.mthatha")
-        assert officer.get("/api/bank/alerts").status_code == 403
+        assert officer.get("/api/utb/cases").status_code == 403
         assert officer.get("/api/admin/audit").status_code == 403
 
     def test_status_workflow_and_download_is_attachment(self, login, lerato):
@@ -371,28 +371,65 @@ class TestD_Intelligence:
 
 # ====================================================================== E
 class TestE_Bank:
-    def test_alerts_masked_and_without_victim_data(self, login, lerato):
+    """The bank link, to Ubuntu Trust Bank (a fictional bank reached over a signed API)."""
+
+    def test_alert_reaches_bank_without_victim_data(self, login, lerato):
+        from ubufakazi_server import banklink
+        from ubufakazi_server.db import SessionLocal
+        from ubufakazi_server.models import BankAlert
         c, _ = login("bank.reviewer")
-        data = c.get("/api/bank/alerts").json()
-        assert "Fictional" in data["notice"] and "no bank has been contacted" in data["notice"]
-        top = data["items"][0]
-        assert top["account"] == "•••• 8359" and top["reports"] >= 7 and top["priority"] == "high"
-        assert all(i["bank_stated"] == "DemoBank" for i in data["items"])        # only this bank's accounts
-        detail = c.get(f"/api/bank/alerts/{top['id']}").json()
+        data = c.get("/api/utb/cases").json()
+        assert "fictional bank" in data["notice"] and data["bank"] == "Ubuntu Trust Bank"
+        top = next(i for i in data["items"] if i["account"] == "•••• 8359")
+        assert top["reports"] >= 7 and top["priority"] == "high" and top["matched"] is True
+        detail = c.get(f"/api/utb/cases/{top['id']}").json()
         blob = json.dumps(detail)
         r = lerato["report"]
-        for secret in (r.reference, r.complainant_name, "Thandi", "071 482", "1047228359", "1047 2283 59", "Mthatha"):
+        for secret in (r.reference, r.complainant_name, "Thandi", "071 482", "1047228359", "Mthatha"):
             assert secret not in blob
-        assert len(detail["reports_list"]) == top["reports"]
+        assert len(detail["timeline"]) == top["reports"] and detail["account_detail"]["customer_ref"].startswith("UTB-C-")
+        db = SessionLocal()                              # what actually travels to the bank
+        try:
+            a = db.query(BankAlert).filter(BankAlert.account_display == "•••• 8359").first()
+            payload = banklink.build_payload(db, a)
+        finally:
+            db.close()
+        assert set(payload) == {"alert_id", "account_number", "bank_stated", "reports", "total_reported", "provinces",
+                                "scam_types", "first_report", "last_report", "timeline", "corroborated_links",
+                                "callback_url"}
+        assert r.reference not in json.dumps(payload) and r.complainant_name not in json.dumps(payload)
 
-    def test_simulated_actions_are_audited(self, login):
-        c, _ = login("bank.reviewer")
-        aid = c.get("/api/bank/alerts").json()["items"][0]["id"]
-        res = c.post(f"/api/bank/alerts/{aid}/status", json={"status": "escalated"}).json()
-        assert "simulated" in res["status_label"]
+    def test_bank_decision_flows_back_to_officer_and_victim(self, login, lerato, client):
+        bank, _ = login("bank.reviewer")
+        case = next(i for i in bank.get("/api/utb/cases").json()["items"] if i["account"] == "•••• 8359")
+        assert bank.post(f"/api/utb/cases/{case['id']}/action", json={"action": "bogus"}).status_code == 400
+        res = bank.post(f"/api/utb/cases/{case['id']}/action", json={"action": "freeze"}).json()
+        assert res["status"] == "frozen"
+        ref = lerato["report"].reference
+        officer, _ = login("officer.mthatha")
+        resp = officer.get(f"/api/police/reports/{ref}").json()["bank_responses"]
+        assert any(b["status"] == "frozen" and b["bank"] == "Ubuntu Trust Bank" for b in resp)
+        t = client.post("/api/public/track", json={"reference": ref, "key": lerato["action"]["receipt_key"]}).json()
+        assert any("frozen" in b["status_label"] for b in t["bank_responses"])
         admin, _ = login("admin")
-        ev = admin.get("/api/admin/audit?limit=50").json()["events"]
-        assert any(e["action"] == "bank.alert_status" for e in ev)
+        acts = {e["action"] for e in admin.get("/api/admin/audit?limit=100").json()["events"]}
+        assert {"bank.alert_sent", "bank.response_received"} <= acts
+        assert admin.get("/api/integrations").json()["bank_link"]["connected"] is True
+
+    def test_bank_api_rejects_unsigned_and_replayed_calls(self, client):
+        from ubufakazi_server import banklink
+        raw = json.dumps({"alert_id": 1, "account_number": "1047228359"}).encode()
+        assert client.post("/utb/api/v1/fraud-alerts", content=raw).status_code == 401
+        old = banklink.sign(raw, ts=1_000_000_000)                                  # signed long ago
+        assert client.post("/utb/api/v1/fraud-alerts", content=raw, headers={"X-UBF-Signature": old}).status_code == 401
+        forged = "t=%d,v1=%s" % (int(__import__("time").time()), "0" * 64)
+        assert client.post("/api/bank-link/callback", content=raw, headers={"X-UBF-Signature": forged}).status_code == 401
+
+    def test_account_not_at_bank_is_reported_as_no_match(self, app):
+        from ubufakazi_server import banklink, utb
+        raw = json.dumps({"alert_id": 999999, "account_number": "9999999999", "reports": 1}).encode()
+        res = utb.receive_alert(raw, banklink.sign(raw))
+        assert res["status"] == "no_match" and res["case_ref"].startswith("UTB-FC-")
 
 
 # ====================================================================== F
@@ -427,7 +464,7 @@ class TestF_Audit:
 
 # ====================================================================== G
 class TestG_WebsiteAndPublic:
-    @pytest.mark.parametrize("path", ["/", "/police", "/bank-demo", "/report", "/track", "/verify", "/integrations",
+    @pytest.mark.parametrize("path", ["/", "/police", "/bank-demo", "/bank", "/report", "/track", "/verify", "/integrations",
                                       "/share", "/resources", "/about", "/privacy", "/mvp", "/demo-logins", "/scam-demo/"])
     def test_pages(self, client, path):
         r = client.get(path)

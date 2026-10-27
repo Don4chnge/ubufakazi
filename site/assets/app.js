@@ -100,7 +100,7 @@
   }
 
   // ---------------------------------------------------------------- 2. extraction
-  const BANKS = ['DemoBank', 'Capitec', 'First National Bank', 'FNB', 'Absa', 'Nedbank', 'Standard Bank', 'TymeBank', 'Discovery Bank', 'African Bank', 'Investec', 'Bidvest Bank', 'Old Mutual', 'Access Bank', 'Postbank'];
+  const BANKS = ['Ubuntu Trust Bank', 'DemoBank', 'Capitec', 'First National Bank', 'FNB', 'Absa', 'Nedbank', 'Standard Bank', 'TymeBank', 'Discovery Bank', 'African Bank', 'Investec', 'Bidvest Bank', 'Old Mutual', 'Access Bank', 'Postbank'];
   const RE_BANK = new RegExp('\\b(' + BANKS.map((b) => b.replace(/ /g, '\\s+')).join('|') + ')\\b', 'i');
   const RE_ACC_CTX = /(acc(ount)?\.?\s*(no|number|nr|#)?|a\/c|rekening(nommer)?|akhawunti|akhaonto|bank(ing)? details|deposit (in)?to|pay (in)?to|eft (in)?to)\s*[:\-]?\s*$/i;
   const RE_DIGITS = /(?<![\d+])\d(?:[ \-]?\d){7,11}(?!\d)/g;

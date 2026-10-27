@@ -9,7 +9,7 @@
     "umfula", "isikhwama", "ithemba", "inqaba", "ukukhanya", "isiqhamo"];
   const USERS = [["admin", "Administrator (all stations, audit log)"], ["officer.mthatha", "Officer · Demo Station Mthatha"],
     ["officer.joburg", "Officer · Johannesburg Central + Alberton"], ["officer.durban", "Officer · Durban Central"],
-    ["bank.reviewer", "DemoBank fraud reviewer (bank demo)"]];
+    ["bank.reviewer", "Ubuntu Trust Bank fraud analyst (fictional bank)"]];
   const enc = new TextEncoder();
 
   async function hmac(alg, keyBytes, msgBytes) {

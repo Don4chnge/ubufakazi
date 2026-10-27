@@ -482,3 +482,5 @@ legend .n { display: inline-grid; place-items: center; width: 22px; height: 22px
 .legend .dot { display: inline-block; width: 10px; height: 10px; border-radius: 50%; }
 .legend .dot.on { background: var(--ok); box-shadow: 0 0 0 3px var(--ok-dim); }
 .legend .dot.off { background: var(--warn); box-shadow: 0 0 0 3px var(--warn-dim); margin-left: 10px; }
+.bank-resp + .bank-resp { border-top: 1px solid var(--line); margin-top: 10px; padding-top: 10px; }
+.st-bank-frozen { color: var(--alert); }

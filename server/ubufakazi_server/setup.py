@@ -23,7 +23,7 @@ USERS = [
     ("officer.mthatha", "Demo Officer (Mthatha)", "officer", ["MTH"]),
     ("officer.joburg", "Demo Officer (Johannesburg)", "officer", ["JHB", "ALB"]),
     ("officer.durban", "Demo Officer (Durban)", "officer", ["DBN"]),
-    ("bank.reviewer", "DemoBank Fraud Reviewer (fictional bank)", "bank_reviewer", []),
+    ("bank.reviewer", "Ubuntu Trust Bank fraud analyst (fictional bank)", "bank_reviewer", []),
 ]
 # On a host with a persistent volume (UBF_DATA_DIR), generated secrets are kept on the volume so they survive restarts.
 ENV_FILE = (data_dir() / ".env") if os.environ.get("UBF_DATA_DIR") else SERVER_DIR / ".env"

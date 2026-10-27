@@ -1,4 +1,4 @@
-/* DemoBank: a deliberately different, invented look so it can never be mistaken for a real bank. */
+/* Ubuntu Trust Bank (fictional): a deliberately different, invented look so it can never be mistaken for a real bank. */
 .bankui { --accent: #F5C66B; --accent-ink: #2A1E05; --accent-dim: rgba(245, 198, 107, 0.12); --line-3: rgba(245, 198, 107, .45); }
 .bankui .btn-primary { background: linear-gradient(135deg, #FCD98A, #F0B44C); box-shadow: 0 8px 30px rgba(245, 198, 107, .25); }
 .bankui .brand svg { stroke: #F5C66B; filter: drop-shadow(0 0 6px rgba(245, 198, 107, .45)); }
@@ -23,3 +23,6 @@
 #detail h3 { margin-top: 18px; }
 #detail .hint { margin-top: 8px; }
 .bar .mono { white-space: nowrap; font-size: 12.5px; }
+.st-utb-frozen, .st-utb-acct-frozen { color: var(--alert); border-color: rgba(255,143,114,.5); }
+.st-utb-investigating { color: var(--warn); }
+.st-utb-no_match, .st-utb-closed { color: var(--muted); }

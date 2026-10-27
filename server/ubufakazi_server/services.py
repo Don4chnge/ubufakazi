@@ -14,7 +14,7 @@ from concurrent.futures import ThreadPoolExecutor
 
 from sqlalchemy.orm import Session
 
-from . import ai, audit, intel, storage, timestamps
+from . import ai, audit, banklink, intel, storage, timestamps
 from .db import session_scope, write_lock
 from .extract import TYPE_LABEL, analyse_text, extract, parse_chat, show_phone
 from .models import (CATEGORIES, FINANCIAL_CATEGORIES, STATUSES, Consent, EvidenceDerivative, EvidenceFile,
@@ -264,6 +264,7 @@ def process_report(report_id: int) -> None:
                 r.status = "awaiting_review"
             audit.record(db, "report.processed", actor="system", target_type="report", target_id=r.reference,
                          station_id=r.station_id, detail={"identifiers": len(r.identifiers), "evidence": len(r.evidence)})
+        banklink.run_later(banklink.deliver_for_report, report_id)     # tell the connected bank (fictional)
     except Exception as e:
         log.exception("processing failed for report %s", report_id)
         with write_lock, session_scope() as db:

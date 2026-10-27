@@ -15,7 +15,7 @@
     row("AI reading of images, voice notes and scans", i.ai_media_reading.configured, i.ai_media_reading.note),
     row("Trusted timestamps (RFC 3161)", i.trusted_timestamps.configured, i.trusted_timestamps.note),
     row("Police station handover (QR + CAS number)", i.station_handover.working, i.station_handover.note),
-    row("Bank fraud review (DemoBank simulation)", i.bank_simulation.working, i.bank_simulation.note),
+    row("Bank link: Ubuntu Trust Bank (fictional)", i.bank_link.connected, i.bank_link.note),
     row("SAPS systems", i.saps.connected, i.saps.note),
     row("Real banks", i.banks.connected, i.banks.note)),
     el("p", { class: "foot-note" }, "Ubufakazi 2.0 is a HackSecure 2026 prototype by Team CyberThreat. All stations, banks and earlier reports are fictional."));

@@ -72,7 +72,7 @@ def parse_chat(raw: str) -> list[dict]:
 
 
 # ------------------------------------------------------------------ extraction
-BANKS = ["DemoBank", "Capitec", "First National Bank", "FNB", "Absa", "Nedbank", "Standard Bank", "TymeBank",
+BANKS = ["Ubuntu Trust Bank", "DemoBank", "Capitec", "First National Bank", "FNB", "Absa", "Nedbank", "Standard Bank", "TymeBank",
          "Discovery Bank", "African Bank", "Investec", "Bidvest Bank", "Old Mutual", "Access Bank", "Postbank"]
 RE_BANK = re.compile(r"\b(" + "|".join(b.replace(" ", r"\s+") for b in BANKS) + r")\b", re.I)
 RE_ACC_CTX = re.compile(r"(acc(ount)?\.?\s*(no|number|nr|#)?|a/c|rekening(nommer)?|akhawunti|akhaonto|bank(ing)? details|deposit (in)?to|pay (in)?to|eft (in)?to)\s*[:\-]?\s*$", re.I)

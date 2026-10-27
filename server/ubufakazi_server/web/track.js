@@ -60,6 +60,7 @@
         el("div", { class: "row-btns" }, packBtn, el("button", { class: "btn btn-ghost", onclick: () => lookup() }, "Check another"))),
       el("section", { class: "panel" }, el("h3", null, "Progress"),
         el("ol", { class: "steps-v" }, t.history.map((h) => el("li", { class: "done" }, el("b", null, h.label), el("div", { class: "muted small" }, dateTime(h.at))))),
+        (t.bank_responses || []).map((b) => el("div", { class: "notice info" }, el("b", null, b.bank + " (fictional bank): "), b.status_label + ". ", b.note || "")),
         t.registration ? el("div", { class: "notice info" }, el("b", null, "Registered at " + t.registration.station + ": "), el("span", { class: "mono" }, t.registration.cas_number),
           " (entered by the officer who registered your case; keep it for any follow-up with the station).") : null,
         el("p", { class: "hint" }, "These are steps inside Ubufakazi's demo workflow. A SAPS case number is only issued when you register the case at a police station. Show the QR code in your case pack to the officer there.")),

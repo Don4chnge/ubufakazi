@@ -25,6 +25,20 @@ def env(tmp_path_factory):
     config.reset_settings()
     db.reset_engine()
     services.SYNC_PROCESSING = True
+    from ubufakazi_server import banklink, utb
+
+    def _bank_transport(url, raw, headers):            # the fictional bank, reached in-process
+        sig = headers.get("X-UBF-Signature")
+        try:
+            if url.endswith("/fraud-alerts"):
+                return 202, utb.receive_alert(raw, sig)
+            if url.endswith("/api/bank-link/callback"):
+                return 200, banklink.receive_callback(raw, sig)
+        except PermissionError:
+            return 401, {}
+        return 404, {}
+    banklink.SYNC = True
+    banklink._post = _bank_transport
     if pg:
         from ubufakazi_server.db import Base, engine
         from ubufakazi_server import models  # noqa: F401

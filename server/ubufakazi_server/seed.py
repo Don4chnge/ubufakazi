@@ -54,7 +54,7 @@ STATUS_MIX = ["awaiting_review"] * 5 + ["under_review"] * 3 + ["more_info_requir
 def _rows() -> list[dict]:
     rows = []
 
-    def add(date, prov, kind, amount, script, acc=(), phone=(), domain=(), bank="DemoBank"):
+    def add(date, prov, kind, amount, script, acc=(), phone=(), domain=(), bank="Ubuntu Trust Bank"):
         rows.append({"date": date, "province": prov, "kind": kind, "amount": amount, "script": script,
                      "acc": list(acc), "phone": list(phone), "domain": list(domain), "bank": bank})
 
@@ -101,7 +101,7 @@ def _rows() -> list[dict]:
         lo, hi = ranges[kind]
         script = "sars_refund" if kind == "sars" and rng.random() < 0.5 else None
         add(date(), rng.choices(provinces, weights)[0], kind, round(rng.randint(lo, hi), -1), script, [acc()], [phone()],
-            bank=rng.choice(["Fictional Bank B", "Fictional Bank C", "Fictional Bank D", "DemoBank"]))
+            bank=rng.choice(["Fictional Bank B", "Fictional Bank C", "Fictional Bank D", "Ubuntu Trust Bank"]))
     rows.sort(key=lambda r: r["date"])
     return rows
 
