@@ -478,3 +478,7 @@ legend .n { display: inline-grid; place-items: center; width: 22px; height: 22px
 .otp-now { font-size: 20px; letter-spacing: .18em; color: var(--accent); text-shadow: 0 0 12px rgba(46,230,214,.4); }
 
 .ts-ok { color: var(--accent); }
+.legend { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 8px; margin: 0 0 14px; color: var(--muted); font-size: 14px; }
+.legend .dot { display: inline-block; width: 10px; height: 10px; border-radius: 50%; }
+.legend .dot.on { background: var(--ok); box-shadow: 0 0 0 3px var(--ok-dim); }
+.legend .dot.off { background: var(--warn); box-shadow: 0 0 0 3px var(--warn-dim); margin-left: 10px; }

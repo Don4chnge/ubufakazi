@@ -107,12 +107,14 @@ def integrations():
         "whatsapp": whatsapp.status(),
         "ai_media_reading": ai.status(),
         "trusted_timestamps": timestamps.status(),
-        "saps": {"connected": False, "note": "Not connected to SAPS systems, and never claimed to be. Station handover works "
-                                             "without it: the complainant shows the QR code on their case pack, an officer "
-                                             "accepts the case at their station and types in the CAS number the station "
-                                             "issued (marked 'entered by officer', not verified with SAPS). Ubufakazi never "
-                                             "creates CAS numbers. Stations in this demo are fictional."},
-        "banks": {"connected": False, "note": "No bank is contacted. The bank dashboard is a fictional DemoBank simulation."},
+        "station_handover": {"working": True, "note": "Working. The complainant shows the QR code on their case pack; "
+                                                      "an officer signs in, accepts the case at their station and records "
+                                                      "the CAS number the station issued (shown as 'entered by officer')."},
+        "saps": {"connected": False, "note": "Deliberately not connected to SAPS's own systems, and never claimed to be. "
+                                             "Ubufakazi never creates or checks CAS numbers. Stations in this demo are fictional."},
+        "bank_simulation": {"working": True, "note": "Working as a simulation: DemoBank, a fictional bank, sees masked "
+                                                     "accounts named in several reports, with no victim details."},
+        "banks": {"connected": False, "note": "Deliberately not connected: no real bank is contacted."},
         "database": "postgres" if s.database_url.startswith("postgres") else "sqlite",
     }
 

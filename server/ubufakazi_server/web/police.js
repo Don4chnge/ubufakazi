@@ -596,12 +596,15 @@
   function integList(i) {
     const row = (name, on, note) => el("div", { class: "integ" }, el("span", { class: "dot " + (on ? "on" : "off") }), el("div", null, el("b", null, name), el("div", { class: "muted" }, note)));
     return el("section", { class: "panel" },
+      el("p", { class: "legend" }, el("span", { class: "dot on" }), " Working now  ", el("span", { class: "dot off" }), " Not connected. For SAPS and real banks this is deliberate: Ubufakazi never pretends to be linked to them."),
       row("Telegram bot", i.telegram.running, i.telegram.note),
       row("WhatsApp", i.whatsapp.running, i.whatsapp.note),
       row("AI reading of images, voice notes and scans", i.ai_media_reading.configured, i.ai_media_reading.note),
       row("Trusted timestamps (RFC 3161)", i.trusted_timestamps.configured, i.trusted_timestamps.note),
+      row("Police station handover (QR + CAS number)", i.station_handover.working, i.station_handover.note),
+      row("Bank fraud review (DemoBank simulation)", i.bank_simulation.working, i.bank_simulation.note),
       row("SAPS systems", i.saps.connected, i.saps.note),
-      row("Banks", i.banks.connected, i.banks.note),
+      row("Real banks", i.banks.connected, i.banks.note),
       row("Database", true, i.database === "sqlite" ? "SQLite (local demo). Set DATABASE_URL for Postgres/Supabase." : "PostgreSQL"));
   }
 
