@@ -14,7 +14,7 @@ from concurrent.futures import ThreadPoolExecutor
 
 from sqlalchemy.orm import Session
 
-from . import ai, audit, intel, storage
+from . import ai, audit, intel, storage, timestamps
 from .db import session_scope, write_lock
 from .extract import TYPE_LABEL, analyse_text, extract, parse_chat, show_phone
 from .models import (CATEGORIES, FINANCIAL_CATEGORIES, STATUSES, Consent, EvidenceDerivative, EvidenceFile,
@@ -239,13 +239,20 @@ def process_report(report_id: int) -> None:
         db.flush()
         job_id = job.id
         todo = [(ev.id, ev.uid, ev.sha256, ev.detected_type) for ev in r.evidence if not ev.derivatives]
+        to_stamp = [(ev.id, ev.sha256) for ev in r.evidence if not ev.trusted_timestamp]
     try:
         derived = {ev_id: _derive_rows(uid, sha, typ) for ev_id, uid, sha, typ in todo}   # slow part, no lock held
+        stamps = {ev_id: timestamps.stamp_quietly(sha) for ev_id, sha in to_stamp} if timestamps.configured() else {}
         with write_lock, session_scope() as db:
             r = db.get(Report, report_id)
             for ev in r.evidence:
                 for d in derived.get(ev.id, []):
                     ev.derivatives.append(EvidenceDerivative(**d))
+                if stamps.get(ev.id) and not ev.trusted_timestamp:
+                    ev.trusted_timestamp = stamps[ev.id]
+                    info = timestamps.public_info(ev.trusted_timestamp)
+                    audit.record(db, "evidence.timestamped", actor="system", target_type="evidence", target_id=ev.id,
+                                 station_id=r.station_id, detail={"report": r.reference, "sha256": ev.sha256, **(info or {})})
             db.flush()
             _process(db, r)
             job = db.get(ProcessingJob, job_id)

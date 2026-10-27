@@ -50,6 +50,7 @@ class Settings:
     demo_mode: bool = True                           # all data fictional; UI shows DEMO banners
     storage_backend: str = "file"                   # file (local disk) | db (inside the database, for hosts without disks)
     demo_seed: str = ""                              # optional: derive demo passwords/2FA secrets (see creds.py)
+    tsa_url: str = ""                                # RFC 3161 timestamp authority (see timestamps.py)
     whatsapp_token: str = ""                         # Meta WhatsApp Cloud API (see whatsapp.py)
     whatsapp_phone_id: str = ""
     whatsapp_verify_token: str = ""
@@ -94,6 +95,7 @@ def get_settings() -> Settings:
             gemini_api_key=os.environ.get("GEMINI_API_KEY", ""),
             gemini_model=os.environ.get("GEMINI_MODEL") or "gemini-2.0-flash",
             demo_seed=os.environ.get("UBF_DEMO_SEED", ""),
+            tsa_url=os.environ.get("UBF_TSA_URL", "").strip(),
             whatsapp_token=os.environ.get("WHATSAPP_TOKEN", "").strip(),
             whatsapp_phone_id=os.environ.get("WHATSAPP_PHONE_NUMBER_ID", "").strip(),
             whatsapp_verify_token=os.environ.get("WHATSAPP_VERIFY_TOKEN", "").strip(),

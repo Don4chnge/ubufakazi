@@ -476,3 +476,5 @@ legend .n { display: inline-grid; place-items: center; width: 22px; height: 22px
 .node-panel .btn { margin: 10px 8px 0 0; }
 .node-panel .facts { margin: 8px 0 4px; grid-template-columns: max-content minmax(0, 1fr); gap: 6px 12px; }
 .otp-now { font-size: 20px; letter-spacing: .18em; color: var(--accent); text-shadow: 0 0 12px rgba(46,230,214,.4); }
+
+.ts-ok { color: var(--accent); }

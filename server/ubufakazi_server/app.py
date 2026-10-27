@@ -18,7 +18,7 @@ from pydantic import BaseModel, Field
 from sqlalchemy import func
 from sqlalchemy.orm import Session
 
-from . import ai, audit, bot, police, services, storage, whatsapp
+from . import ai, audit, bot, police, services, storage, timestamps, whatsapp
 from .casepack import build_case_pack
 from .config import SITE_DIR, WEB_DIR, get_settings
 from .db import get_db, init_db, write_lock
@@ -106,7 +106,7 @@ def integrations():
         "telegram": _bot_status(),
         "whatsapp": whatsapp.status(),
         "ai_media_reading": ai.status(),
-        "trusted_timestamps": {"configured": False, "note": "Not configured. Times are the server's clock, not RFC 3161 tokens."},
+        "trusted_timestamps": timestamps.status(),
         "saps": {"connected": False, "note": "Not connected. Fictional demo stations only; no CAS numbers are issued."},
         "banks": {"connected": False, "note": "No bank is contacted. The bank dashboard is a fictional DemoBank simulation."},
         "database": "postgres" if s.database_url.startswith("postgres") else "sqlite",
@@ -512,6 +512,7 @@ def police_report(reference: str, request: Request, p: Principal = Depends(offic
         "evidence": [{"id": e.id, "name": e.original_name, "type": e.detected_type, "declared_mime": e.declared_mime,
                       "size": e.size, "sha256": e.sha256, "received_at": e.received_at.isoformat() + "Z", "channel": e.channel,
                       "trusted_timestamp": bool(e.trusted_timestamp),
+                      "timestamp": timestamps.public_info(e.trusted_timestamp),
                       "previewable": e.detected_type in ("jpeg", "png", "webp", "gif"),
                       "derivatives": [{"kind": d.kind, "method": d.method, "ai_generated": d.ai_generated, "note": d.note,
                                        "content": d.content[:20000], "truncated": len(d.content) > 20000,
@@ -559,11 +560,34 @@ def evidence_verify(evidence_id: int, request: Request, p: Principal = Depends(o
     e = _evidence(db, p, evidence_id)
     now = storage.rehash(e.uid)
     ok = now == e.sha256
+    ts_ok, ts_note = None, None
+    if e.trusted_timestamp:
+        try:
+            info = timestamps.verify(timestamps.token_bytes(e.trusted_timestamp), now)
+            ts_ok, ts_note = True, f"Trusted timestamp valid: {info['gen_time']} by {info['tsa']}"
+        except (timestamps.TimestampError, ValueError, KeyError) as ex:
+            ts_ok, ts_note = False, f"Trusted timestamp does NOT match: {ex}"
     with write_lock:
         audit.record(db, "evidence.verified", actor=_actor(p), actor_user_id=p.user.id, target_type="evidence",
                      target_id=e.id, station_id=e.report.station_id, ip=client_ip(request),
-                     detail={"match": ok, "report": e.report.reference})
-    return {"match": ok, "recorded_sha256": e.sha256, "current_sha256": now, "checked_at": utcnow().isoformat() + "Z"}
+                     detail={"match": ok, "timestamp_ok": ts_ok, "report": e.report.reference})
+    return {"match": ok, "recorded_sha256": e.sha256, "current_sha256": now, "checked_at": utcnow().isoformat() + "Z",
+            "timestamp_ok": ts_ok, "timestamp_note": ts_note}
+
+
+@app.get("/api/police/evidence/{evidence_id}/timestamp")
+def evidence_timestamp(evidence_id: int, request: Request, p: Principal = Depends(officer), db: Session = Depends(get_db)):
+    """The RFC 3161 reply (.tsr) for independent checking with openssl."""
+    e = _evidence(db, p, evidence_id)
+    if not e.trusted_timestamp:
+        raise HTTPException(404, "This file has no trusted timestamp.")
+    with write_lock:
+        audit.record(db, "evidence.timestamp_downloaded", actor=_actor(p), actor_user_id=p.user.id, target_type="evidence",
+                     target_id=e.id, station_id=e.report.station_id, ip=client_ip(request),
+                     detail={"report": e.report.reference})
+    return Response(timestamps.token_bytes(e.trusted_timestamp), media_type="application/timestamp-reply",
+                    headers={"Content-Disposition": f'attachment; filename="{e.report.reference}-{e.id}.tsr"',
+                             "Content-Security-Policy": "default-src 'none'; sandbox"})
 
 
 class StatusIn(BaseModel):

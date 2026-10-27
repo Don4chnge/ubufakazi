@@ -19,6 +19,7 @@ from reportlab.lib.units import mm
 from reportlab.platypus import (PageBreak, Paragraph, SimpleDocTemplate, Spacer, Table, TableStyle)
 from sqlalchemy.orm import Session
 
+from . import timestamps
 from .extract import money
 from .models import CATEGORIES, STATUS_LABELS, AuditEvent, Note, Report, StatusChange
 from .writing import LANG_NAMES
@@ -204,13 +205,27 @@ def build_case_pack(db: Session, r: Report, audience: str = "complainant", viewe
     f.append(P("Each original file is stored exactly as received and never changed. Its SHA-256 fingerprint was calculated "
                "by the Ubufakazi server when the file arrived. To check a copy, calculate its SHA-256 (for example on the "
                "Ubufakazi verify page, which works offline in the browser) and compare it with the value below. "
-               "'Received' is the server's clock, not a trusted third-party timestamp.", "small"))
+               "'Received' is the server's clock; trusted third-party timestamps, where present, are listed below the table.", "small"))
     f.append(Spacer(1, 4))
     rows = [["#", "File", "Type / size", "Received", "SHA-256"]]
     for n, ev in enumerate(r.evidence, 1):
         rows.append([str(n), ev.original_name, f"{ev.detected_type} / {_size(ev.size)}", _fmt(ev.received_at),
                      f'<font name="Courier" size="6.6">{ev.sha256[:32]}<br/>{ev.sha256[32:]}</font>'])
     f.append(_grid(rows, [7, 50, 25, 32, 60], S) if len(rows) > 1 else P("No files were attached.", "small"))
+    stamped = [(n, ev, timestamps.public_info(ev.trusted_timestamp)) for n, ev in enumerate(r.evidence, 1)
+               if ev.trusted_timestamp]
+    if stamped:
+        f.append(Spacer(1, 6))
+        f.append(P("Trusted timestamps (RFC 3161)", "label"))
+        f.append(P("An independent timestamp authority signed each file's SHA-256 fingerprint at the time shown. Only the "
+                   "fingerprint was sent, never the file. The signed tokens (.tsr) can be checked without Ubufakazi, "
+                   "for example with 'openssl ts -verify'.", "small"))
+        rows = [["#", "Timestamp (UTC)", "Authority", "Token serial"]]
+        for n, ev, info in stamped:
+            if info:
+                rows.append([str(n), escape(info["gen_time"].replace("T", " ").replace("Z", "")), escape(info["tsa"]),
+                             escape(info["serial"])])
+        f.append(_grid(rows, [7, 40, 85, 42], S))
     derived = [(ev, d) for ev in r.evidence for d in ev.derivatives]
     if derived:
         f.append(Spacer(1, 6))

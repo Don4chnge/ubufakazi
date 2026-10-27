@@ -9,5 +9,6 @@ python-telegram-bot==21.6
 reportlab>=4.0
 pymupdf>=1.24
 httpx>=0.27
+asn1crypto>=1.5      # RFC 3161 trusted timestamps
 psycopg[binary]>=3.2      # Postgres (Neon/Supabase) when DATABASE_URL points there
 pytest>=8.0

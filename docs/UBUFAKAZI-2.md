@@ -47,6 +47,11 @@ and `WHATSAPP_APP_SECRET` (App settings > Basic). In Meta, set the webhook to `h
 verify token and subscribe to the `messages` field. Every webhook call is checked against the app secret. The sender's number is stored
 only as a keyed hash. Meta's free test number can message up to 5 numbers you add as allowed recipients; temporary tokens last 24 hours.
 
+**Trusted timestamps (optional, RFC 3161).** Set `UBF_TSA_URL` (for example `https://freetsa.org/tsr`). For every new
+evidence file, only its SHA-256 fingerprint is sent to the timestamp authority; the signed reply is verified (fingerprint,
+nonce, signature) and stored. Officers see it on the evidence card, "Verify" re-checks it, and the `.tsr` token can be
+downloaded and checked independently with `openssl ts -verify`. Failures never block a report.
+
 **AI reading of media (optional).** Set `GEMINI_API_KEY`. Without it, screenshots, voice notes and scans are still stored and hashed, but they are marked "not processed". Nothing is guessed.
 
 **Tests:**
@@ -164,7 +169,7 @@ Web form (/report) ──────┼─► conversation.py / app.py ─► s
 ## Known limitations (said out loud)
 
 - **Not SAPS, not a bank.** These are fictional stations and a fictional bank. A real deployment needs SAPS approval, verified receiving channels and a POPIA impact assessment.
-- **Timestamps.** "Received" is the server clock. Trusted RFC 3161 timestamps are not configured.
+- **Timestamps.** "Received" is the server clock. RFC 3161 tokens are added when `UBF_TSA_URL` is set; checking the authority's certificate chain is done with openssl, not in the app.
 - **Tamper evidence, not tamper-proofing.** The hash chain and file hashes make changes detectable. An attacker with full server access could still delete data. Hourly anchoring of the audit head to an external log would harden this.
 - **Hosting.** One container with one volume. Back up `/data` if real use ever follows; the demo data is synthetic.
 - **Single process.** The rate limiter is in memory. The audit chain relies on one server process (the bot runs inside it). Multi-instance deployment needs a database-level lock or sequence for the chain.

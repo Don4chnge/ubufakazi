@@ -342,7 +342,7 @@
 
   function evidence(r, body) {
     if (!r.evidence.length) { body.replaceChildren(el("div", { class: "empty" }, r.is_seed ? "Synthetic seed record: no evidence files." : "No files were attached.")); return; }
-    body.replaceChildren(el("div", { class: "notice info" }, "Originals are stored exactly as received and never modified. Their SHA-256 was calculated by the server on arrival. Use Verify to re-hash the stored file now. Every download and verification is written to the audit log."),
+    body.replaceChildren(el("div", { class: "notice info" }, "Originals are stored exactly as received and never modified. Their SHA-256 was calculated by the server on arrival and, when configured, timestamped by an independent authority (RFC 3161). Use Verify to re-hash the stored file now. Every download and verification is written to the audit log."),
       el("div", { class: "stack" }, ...r.evidence.map((e) => evCard(r, e))));
   }
 
@@ -354,12 +354,16 @@
       try {
         const v = await api("POST", `/api/police/evidence/${e.id}/verify`, {});
         result.replaceChildren(v.match ? el("div", { class: "verify-ok" }, "✓ Unchanged since receipt (" + dateTime(v.checked_at) + ")")
-          : el("div", { class: "verify-bad" }, "✗ MISMATCH: stored file differs from the hash recorded at receipt. Do not rely on it; escalate."));
+          : el("div", { class: "verify-bad" }, "✗ MISMATCH: stored file differs from the hash recorded at receipt. Do not rely on it; escalate."),
+          v.timestamp_note ? el("div", { class: v.timestamp_ok ? "verify-ok" : "verify-bad" }, (v.timestamp_ok ? "✓ " : "✗ ") + v.timestamp_note) : null);
       } catch (ex) { toast(ex.message, true); } finally { verify.disabled = false; }
     } }, icon(I.check), "Verify");
     const dl = el("button", { class: "btn btn-ghost btn-small", onclick: async () => {
       try { download(await api("GET", `/api/police/evidence/${e.id}/download`, undefined, { blob: true }), `${r.reference}-${e.id}-${e.name}`); }
       catch (ex) { toast(ex.message, true); } } }, icon(I.dl), "Original");
+    const tsr = e.timestamp ? el("button", { class: "btn btn-ghost btn-small", title: "RFC 3161 token for independent checking (openssl ts -verify)", onclick: async () => {
+      try { download(await api("GET", `/api/police/evidence/${e.id}/timestamp`, undefined, { blob: true }), `${r.reference}-${e.id}.tsr`); }
+      catch (ex) { toast(ex.message, true); } } }, icon(I.dl), "Timestamp token") : null;
     if (e.previewable) {
       const show = el("button", { class: "btn btn-ghost btn-small", onclick: async () => {
         try { const b = await api("GET", `/api/police/evidence/${e.id}/download?inline=1`, undefined, { blob: true });
@@ -372,10 +376,11 @@
       d.content ? el("pre", null, d.content + (d.truncated ? "\n[…truncated in this view]" : "")) : null));
     return el("article", { class: "ev" }, thumb,
       el("div", null, el("div", { class: "name" }, e.name),
-        el("div", { class: "row" }, el("span", null, e.type.toUpperCase() + " · " + size(e.size)), el("span", null, "received " + dateTime(e.received_at) + " (server clock)"), el("span", null, "via " + e.channel),
+        el("div", { class: "row" }, el("span", null, e.type.toUpperCase() + " · " + size(e.size)), el("span", null, "received " + dateTime(e.received_at) + " (server clock)"),
+          e.timestamp ? el("span", { class: "ts-ok", title: "RFC 3161 trusted timestamp by " + e.timestamp.tsa }, "✓ trusted timestamp " + dateTime(e.timestamp.gen_time)) : null, el("span", null, "via " + e.channel),
           e.declared_mime ? el("span", null, "declared " + e.declared_mime) : null),
         el("div", { class: "hash", title: "SHA-256" }, e.sha256), result, ders),
-      el("div", { class: "btns" }, verify, dl));
+      el("div", { class: "btns" }, verify, dl, tsr));
   }
 
   function timeline(r, body) {
