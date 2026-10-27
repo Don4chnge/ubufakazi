@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="referrer" content="no-referrer">
+<meta name="theme-color" content="#030812">
+<title>For banks · Ubufakazi</title>
+<meta name="description" content="Signed mule-account alerts for bank fraud teams, with subscription plans. Free for victims and SAPS.">
+<link rel="icon" href="/app/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/app/console.css">
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="topbar">
+  <a class="brand" href="/" aria-label="Ubufakazi home"><svg viewBox="0 0 32 32" aria-hidden="true"><path d="M16 3l10 4v8.2c0 6.6-4.3 11.3-10 13.8C10.3 26.5 6 21.8 6 15.2V7z"/><path d="M11 17.2c.5-3.2 2.5-5.4 5-5.4s4.5 2.2 5 5.4"/><path d="M13.2 20.6c0-2.6 1.2-4.4 2.8-4.4s2.8 1.8 2.8 4.4"/><path d="M16 19.4v4.2"/></svg><span class="brand-text"><b>Ubufakazi</b><small>Scam-syndicate forensics for SAPS &amp; banks</small></span></a>
+  <nav class="pubnav" id="pubnav" aria-label="Main"><a href="/">Home</a><a href="/police#/board">For SAPS</a><a href="/banks" aria-current="page">For Banks</a><a href="/report">Report a Scam</a><a href="/track">Track a Case</a><a href="/about">About</a></nav>
+  <span class="spacer"></span>
+  <div class="nav-actions">
+    
+    <a class="btn btn-ghost btn-small" href="/police">Investigator login</a>
+    <a class="btn btn-primary btn-small" href="/report">Report a Scam</a>
+    <button class="menu-btn" type="button" aria-label="Menu" aria-controls="pubnav" aria-expanded="false"><svg viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
+  </div>
+</header>
+<main class="public wide" id="main">
+  <div class="page-hero">
+    <div class="kicker">For banks and fintechs</div>
+    <h1>Freeze the mule account <span class="grad">before the money moves</span></h1>
+    <p class="lead-in">Scam victims report to SAPS through Ubufakazi. When several victims say they paid into the same account at your bank, Ubufakazi sends your fraud team a signed alert straight away, with the evidence summary. Your team reviews it and can block the account in one click. SAPS and the victim see your decision.</p>
+    <p><a class="btn btn-primary" href="/bank">Open the bank console demo</a> <a class="btn btn-ghost" href="#plans">See the plans</a></p>
+  </div>
+
+  <h2 class="section-title">How it works</h2>
+  <ol class="bank-steps">
+    <li class="panel reveal"><span class="n">1</span><h3>Victims report</h3><p class="muted">On the website or Telegram. Every file is fingerprinted (SHA-256) and timestamped, and the report goes to the SAPS station whose jurisdiction covers where it happened.</p></li>
+    <li class="panel reveal"><span class="n">2</span><h3>Reports are linked</h3><p class="muted">Ubufakazi finds reports that name the same receiving account, phone number, website or message script, across every station and province.</p></li>
+    <li class="panel reveal"><span class="n">3</span><h3>Your bank gets an alert</h3><p class="muted">Over a signed API: the account number, how many separate reports name it, amounts, dates, provinces and scam types. Never victims' names, ID numbers or chats.</p></li>
+    <li class="panel reveal"><span class="n">4</span><h3>You block the account</h3><p class="muted">Investigate, freeze, lift the freeze or close. Each decision goes back to Ubufakazi, where the investigating officer and the victim can see it.</p></li>
+  </ol>
+
+  <h2 class="section-title" id="plans">Subscription plans</h2>
+  <p class="muted plans-note">Free for scam victims and for SAPS. Banks and fintechs pay, because freezing a mule account early saves them losses and investigation time. Proposed pricing, excluding VAT, to be confirmed in the pilot.</p>
+  <div class="plans">
+    <section class="plan reveal">
+      <div class="kicker">Pilot</div><h3>3 months free</h3><div class="price">R0</div>
+      <ul class="checks"><li>One bank, the stations in one province</li><li>Signed alerts on your own accounts</li><li>Fraud console with block / unblock</li><li>Monthly results review: accounts flagged and frozen</li></ul>
+    </section>
+    <section class="plan reveal">
+      <div class="kicker">Fintech</div><h3>For fintechs and smaller banks</h3><div class="price">R12 500<small>/month</small></div>
+      <ul class="checks"><li>Up to 250 alerts a month</li><li>Signed alerts on your own accounts</li><li>Fraud console with block / unblock</li><li>Decisions shared with SAPS and the victim</li><li>Email support</li></ul>
+    </section>
+    <section class="plan featured reveal">
+      <div class="kicker">Bank</div><h3>For retail banks</h3><div class="price">R75 000<small>/month</small></div>
+      <ul class="checks"><li>Unlimited alerts, all provinces</li><li>Everything in Fintech</li><li>Fraud-report API: structured, evidence-linked reports for your case systems</li><li>Syndicate view: every account linked to the same network</li><li>Priority support</li></ul>
+    </section>
+    <section class="plan reveal">
+      <div class="kicker">Enterprise · insurers</div><h3>Custom</h3><div class="price">Quote</div>
+      <ul class="checks"><li>Several brands or entities</li><li>Integration with your core banking and AML tools</li><li>Insurers: data licence for scam claims</li><li>Dedicated support</li></ul>
+    </section>
+  </div>
+
+  <h2 class="section-title">What your bank never receives</h2>
+  <section class="panel reveal"><ul class="checks">
+    <li>Victims' names, ID numbers, phone numbers, chats or statements. Alerts are about the receiving account only.</li>
+    <li>A verdict. An alert is an investigative lead: the account may belong to a money mule or a compromised customer, so your team checks its own records before acting.</li>
+    <li>This is a demonstration: Ubuntu Trust Bank is a fictional bank, and Ubufakazi is not connected to any real bank yet.</li>
+  </ul></section>
+</main>
+
+<footer class="site-foot">
+  <div class="in">
+    <div>
+      <a class="brand" href="/"><svg viewBox="0 0 32 32" aria-hidden="true"><path d="M16 3l10 4v8.2c0 6.6-4.3 11.3-10 13.8C10.3 26.5 6 21.8 6 15.2V7z"/><path d="M11 17.2c.5-3.2 2.5-5.4 5-5.4s4.5 2.2 5 5.4"/><path d="M13.2 20.6c0-2.6 1.2-4.4 2.8-4.4s2.8 1.8 2.8 4.4"/><path d="M16 19.4v4.2"/></svg><span class="brand-text"><b>Ubufakazi</b><small>Scam-syndicate forensics for SAPS &amp; banks</small></span></a>
+      <p class="muted small foot-blurb">Digital forensics for SAPS and banks: tamper-evident scam evidence, routed by station jurisdiction and linked into syndicates across provinces.</p>
+      <div class="social"><a href="https://github.com/Don4chnge/ubufakazi" target="_blank" rel="noopener" aria-label="Source code on GitHub"><svg viewBox="0 0 24 24"><path d="M12 .5a11.5 11.5 0 0 0-3.64 22.41c.58.1.79-.25.79-.56v-2c-3.2.7-3.88-1.37-3.88-1.37-.52-1.33-1.28-1.69-1.28-1.69-1.05-.71.08-.7.08-.7 1.16.08 1.77 1.19 1.77 1.19 1.03 1.77 2.7 1.26 3.36.96.1-.75.4-1.26.73-1.55-2.55-.29-5.24-1.28-5.24-5.69 0-1.26.45-2.29 1.19-3.1-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.17 1.18a11 11 0 0 1 5.78 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.76.11 3.05.74.81 1.19 1.84 1.19 3.1 0 4.42-2.7 5.39-5.26 5.68.41.36.78 1.06.78 2.14v3.17c0 .31.21.67.8.56A11.5 11.5 0 0 0 12 .5z"/></svg></a></div>
+    </div>
+    <div><h4>For victims (free)</h4><ul><li><a href="/report">Report a scam</a></li><li><a href="/track">Track a case</a></li><li><a href="/verify">Verify a file</a></li><li><a href="/demo-kit/samples/">Sample evidence</a></li></ul></div>
+    <div><h4>For SAPS &amp; banks</h4><ul><li><a href="/police#/board">Syndicate jurisdiction board</a></li><li><a href="/banks">Bank plans &amp; pricing</a></li><li><a href="/police">Investigator dashboard</a></li><li><a href="/bank">Ubuntu Trust Bank (fictional)</a></li><li><a href="/integrations">System status</a></li></ul></div>
+    <div><h4>Project</h4><ul><li><a href="/about">About Ubufakazi</a></li><li><a href="https://github.com/Don4chnge/ubufakazi" target="_blank" rel="noopener">Source code</a></li><li><a href="/privacy">Privacy &amp; data deletion</a></li><li><a href="/mvp">Original MVP (offline)</a></li></ul></div>
+  </div>
+  <div class="legal"><span>Demonstration prototype by Team CyberThreat · HackSecure 2026. Fictional stations, fictional bank and synthetic data.</span><span>Not affiliated with SAPS or any bank. In danger now? Call 10111.</span></div>
+</footer>
+<script src="/app/common.js"></script>
+</body>
+</html>

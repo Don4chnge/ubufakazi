@@ -6,7 +6,7 @@
   const { el, api, toast, money, date, dateTime } = UBF;
   const root = document.getElementById("root");
   let me = null, data = null, selected = null;
-  const ACTION_LABEL = { investigate: "Start investigation", freeze: "Freeze account", release: "Lift freeze", close: "Close case" };
+  const ACTION_LABEL = { investigate: "Start investigation", freeze: "Block account (freeze)", release: "Unblock account", close: "Close case" };
   const ACTION_CLASS = { freeze: "btn-danger", investigate: "btn-primary" };
 
   async function boot() {
@@ -52,15 +52,31 @@
     });
     root.replaceChildren(el("main", { class: "main" },
       el("div", { class: "page-head" }, el("div", null, el("div", { class: "kicker" }, data.bank + " · fraud operations"), el("h1", null, "Fraud alerts from Ubufakazi"),
-        el("p", null, "Accounts at this bank named in scam reports. Alerts arrive over Ubufakazi's signed API; each decision is reported back."))),
+        el("p", null, "Scam victims report to SAPS through Ubufakazi. When their reports say they paid into an account held at this bank, Ubufakazi sends this alert so the fraud team can block the account before the money moves on. Each decision is reported back to the investigating officer and the victim.")),
+        el("a", { class: "plan-pill", href: "/banks#plans", title: "Ubufakazi subscription plans for banks" }, el("span", null, "Subscription"), el("b", null, "Bank plan · demo"))),
+      el("ol", { class: "how-strip" },
+        el("li", null, el("b", null, "1"), "Victims report scams to SAPS via Ubufakazi"),
+        el("li", null, el("b", null, "2"), "Reports naming the same account are linked"),
+        el("li", null, el("b", null, "3"), "Signed alert arrives here (no victim names)"),
+        el("li", null, el("b", null, "4"), "You block the account; SAPS sees your decision")),
       el("div", { class: "notice warn" }, el("b", null, "Fictional bank. "), data.notice),
       el("div", { class: "tiles" }, tile(items.length, "Alerts received"), tile(open, "Open (new or investigating)", true), tile(frozen, "Accounts frozen"), tile(money(total), "Reported paid into our accounts")),
       el("div", { class: "bank-grid" },
         items.length ? el("div", { class: "table-wrap" }, el("table", { class: "data" },
           el("thead", null, el("tr", null, ["Account", "Reports", "Reported paid", "Last report", "Priority", "Case status"].map((h) => el("th", { scope: "col" }, h)))),
-          el("tbody", null, rows))) : el("div", { class: "empty" }, "No alerts yet. They appear when Ubufakazi processes a report naming an Ubuntu Trust Bank account."),
+          el("tbody", null, rows))) : el("div", { class: "empty" }, data.syncing ? "Receiving alerts from Ubufakazi… this page refreshes in a few seconds." : "No alerts yet. They appear when Ubufakazi processes a report naming an Ubuntu Trust Bank account."),
         detail)));
     if (selected) pick(selected);
+    if (data.syncing) setTimeout(load, 5000);
+  }
+
+  function recommend(a) {
+    if (a.status === "frozen") return el("div", { class: "notice ok-note" }, el("b", null, "Account blocked. "), "Ubufakazi, the investigating officer and the victim have been told.");
+    if (!a.account_detail || !a.actions.length) return null;
+    const many = a.reports >= 3;
+    return el("div", { class: "notice " + (many ? "" : "warn") }, el("b", null, many ? "Recommendation: block this account. " : "Recommendation: investigate. "),
+      many ? `${a.reports} separate victims in ${a.provinces.length} province${a.provinces.length === 1 ? "" : "s"} say they paid into this account. It is likely being used as a mule account. Check your own records, then block it while the funds can still be stopped.`
+           : `${a.reports} report${a.reports === 1 ? "" : "s"} name this account so far. Check your records; Ubufakazi will update this alert if more victims report it.`);
   }
 
   async function pick(id, tr) {
@@ -83,7 +99,13 @@
         el("dt", null, "Balance"), el("dd", null, money(ad.balance)),
         el("dt", null, "Account status"), el("dd", null, el("span", { class: "st st-utb-acct-" + ad.status }, ad.status === "frozen" ? "Frozen" : "Active")))
         : el("div", { class: "notice info" }, "No Ubuntu Trust Bank account has this number. Ubufakazi was told automatically."),
-      el("p", { class: "muted" }, `${a.reports} separate report${a.reports === 1 ? "" : "s"} · ${money(a.total_reported)} · ${a.provinces.length} province${a.provinces.length === 1 ? "" : "s"} · ${a.scam_types.join(", ") || "type not stated"}`),
+      recommend(a),
+      el("h3", null, "Fraud report from Ubufakazi"),
+      el("dl", { class: "facts" },
+        el("dt", null, "Separate reports"), el("dd", null, String(a.reports)),
+        el("dt", null, "Reported paid in"), el("dd", null, money(a.total_reported)),
+        el("dt", null, "Provinces"), el("dd", null, a.provinces.join(", ") || "-"),
+        el("dt", null, "Scam types"), el("dd", null, a.scam_types.join(", ") || "Not stated")),
       a.corroborated_links ? el("div", { class: "notice info" }, `${a.corroborated_links} pairs of these reports are also linked by other signals (same phone numbers, websites or message templates), which suggests organised use of the account, possibly by a money mule.`) : null,
       el("h3", null, "Payments reported into this account"),
       el("div", { class: "bars" }, a.timeline.map((r) => {

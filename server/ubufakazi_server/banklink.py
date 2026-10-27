@@ -179,7 +179,7 @@ def deliver_for_report(report_id: int) -> None:
         log.exception("bank delivery failed for report %s", report_id)
 
 
-def keep_delivering(first_delay: float = 20, every: float = 600) -> None:
+def keep_delivering(first_delay: float = 5, every: float = 600) -> None:
     """Background loop: deliver anything the bank has not received yet (after a deploy, after a network hiccup)."""
     time.sleep(first_delay)
     while True:
@@ -192,13 +192,29 @@ def keep_delivering(first_delay: float = 20, every: float = 600) -> None:
 
 
 def deliver_pending() -> int:
-    """Startup backfill: send every routed alert the bank has not seen yet."""
+    """Backfill: send every routed alert the bank has not seen yet, or whose picture changed (deliver() skips the
+    rest), e.g. after new reports or a demo-data refresh."""
     from .db import session_scope
-    from .models import BankAlert, BankDelivery
+    from .models import BankAlert
     with session_scope() as db:
-        sent = {a for (a,) in db.query(BankDelivery.alert_id).filter(BankDelivery.delivered_at.isnot(None))}
-        todo = [a.id for a in db.query(BankAlert).filter(BankAlert.bank_stated.in_(ROUTED_BANKS)) if a.id not in sent]
+        todo = [a.id for a in db.query(BankAlert).filter(BankAlert.bank_stated.in_(ROUTED_BANKS))]
     return sum(1 for i in todo if deliver(i))
+
+
+_backfill_lock = threading.Lock()
+
+
+def backfill_soon() -> None:
+    """Start one background backfill unless one is already running (used when the bank console looks empty)."""
+    if not _backfill_lock.acquire(blocking=False):
+        return
+
+    def _run():
+        try:
+            deliver_pending()
+        finally:
+            _backfill_lock.release()
+    run_later(_run)
 
 
 def run_later(fn, *args) -> None:

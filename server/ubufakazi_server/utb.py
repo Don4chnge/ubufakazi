@@ -119,7 +119,8 @@ def case_detail(db, c) -> dict:
                                "status": acct.status, "opened": acct.opened_at.date().isoformat()} if acct else None,
             "events": [{"at": e.at.isoformat() + "Z", "action": e.action, "by": e.by, "note": e.note}
                        for e in db.query(UtbEvent).filter_by(case_id=c.id).order_by(UtbEvent.id)],
-            "actions": [a for a, (st, _, _) in ACTIONS.items() if acct is not None and st != c.status]}
+            "actions": [a for a, (st, _, _) in ACTIONS.items() if acct is not None and st != c.status
+                        and (a != "release" or acct.status == "frozen") and (a != "freeze" or acct.status != "frozen")]}
 
 
 def act(case_id: int, action: str, by: str) -> dict:

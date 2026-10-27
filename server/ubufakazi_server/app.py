@@ -849,9 +849,13 @@ def utb_cases(p: Principal = Depends(bank_role), db: Session = Depends(get_db)):
     from .models import UtbCase
     utb.seed_registry(db)
     items = [utb.case_row(db, c) for c in db.query(UtbCase).all()]
+    syncing = False
+    if not items and db.query(BankAlert).filter(BankAlert.bank_stated.in_(banklink.ROUTED_BANKS)).first():
+        banklink.backfill_soon()                 # alerts exist but have not reached the bank yet
+        syncing = True
     items.sort(key=lambda x: ({"received": 0, "investigating": 1, "frozen": 2}.get(x["status"], 3), -x["reports"],
                               -x["total_reported"]))
-    return {"bank": utb.NAME, "statuses": utb.STATUS, "items": items,
+    return {"bank": utb.NAME, "statuses": utb.STATUS, "items": items, "syncing": syncing,
             "notice": "Ubuntu Trust Bank is a fictional bank. These alerts arrived from Ubufakazi over its signed API. "
                       "No real bank, account or person is involved."}
 
@@ -882,7 +886,7 @@ def utb_action(case_id: int, body: UtbActionIn, request: Request, p: Principal =
 # ------------------------------------------------------------------ pages + website
 PAGES = {"/": "home.html", "/demo-logins": "demo-logins.html", "/share": "share.html", "/resources": "resources.html", "/about": "about.html",
          "/police": "police.html", "/bank-demo": "bank.html", "/bank": "bank.html", "/report": "report.html", "/track": "track.html",
-         "/verify": "verify.html", "/integrations": "integrations.html", "/privacy": "privacy.html"}
+         "/verify": "verify.html", "/integrations": "integrations.html", "/privacy": "privacy.html", "/banks": "banks.html"}
 
 
 def _page(name: str):
