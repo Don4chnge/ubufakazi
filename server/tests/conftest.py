@@ -34,6 +34,12 @@ def env(tmp_path_factory):
                 return 202, utb.receive_alert(raw, sig)
             if url.endswith("/api/bank-link/callback"):
                 return 200, banklink.receive_callback(raw, sig)
+            if url.endswith("/api/v1/beneficiary-check"):
+                from ubufakazi_server import payee
+                try:
+                    return 200, payee.handle(raw, headers)
+                except payee.CheckRefused as e:
+                    return e.status, {}
         except PermissionError:
             return 401, {}
         return 404, {}

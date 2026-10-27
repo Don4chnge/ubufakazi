@@ -178,9 +178,9 @@
           el("td", null, j.province), el("td", null, el("b", null, j.station.replace("Demo Station · ", "")), el("span", { class: "sub" }, j.code + (j.code === syn.lead.code ? " · suggested lead" : "") + (j.own ? " · your station" : ""))),
           el("td", null, j.visible ? j.towns.join(", ") : el("span", { class: "muted" }, "Restricted: another station's jurisdiction")),
           el("td", { class: "num" }, String(j.victims)), el("td", { class: "num" }, j.amount !== null ? money(j.amount) : "–")))));
-      const mt = el("table", { class: "data" }, el("thead", null, el("tr", null, ["Mule account", "Bank", "Reports", "Bank decision"].map((h, i) => el("th", { scope: "col", class: i === 2 ? "num" : null }, h)))),
+      const mt = el("table", { class: "data" }, el("thead", null, el("tr", null, ["Mule account", "Bank", "Reports", "Payers warned", "Bank decision"].map((h, i) => el("th", { scope: "col", class: i === 2 || i === 3 ? "num" : null }, h)))),
         el("tbody", null, syn.mules.map((m) => el("tr", null, el("td", { class: "mono" }, m.account), el("td", null, m.bank || "Not stated", el("span", { class: "sub" }, plural(m.provinces.length, "province"))),
-          el("td", { class: "num" }, String(m.reports)),
+          el("td", { class: "num" }, String(m.reports)), el("td", { class: "num" }, String(m.warned || 0)),
           el("td", null, m.bank_status === "frozen" ? el("span", { class: "st st-frozen" }, "Frozen") : m.bank_connected
             ? el("span", { class: "st st-under_review" }, m.bank_status ? m.bank_status.replace(/_/g, " ") : "Alert sent")
             : el("span", { class: "st st-more_info_required" }, "Not connected: send manually"),
@@ -203,6 +203,7 @@
               el("li", null, el("b", null, `${syn.lead.station.replace("Demo Station · ", "")} (${syn.lead.code}) leads. `), leadWhy(syn)),
               others.length ? el("li", null, el("b", null, "Link the other dockets to one investigation: "), others.join(", ") + ".") : null,
               el("li", null, el("b", null, "Freeze the money trail: "), `ask the bank to act on ${mulesTxt || "the receiving accounts"} while funds can still be stopped.`),
+              syn.warned ? el("li", null, el("b", null, "Next victims already protected: "), `${syn.warned} customer${syn.warned === 1 ? " was" : "s were"} warned before paying into these accounts.`) : null,
               el("li", null, el("b", null, "Use the evidence as is: "), "every file is SHA-256 fingerprinted and independently timestamped; case packs carry a QR code for the station handover."))),
             el("section", { class: "panel" }, el("h3", null, "Mule accounts and bank decisions"), el("div", { class: "table-wrap" }, mt))))));
     }

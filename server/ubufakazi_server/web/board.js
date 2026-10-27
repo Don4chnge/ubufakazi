@@ -79,7 +79,7 @@ const UBFBoard = (() => {
         const chip = el("svg:g", { class: "jacc " + st });
         chip.append(el("svg:rect", { x: AX, y: y - 30, width: 300, height: 60, rx: 10 }));
         chip.append(el("svg:text", { x: AX + 14, y: y - 8, class: "jaccno" }, m.account));
-        chip.append(el("svg:text", { x: AX + 14, y: y + 12, class: "jname" }, `${m.bank || "Bank not stated"} · ${m.reports} report${m.reports === 1 ? "" : "s"}`));
+        chip.append(el("svg:text", { x: AX + 14, y: y + 12, class: "jname" }, `${m.bank || "Bank not stated"} · ${m.reports} report${m.reports === 1 ? "" : "s"}` + (m.warned ? ` · ${m.warned} payer${m.warned === 1 ? "" : "s"} warned` : "")));
         chip.append(el("svg:text", { x: AX + 288, y: y - 8, class: "jtag", "text-anchor": "end" },
           st === "frozen" ? "FROZEN" : st === "sent" ? (m.bank_status ? m.bank_status.toUpperCase() : "ALERT SENT") : "SEND MANUALLY"));
         gAcc.append(chip);

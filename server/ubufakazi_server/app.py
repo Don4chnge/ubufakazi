@@ -20,7 +20,7 @@ from pydantic import BaseModel, Field
 from sqlalchemy import func
 from sqlalchemy.orm import Session
 
-from . import ai, audit, banklink, bot, handover, police, services, storage, timestamps, utb, whatsapp
+from . import payee, ai, audit, banklink, bot, handover, police, services, storage, timestamps, utb, whatsapp
 from .casepack import build_case_pack
 from .config import SITE_DIR, WEB_DIR, get_settings
 from .db import get_db, init_db, write_lock
@@ -828,6 +828,37 @@ async def bank_callback(request: Request):
         _err(401, "Bad signature.")
     except (ValueError, KeyError):
         _err(400, "Bad request.")
+
+
+# ------------------------------------------------------------------ beneficiary check (subscribed banks only)
+@app.post("/api/v1/beneficiary-check")
+async def beneficiary_check(request: Request):
+    raw = await request.body()
+    try:
+        return await run_in_threadpool(payee.handle, raw, request.headers)
+    except payee.CheckRefused as e:
+        _err(e.status, e.message)
+
+
+@app.post("/api/utb/payment-check")
+async def utb_payment_check(request: Request, p: Principal = Depends(bank_role)):
+    """The fictional bank's own app backend: its customer is about to pay a new beneficiary."""
+    try:
+        body = await request.json()
+        assert isinstance(body, dict)
+    except Exception:                                        # noqa: BLE001
+        _err(400, "Bad request.")
+    number = "".join(ch for ch in str(body.get("account_number", "")) if ch.isdigit())
+    if not 6 <= len(number) <= 16:
+        _err(400, "Enter an account number of 6 to 16 digits.")
+    try:
+        amount = float(body["amount"]) if body.get("amount") not in (None, "") else None
+    except (TypeError, ValueError):
+        _err(400, "Enter a valid amount.")
+    status, res = await run_in_threadpool(payee.client_check, "utb", number, amount)
+    if status != 200:
+        _err(502, "Ubufakazi did not answer the check (HTTP %s)." % status)
+    return res
 
 
 # ------------------------------------------------------------------ Ubuntu Trust Bank (FICTIONAL bank, own API)

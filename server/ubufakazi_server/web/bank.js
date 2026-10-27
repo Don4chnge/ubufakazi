@@ -5,7 +5,7 @@
 (() => {
   const { el, api, toast, money, date, dateTime } = UBF;
   const root = document.getElementById("root");
-  let me = null, data = null, selected = null;
+  let me = null, data = null, selected = null, view = "alerts";
   const ACTION_LABEL = { investigate: "Start investigation", freeze: "Block account (freeze)", release: "Unblock account", close: "Close case" };
   const ACTION_CLASS = { freeze: "btn-danger", investigate: "btn-primary" };
 
@@ -50,7 +50,11 @@
         el("td", null, el("span", { class: "st st-utb-" + a.status }, a.status_label)));
       return tr;
     });
-    root.replaceChildren(el("main", { class: "main" },
+    const tabs = el("div", { class: "bank-tabs", role: "tablist" },
+      el("button", { role: "tab", "aria-selected": view === "alerts" ? "true" : "false", onclick: () => { view = "alerts"; render(); } }, "Fraud alerts from Ubufakazi"),
+      el("button", { role: "tab", "aria-selected": view === "pay" ? "true" : "false", onclick: () => { view = "pay"; render(); } }, "Customer payment check"));
+    if (view === "pay") { root.replaceChildren(el("main", { class: "main" }, tabs, payView())); return; }
+    root.replaceChildren(el("main", { class: "main" }, tabs,
       el("div", { class: "page-head" }, el("div", null, el("div", { class: "kicker" }, data.bank + " · fraud operations"), el("h1", null, "Fraud alerts from Ubufakazi"),
         el("p", null, "Scam victims report to SAPS through Ubufakazi. When their reports say they paid into an account held at this bank, Ubufakazi sends this alert so the fraud team can block the account before the money moves on. Each decision is reported back to the investigating officer and the victim.")),
         el("a", { class: "plan-pill", href: "/banks#plans", title: "Ubufakazi subscription plans for banks" }, el("span", null, "Subscription"), el("b", null, "Bank plan · demo"))),
@@ -68,6 +72,65 @@
         detail)));
     if (selected) pick(selected);
     if (data.syncing) setTimeout(load, 5000);
+  }
+
+
+  // ------------------------------------------------------------------ customer payment check (beneficiary check)
+  const SAMPLES = [["Fake-job syndicate account", "1047228359"], ["OTP-fraud mule account", "6230441802"], ["Account nobody reported", "4105529930"]];
+  function payView() {
+    const num = el("input", { id: "pnum", inputmode: "numeric", autocomplete: "off", placeholder: "e.g. 1047228359", maxlength: "16" });
+    const amt = el("input", { id: "pamt", inputmode: "decimal", autocomplete: "off", placeholder: "R 0.00" });
+    const who = el("input", { id: "pname", autocomplete: "off", placeholder: "e.g. Mzansi Retail HR" });
+    const screen = el("div", { class: "phone-screen" });
+    const form = el("form", { class: "pay-form", onsubmit: async (ev) => {
+      ev.preventDefault();
+      const btn = form.querySelector("button[type=submit]"); btn.disabled = true; btn.textContent = "Checking with Ubufakazi…";
+      try {
+        const r = await api("POST", "/api/utb/payment-check", { account_number: num.value, amount: amt.value.replace(/[^0-9.]/g, "") || null });
+        showResult(r, who.value || "this beneficiary", amt.value);
+      } catch (e) { toast(e.message, true); }
+      btn.disabled = false; btn.textContent = "Continue";
+    } },
+      el("label", { for: "pname" }, "Beneficiary name"), who,
+      el("label", { for: "pnum" }, "Account number"), num,
+      el("label", { for: "pamt" }, "Amount"), amt,
+      el("button", { class: "btn btn-primary", type: "submit" }, "Continue"),
+      el("div", { class: "chips" }, el("span", null, "Try:"), SAMPLES.map(([l, n]) => el("button", { type: "button", class: "chip", onclick: () => { num.value = n; if (!amt.value) amt.value = "1850"; } }, l))));
+    function showResult(r, name, amount) {
+      const tone = { high: "stop", warning: "warn", caution: "warn", clear: "ok" }[r.risk];
+      const title = { high: "Stop. This looks like a scam.", warning: "Warning: check before you pay", caution: "Check before you pay", clear: "No scam reports found" }[r.risk];
+      screen.replaceChildren(el("div", { class: "pay-result " + tone },
+        el("div", { class: "pr-icon", "aria-hidden": "true" }, tone === "ok" ? "✓" : "!"),
+        el("h3", null, title),
+        el("p", { class: "pr-head" }, r.headline),
+        el("p", null, r.advice),
+        r.risk !== "clear" ? el("ul", { class: "pr-facts" },
+          el("li", null, el("b", null, String(r.reports)), " scam report" + (r.reports === 1 ? "" : "s")),
+          el("li", null, el("b", null, String(r.provinces)), " province" + (r.provinces === 1 ? "" : "s")),
+          el("li", null, el("b", null, String(r.jurisdictions)), " police jurisdiction" + (r.jurisdictions === 1 ? "" : "s")),
+          r.frozen_by_its_bank ? el("li", null, el("b", null, "Frozen"), " by its bank") : null) : null,
+        el("div", { class: "pr-btns" },
+          r.risk === "clear" ? el("button", { class: "btn btn-primary", onclick: () => { toast(`Demo: payment of ${amount || "the amount"} to ${name} would continue.`); reset(); } }, "Pay now")
+            : [el("button", { class: "btn btn-primary", onclick: () => { toast("Payment cancelled. Well done: the customer kept their money."); reset(); } }, "Cancel payment"),
+               el("button", { class: "btn btn-ghost btn-small", onclick: () => { toast("Demo: the bank would ask the customer to confirm and log the override.", true); reset(); } }, "I know this person, pay anyway")]),
+        el("p", { class: "pr-foot" }, `Checked with Ubufakazi · ${r.check_id} · signed request · ${r.quota_left_this_hour} checks left this hour`)));
+    }
+    function reset() { screen.replaceChildren(form); }
+    reset();
+    return el("div", { class: "pay-grid" },
+      el("div", { class: "phone" }, el("div", { class: "phone-top" }, el("b", null, "Ubuntu Trust Bank"), el("span", null, "Fictional bank app · demo")),
+        el("h3", { class: "phone-h" }, "Pay a new beneficiary"), screen),
+      el("section", { class: "panel" },
+        el("div", { class: "kicker" }, "Stop the next victim"),
+        el("h2", null, "Checked before the money leaves"),
+        el("p", { class: "muted" }, "When a customer adds a new beneficiary, this bank asks Ubufakazi whether the account is named in scam reports, and warns the customer before they pay."),
+        el("h3", null, "How the check is protected"),
+        el("ul", { class: "checks" },
+          el("li", null, el("b", null, "Subscribed banks only: "), "every request is signed with this bank's own key; requests older than 5 minutes, or reused, are refused."),
+          el("li", null, el("b", null, "Cannot frame an innocent account: "), "“Stop” needs several victims in at least two police jurisdictions, or the account frozen by its own bank. One report only ever says “check before you pay”."),
+          el("li", null, el("b", null, "Nothing to mine: "), "the answer is a risk level and counts. No victims, references, stations, amounts or chats."),
+          el("li", null, el("b", null, "Abuse is visible: "), "hourly quota per bank, unusual lookup volumes raise a security alert, and every check is written to the tamper-evident audit log (without the account number).")),
+        el("p", { class: "hint" }, "Fictional bank and synthetic data. A real bank would run this check inside its own app.")));
   }
 
   function recommend(a) {

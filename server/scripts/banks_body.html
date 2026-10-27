@@ -14,20 +14,32 @@
     <li class="panel reveal"><span class="n">4</span><h3>You block the account</h3><p class="muted">Investigate, freeze, lift the freeze or close. Each decision goes back to Ubufakazi, where the investigating officer and the victim can see it.</p></li>
   </ol>
 
+  <h2 class="section-title" id="check">Stop the next victim: beneficiary check</h2>
+  <section class="panel reveal"><div class="grid2">
+    <div><h3>Before the money leaves</h3><p class="muted">When your customer adds a new beneficiary, your app asks Ubufakazi whether that account is named in scam reports. If it is, your customer sees a warning such as <b>"Named in 9 scam reports by different victims in 7 provinces. Do not pay."</b> before they pay. Alerts help you freeze accounts; the beneficiary check stops the next payment.</p>
+      <p><a class="btn btn-ghost btn-small" href="/bank">Try it in the bank console demo (Customer payment check tab)</a></p></div>
+    <div><h3>Built so it cannot be abused</h3><ul class="checks">
+      <li>Subscribed banks only: each request is signed with the bank's own key, and stale or reused requests are refused</li>
+      <li>Anti-framing: "do not pay" needs several victims in at least two police jurisdictions, or the account frozen by its own bank</li>
+      <li>Answers are a risk level and counts only, never victims or case details</li>
+      <li>Hourly quotas, alerts on unusual lookup volumes, and every check in the tamper-evident audit log</li>
+    </ul></div>
+  </div></section>
+
   <h2 class="section-title" id="plans">Subscription plans</h2>
   <p class="muted plans-note">Free for scam victims and for SAPS. Banks and fintechs pay, because freezing a mule account early saves them losses and investigation time. Proposed pricing, excluding VAT, to be confirmed in the pilot.</p>
   <div class="plans">
     <section class="plan reveal">
       <div class="kicker">Pilot</div><h3>3 months free</h3><div class="price">R0</div>
-      <ul class="checks"><li>One bank, the stations in one province</li><li>Signed alerts on your own accounts</li><li>Fraud console with block / unblock</li><li>Monthly results review: accounts flagged and frozen</li></ul>
+      <ul class="checks"><li>One bank, the stations in one province</li><li>Beneficiary check in your app</li><li>Signed alerts on your own accounts</li><li>Fraud console with block / unblock</li><li>Monthly results review: accounts flagged and frozen</li></ul>
     </section>
     <section class="plan reveal">
       <div class="kicker">Fintech</div><h3>For fintechs and smaller banks</h3><div class="price">R12 500<small>/month</small></div>
-      <ul class="checks"><li>Up to 250 alerts a month</li><li>Signed alerts on your own accounts</li><li>Fraud console with block / unblock</li><li>Decisions shared with SAPS and the victim</li><li>Email support</li></ul>
+      <ul class="checks"><li>Up to 250 alerts a month</li><li>Beneficiary check: up to 20 000 lookups a month</li><li>Signed alerts on your own accounts</li><li>Fraud console with block / unblock</li><li>Decisions shared with SAPS and the victim</li><li>Email support</li></ul>
     </section>
     <section class="plan featured reveal">
       <div class="kicker">Bank</div><h3>For retail banks</h3><div class="price">R75 000<small>/month</small></div>
-      <ul class="checks"><li>Unlimited alerts, all provinces</li><li>Everything in Fintech</li><li>Fraud-report API: structured, evidence-linked reports for your case systems</li><li>Syndicate view: every account linked to the same network</li><li>Priority support</li></ul>
+      <ul class="checks"><li>Unlimited alerts, all provinces</li><li>Unlimited beneficiary checks in your app</li><li>Everything in Fintech</li><li>Fraud-report API: structured, evidence-linked reports for your case systems</li><li>Syndicate view: every account linked to the same network</li><li>Priority support</li></ul>
     </section>
     <section class="plan reveal">
       <div class="kicker">Enterprise · insurers</div><h3>Custom</h3><div class="price">Quote</div>

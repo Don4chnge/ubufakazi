@@ -354,6 +354,19 @@ class UtbEvent(Base):
     note: Mapped[str] = mapped_column(String(300), default="")
 
 
+class BeneficiaryCheck(Base):
+    """A subscribed bank asked, before a customer paid a new beneficiary, whether the account is named in scam
+    reports. No account number is stored: only its keyed hash, the risk given and the count."""
+    __tablename__ = "beneficiary_checks"
+    id: Mapped[int] = mapped_column(primary_key=True)
+    at: Mapped[dt.datetime] = mapped_column(DateTime, default=utcnow, index=True)
+    bank_id: Mapped[str] = mapped_column(String(20), index=True)
+    account_hmac: Mapped[str] = mapped_column(String(64), index=True)
+    risk: Mapped[str] = mapped_column(String(12))
+    reports: Mapped[int] = mapped_column(Integer, default=0)
+    amount: Mapped[Optional[float]] = mapped_column(Float, nullable=True)
+
+
 class EvidenceBlob(Base):
     """Original file bytes, when evidence is kept in the database (hosted mode, UBF_STORAGE=db).
     Insert-only: database triggers reject UPDATE, so an original cannot be silently replaced through SQL."""

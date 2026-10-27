@@ -212,7 +212,9 @@ def board(db: Session, p: Principal, min_size: int = 3) -> dict:
     from .models import BankAlert, BankDelivery
     from .extract import mask_acc
     from .stations import jurisdictions
+    from .payee import warned_counts
     stations = {s.id: s for s in db.query(Station).all()}
+    warned = warned_counts(db)
     full = p.is_admin
     syndicates = []
     for comp in _components(db):
@@ -255,7 +257,7 @@ def board(db: Session, p: Principal, min_size: int = 3) -> dict:
             prov_hit = sorted({stations[r.station_id].province for r in reps if r.id in rids})
             mules.append({"account": acc_info[hm][0], "bank": acc_info[hm][1], "reports": len(rids), "provinces": prov_hit,
                           "bank_connected": bool(dl), "bank_status": (dl.bank_status if dl else None),
-                          "bank_note": (dl.bank_note if dl else None)})
+                          "bank_note": (dl.bank_note if dl else None), "warned": warned.get(hm, 0)})
         types = Counter(r.scam_type for r in reps if r.scam_type)
         dates = sorted(r.created_at for r in reps)
         top = types.most_common(1)[0][0] if types else None
@@ -270,7 +272,7 @@ def board(db: Session, p: Principal, min_size: int = 3) -> dict:
             "jurisdictions": sorted(rows, key=lambda x: (x["province"], -x["victims"])),
             "lead": {"code": lead["code"], "station": lead["station"], "province": lead["province"],
                      "victims": lead["victims"], "first": lead["first"]},
-            "mules": mules, "phones": len(kinds["phone"]), "websites": len(kinds["domain"]),
+            "mules": mules, "warned": sum(m["warned"] for m in mules), "phones": len(kinds["phone"]), "websites": len(kinds["domain"]),
             "scripted": any(r.script_text for r in reps)})
     syndicates.sort(key=lambda s: (-s["stations"], -(sum(j["amount"] or 0 for j in s["jurisdictions"])), s["first"]))
     for n, s in enumerate(syndicates):
