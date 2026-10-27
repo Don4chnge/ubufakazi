@@ -365,8 +365,8 @@ def messages_from(payload: dict) -> list[dict]:
                 elif st.get("status") == "failed":
                     err = (st.get("errors") or [{}])[0]
                     detail = (err.get("error_data") or {}).get("details") or err.get("message") or err.get("title") or ""
-                    STATE["error"] = re.sub(r"\d{6,}", "[number hidden]",
-                                            f"Meta could not deliver a reply (error {err.get('code')}: {detail})")[:300]
+                    detail = re.sub(r"\d{6,}", "[number hidden]", str(detail))
+                    STATE["error"] = f"Meta could not deliver a reply (error {err.get('code')}: {detail})"[:300]
                     log.warning("WhatsApp delivery failed: %s", STATE["error"])
     return found
 
