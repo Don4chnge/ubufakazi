@@ -56,7 +56,7 @@
     if (view === "pay") { root.replaceChildren(el("main", { class: "main" }, tabs, payView())); return; }
     root.replaceChildren(el("main", { class: "main" }, tabs,
       el("div", { class: "page-head" }, el("div", null, el("div", { class: "kicker" }, data.bank + " · fraud operations"), el("h1", null, "Fraud alerts from Ubufakazi"),
-        el("p", null, "Scam victims report to Ubufakazi, which routes each report to the fraud desk of the branch for their area and links reports into syndicates. When their reports say they paid into an account held at this bank, Ubufakazi sends this alert so the fraud team can block the account before the money moves on. Each decision is reported back to the investigating officer and the victim.")),
+        el("p", null, "Scam victims report to Ubufakazi, which routes each report to the fraud desk of the branch for their area and links reports into syndicates. When their reports say they paid into an account held at this bank, Ubufakazi sends this alert so the fraud team can block the account before the money moves on. Each decision is reported back to the branch fraud desk and the victim.")),
         el("a", { class: "plan-pill", href: "/banks#plans", title: "Ubufakazi subscription plans for banks" }, el("span", null, "Subscription"), el("b", null, "Bank plan · demo"))),
       el("ol", { class: "how-strip" },
         el("li", null, el("b", null, "1"), "Victims report scams via Ubufakazi"),
