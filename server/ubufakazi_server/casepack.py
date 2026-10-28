@@ -343,4 +343,8 @@ def _source_label(src: str, r: Report) -> str:
         for n, ev in enumerate(r.evidence, 1):
             if ev.id == ev_id:
                 return f"file #{n} (extracted)"
+    if src.startswith(("ai:", "flagged:")):
+        kind, _, rest = src.partition(":")
+        base = _source_label("evidence:" + rest, r) if rest.isdigit() else _source_label(rest, r)
+        return base + (" · AI-read, unverified" if kind == "ai" else " · injection flagged")
     return {"chat": "chat (extracted)", "description": "complainant's words", "seed": "synthetic"}.get(src, src)

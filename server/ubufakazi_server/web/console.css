@@ -602,3 +602,10 @@ ol.bank-steps .n { display: inline-grid; place-items: center; width: 34px; heigh
 .pr-btns .btn { justify-content: center; }
 .pr-foot { font: 500 10.5px var(--mono) !important; color: var(--faint) !important; margin-top: 6px !important; }
 @media (max-width: 900px) { .pay-grid { grid-template-columns: 1fr; } }
+
+/* ---------------------------------------------------------------- AI safety */
+.panel.ai-alert { border-color: rgba(255, 93, 108, .55); background: linear-gradient(180deg, rgba(255,93,108,.12), var(--panel)); margin-bottom: 14px; }
+.panel.ai-alert h3 { color: #FF8B96; }
+ul.inj-list { list-style: none; padding: 0; margin: 10px 0; display: grid; gap: 8px; }
+ul.inj-list li { border: 1px solid var(--line); border-radius: 10px; padding: 10px 12px; background: rgba(3,8,18,.4); }
+ul.inj-list q { display: block; margin-top: 6px; font: 500 12.5px/1.45 var(--mono); color: var(--ink); quotes: "\201C" "\201D"; }

@@ -132,10 +132,14 @@ def update_bank_alerts(db: Session, report: Report) -> list[BankAlert]:
     """Fictional demo alerts: one per receiving account named in a financial report."""
     if report.category not in FINANCIAL_CATEGORIES:
         return []
+    from .aiguard import untrusted
     out = []
     for i in report.identifiers:
         if i.kind != "account":
             continue
+        if untrusted(i.source) and not any(not untrusted(s) for (s,) in db.query(Identifier.source).filter(
+                Identifier.kind == "account", Identifier.hmac == i.hmac).all()):
+            continue      # AI-only / injection-flagged: a lead for SAPS, never a bank alert on its own
         al = db.query(BankAlert).filter_by(account_hmac=i.hmac).first()
         if not al:
             al = BankAlert(account_hmac=i.hmac, account_display=mask_acc(i.value), bank_stated=i.bank or "")

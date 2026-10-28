@@ -1,0 +1,7 @@
+{
+ "tool": "pip-audit",
+ "scanned_at": "2026-10-28T00:55:10+00:00",
+ "packages": 47,
+ "known_vulnerabilities": 0,
+ "direct_requirements_pinned": true
+}

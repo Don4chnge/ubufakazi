@@ -382,7 +382,8 @@
     const f = r.facts || {};
     const ids = r.identifiers || [];
     const kindLabel = { account: "Receiving account", phone: "Phone", email: "Email", domain: "Website", social: "Social profile", username: "@username", payment_ref: "Payment ref" };
-    const srcLabel = (s) => s === "chat" ? "chat" : s === "description" ? "complainant" : s === "seed" ? "synthetic" : s.startsWith("evidence:") ? "file" : s;
+    const srcLabel = (s) => s === "chat" ? "chat" : s === "description" ? "complainant" : s === "seed" ? "synthetic" : s.startsWith("evidence:") ? "file"
+      : s.startsWith("ai:") ? "AI-read · unverified" : s.startsWith("flagged:") ? "⚠ injection flagged" : s;
     const groups = {};
     ids.forEach((i) => { (groups[i.kind] = groups[i.kind] || []).push(i); });
     const facts = el("dl", { class: "facts" },
@@ -392,7 +393,15 @@
       f.total_paid ? [el("dt", null, "Payments"), el("dd", null, (f.payments || [f.total_paid]).map((p) => el("span", { class: "chip" }, money(p))), el("b", null, " = " + money(f.total_paid)))] : null,
       f.total_requested ? [el("dt", null, "Requested"), el("dd", null, money(f.total_requested))] : null);
     const answers = Object.entries(r.answers || {}).filter(([, v]) => v);
-    body.replaceChildren(el("div", { class: "cols" },
+    const sec = f.security || {};
+    const inj = sec.prompt_injection || [];
+    const aiPanel = inj.length ? el("section", { class: "panel ai-alert" },
+        el("h3", null, "⚠ Possible prompt injection in the evidence"),
+        el("p", null, "Text in this report looks written to steer an AI reader. Details from the affected file(s) are kept as leads for you, but they cannot send a bank alert or count in the bank beneficiary check on their own."),
+        el("ul", { class: "inj-list" }, inj.map((x) => el("li", null, el("b", null, x.label), el("span", { class: "sub" }, `${x.file} · read by ${x.read_by}`), el("q", null, x.snippet)))),
+        el("p", { class: "hint" }, "OWASP LLM01 (prompt injection) · LLM06 (excessive agency). Check the original file before relying on any detail."))
+      : sec.untrusted_identifiers ? el("div", { class: "notice info" }, el("b", null, "AI-read details: "), `${sec.untrusted_identifiers} detail${sec.untrusted_identifiers === 1 ? " was" : "s were"} read only by the AI. They are shown as unverified and need confirmation before a bank is alerted.`) : null;
+    body.replaceChildren(aiPanel, el("div", { class: "cols" },
       el("div", null,
         el("section", { class: "panel" }, el("h3", null, "The complainant's account"), el("div", { class: "quote" }, r.description),
           answers.length ? el("dl", { class: "facts" }, answers.map(([k, v]) => [el("dt", null, k.replace(/_/g, " ")), el("dd", null, String(v))])) : null,

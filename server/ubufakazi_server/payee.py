@@ -78,8 +78,12 @@ def assess(db, account_number: str) -> dict:
     from .security import identifier_hmac
     digits = "".join(ch for ch in account_number if ch.isdigit())
     hm = identifier_hmac("account", digits)
-    reps = (db.query(Report).join(Identifier, Identifier.report_id == Report.id)
-            .filter(Identifier.kind == "account", Identifier.hmac == hm).distinct().all())
+    from .aiguard import untrusted
+    rows = (db.query(Report, Identifier.source).join(Identifier, Identifier.report_id == Report.id)
+            .filter(Identifier.kind == "account", Identifier.hmac == hm).all())
+    trusted = {r.id: r for r, src in rows if not untrusted(src)}
+    # AI-only / injection-flagged readings count only once a trusted reading of the same account exists
+    reps = list({r.id: r for r, src in rows}.values()) if trusted else []
     n = len(reps)
     stations = {r.station_id for r in reps}
     provinces = {r.province for r in reps if r.province}

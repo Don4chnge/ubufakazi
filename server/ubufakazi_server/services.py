@@ -15,7 +15,7 @@ from concurrent.futures import ThreadPoolExecutor
 
 from sqlalchemy.orm import Session
 
-from . import ai, audit, banklink, intel, storage, timestamps
+from . import ai, aiguard, audit, banklink, intel, storage, timestamps
 from .db import session_scope, write_lock
 from .extract import TYPE_LABEL, analyse_text, extract, parse_chat, show_phone
 from .models import (CATEGORIES, FINANCIAL_CATEGORIES, STATUSES, Consent, EvidenceDerivative, EvidenceFile,
@@ -307,31 +307,51 @@ def _process_report(report_id: int) -> None:
 
 def _process(db: Session, r: Report) -> None:
     chat_parts, other_parts = [], []
-    for ev in r.evidence:
+    findings, chat_flagged = [], False                     # AI safety: prompt-injection attempts in evidence
+    for n, ev in enumerate(r.evidence, 1):
         for d in ev.derivatives:
             if not d.content:
                 continue
+            hits = aiguard.scan(d.content, is_ai_output=(d.kind == "ai-extract"))
+            for h in hits:
+                findings.append({**h, "file": f"file #{n}: {ev.original_name}"[:120],
+                                 "read_by": "AI" if d.kind == "ai-extract" else "rules"})
             if d.kind == "text" and parse_chat(d.content) and any(m["sender"] for m in parse_chat(d.content)[:50]):
                 chat_parts.append(d.content)
+                chat_flagged = chat_flagged or bool(hits)
             elif d.kind in ("text", "pdf-text", "ai-extract"):
-                other_parts.append((f"evidence:{ev.id}", d.content))
+                src = ("flagged:" if hits else "ai:" if d.kind == "ai-extract" else "evidence:") + str(ev.id)
+                other_parts.append((src, d.content))
+    desc_hits = aiguard.scan(r.description)
+    findings += [{**h, "file": "complainant's description", "read_by": "rules"} for h in desc_hits]
     main_text = "\n".join(chat_parts) if chat_parts else r.description
     analysis = analyse_text(main_text)
     scam_type = analysis["scam_type"] if r.category in FINANCIAL_CATEGORIES else "other"
 
     # identifiers: chat/description first, then other evidence (identifiers only, never amounts)
-    items = intel.identifiers_from_analysis(analysis["ex"], "chat" if chat_parts else "description")
+    main_src = ("flagged:chat" if chat_flagged else "chat") if chat_parts else ("flagged:description" if desc_hits else "description")
+    items = intel.identifiers_from_analysis(analysis["ex"], main_src)
     extra_sources = {}
-    for src, text in ([("description", r.description)] if chat_parts else []) + other_parts:
+    for src, text in ([("flagged:description" if desc_hits else "description", r.description)] if chat_parts else []) + other_parts:
         ex2 = extract(parse_chat(text), None)
         found = intel.identifiers_from_analysis(ex2, src)
         if found:
             extra_sources[src] = len(found)
         items += found
-    # an account seen in a proof-of-payment PDF that the chat also gave keeps the chat's bank name
+    # trusted readings first, so an identifier also read by the rules is never stored as "AI only"
+    items.sort(key=lambda it: aiguard.untrusted(it.get("source")))
     intel.save_identifiers(db, r, items)
 
     r.facts = _facts(analysis, scam_type, extra_sources)
+    untrusted_n = sum(1 for i in r.identifiers if aiguard.untrusted(i.source))
+    r.facts["security"] = {"prompt_injection": findings[:20], "untrusted_identifiers": untrusted_n,
+                           "rule": "Details read only by the AI, or from a file with an injection attempt, are leads "
+                                   "for investigators but never send a bank alert or count in the beneficiary check "
+                                   "on their own."}
+    if findings:
+        audit.record(db, "security.prompt_injection_suspected", actor="system", target_type="report",
+                     target_id=r.reference, station_id=r.station_id,
+                     detail={"findings": len(findings), "kinds": sorted({f["kind"] for f in findings})}, commit=False)
     r.scam_type = scam_type if r.category in FINANCIAL_CATEGORIES else None
     r.amount_paid = analysis["ex"]["total_paid"]
     if r.amount_paid is None and r.answers.get("amount_paid"):
