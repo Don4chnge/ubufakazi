@@ -83,11 +83,11 @@ STATUS_LABELS = {
     "awaiting_review": "Awaiting review",
     "under_review": "Under review",
     "more_info_required": "More information required",
-    "prepared_for_visit": "Ready for escalation to SAPS",
-    "registered_at_station": "Escalated to SAPS by the bank (CAS number recorded)",
+    "prepared_for_visit": "Prepared for complainant's visit",
+    "registered_at_station": "Registered at a police station",
     "closed": "Closed in Ubufakazi's workflow",
 }
-# Ubufakazi focuses on scam syndicates for banks: only these two categories can be reported.
+# Ubufakazi focuses on scam syndicates for SAPS and banks: only these two categories can be reported.
 CATEGORIES = {
     "scam": "Online scam / fraudulent job offer",
     "banking_fraud": "Digital banking fraud / suspicious payment",

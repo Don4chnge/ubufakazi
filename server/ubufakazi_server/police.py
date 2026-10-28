@@ -297,5 +297,5 @@ def board(db: Session, p: Principal, min_size: int = 3) -> dict:
                        "stations": len({j["code"] for s in syndicates for j in s["jurisdictions"]}),
                        "provinces": len({pr["province"] for s in syndicates for pr in s["provinces"]}),
                        "amount": sum(s["total_amount"] or 0 for s in syndicates) if full else None},
-            "note": "The bank, its branches and their regions are fictional. A link is an "
+            "note": "Demo stations and jurisdictions are fictional, not SAPS precinct boundaries. A link is an "
                     "investigative lead, not proof: an account may belong to a money mule or a compromised holder."}

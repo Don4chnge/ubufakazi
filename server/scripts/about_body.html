@@ -2,28 +2,28 @@
   <div class="page-hero">
     <div class="kicker">About Ubufakazi</div>
     <h1>Ubufakazi means <span class="grad">evidence</span></h1>
-    <p class="lead-in">In isiZulu, <i>ubufakazi</i> means evidence or testimony. Ubufakazi is a digital-forensics tool for scam victims and banks: it turns victims' evidence into tamper-evident case files and links them across bank branches, so the bank sees the syndicate, freezes the mule account and escalates to SAPS.</p>
+    <p class="lead-in">In isiZulu, <i>ubufakazi</i> means evidence or testimony. Ubufakazi is a digital-forensics tool for SAPS and banks: it turns scam victims' evidence into tamper-evident case files and links them across station jurisdictions, so investigators see the syndicate and banks can freeze the mule account.</p>
   </div>
 
   <div class="grid3">
-    <section class="panel reveal"><div class="kicker">The problem</div><h3>One syndicate, many branches</h3><p class="muted">A syndicate scams victims in many provinces. Each victim's report lands as a small fraud case at their own branch, so no single branch sees the network, and the mule account stays open.</p></section>
+    <section class="panel reveal"><div class="kicker">The problem</div><h3>One syndicate, many dockets</h3><p class="muted">A syndicate scams victims in many provinces. Each victim opens a small docket at their own station, so no single station sees the network, and the mule account stays open.</p></section>
     <section class="panel reveal"><div class="kicker">What we do</div><h3>Evidence that holds up</h3><p class="muted">Every file is fingerprinted with SHA-256 the moment it arrives and kept read-only. Facts are extracted, a timeline built, and a draft statement written in the victim's language.</p></section>
-    <section class="panel reveal"><div class="kicker">Why it matters</div><h3>Ten victims is a syndicate case</h3><p class="muted">When reports at different branches share a mule account, phone number, website or message script, the syndicate board shows the branches involved, a suggested lead branch and the bank's decision.</p></section>
+    <section class="panel reveal"><div class="kicker">Why it matters</div><h3>Ten victims is a syndicate case</h3><p class="muted">When reports in different jurisdictions share a mule account, phone number, website or message script, the syndicate board shows the stations involved, a suggested lead station and the bank's decision.</p></section>
   </div>
 
   <h2 class="section-title" id="model">Who it serves and who pays</h2>
   <div class="grid3">
-    <section class="panel reveal"><div class="kicker">Bank branches</div><h3>Fraud investigators</h3><p class="muted">Structured, tamper-evident cases linked to the same scammer across branches, even when phone numbers change. The bank escalates to SAPS with a sealed case pack.</p></section>
+    <section class="panel reveal"><div class="kicker">SAPS</div><h3>Investigators</h3><p class="muted">Structured, tamper-evident cases linked to the same scammer across station jurisdictions, even when phone numbers change.</p></section>
     <section class="panel reveal"><div class="kicker">Banks · paying customers</div><h3>Fraud teams</h3><p class="muted">Banks and fintechs subscribe to syndicate alerts and a fraud-report API: early warning when many victims paid the same mule account, while it can still be frozen.</p></section>
     <section class="panel reveal"><div class="kicker">Funding the free service</div><h3>Insurers, grants, CSI</h3><p class="muted">Insurers can licence data for scam claims. Grants, CSI and sponsors fund the free victim reporting that feeds the evidence.</p></section>
   </div>
   <section class="panel reveal"><div class="grid2">
-    <div><h3>Free for victims</h3><p class="muted">Victims report at no cost. The banks that save money by freezing mule accounts earlier pay for the service, and SAPS receives stronger, linked cases from the bank.</p></div>
-    <div><h3>How we start</h3><p class="muted">A pilot with one bank and its branches in one province: measure how many mule accounts are flagged and frozen, then agree subscription pricing per institution by alert volume.</p></div>
+    <div><h3>Free for victims and SAPS</h3><p class="muted">Victims report at no cost, and SAPS stations use the console and syndicate board at no cost. The banks that save money by freezing mule accounts earlier pay for the service.</p></div>
+    <div><h3>How we start</h3><p class="muted">A pilot with one bank and the stations in one province: measure how many mule accounts are flagged and frozen, then agree subscription pricing per institution by alert volume.</p></div>
   </div></section>
 
-  <h2 class="section-title" id="jurisdiction">Branch routing</h2>
-  <section class="panel reveal"><p class="muted">Every report goes to the fraud desk of the bank branch whose region covers the town where the victim was scammed (each province has three or four branches, each covering its own towns). If the town is unknown, the province's default branch receives it. The bank (Ubuntu Trust Bank), its branches and their regions are fictional; a real deployment would use the partner bank's own branch network.</p></section>
+  <h2 class="section-title" id="jurisdiction">Jurisdiction routing</h2>
+  <section class="panel reveal"><p class="muted">Every report goes to the demo station whose jurisdiction covers the town where the victim was scammed (each province has three or four demo stations, each covering its own towns). If the town is unknown, the province's default station receives it. The demo stations and their jurisdictions are fictional, not official SAPS precinct boundaries; a real deployment would use SAPS's own boundaries.</p></section>
 
   <h2 class="section-title" id="how">How linking works</h2>
   <section class="panel reveal">
@@ -48,7 +48,7 @@
 
   <h2 class="section-title">Privacy and safety</h2>
   <div class="grid3">
-    <section class="panel reveal"><h3>Branch-isolated</h3><p class="muted">Investigators see only their own branch's reports. Other branches' reports appear as "restricted", with no details.</p></section>
+    <section class="panel reveal"><h3>Station-isolated</h3><p class="muted">Officers see only their own station's reports. Other stations' reports appear as "restricted", with no details.</p></section>
     <section class="panel reveal"><h3>No ID, no GPS</h3><p class="muted">We never ask for ID numbers. Location is optional and rounded to about 1 km. Banks receive account-level alerts only, never victims' names or statements.</p></section>
     <section class="panel reveal"><h3>Audited</h3><p class="muted">Every view, download, verification and status change is written to a hash-chained audit log, so changes to history are detectable.</p></section>
   </div>
@@ -56,10 +56,10 @@
   <h2 class="section-title">What Ubufakazi is not</h2>
   <section class="panel reveal">
     <ul class="checks">
-      <li>Not SAPS, and not connected to SAPS or any real bank. No CAS numbers are issued: when the bank escalates to SAPS, its investigator enters the CAS number SAPS issued, and it is not checked with SAPS.</li>
-      <li>Not proof of guilt. Automatic extraction can miss or misread details; investigators must check every fact against the original files.</li>
+      <li>Not SAPS, and not connected to SAPS or any real bank. No CAS numbers are issued: an officer enters the CAS number when the case is registered, and it is not checked with SAPS.</li>
+      <li>Not proof of guilt. Automatic extraction can miss or misread details; officers must check every fact against the original files.</li>
       <li>Not tamper-proof. It makes changes detectable: SHA-256 fingerprints plus independent RFC 3161 timestamps from FreeTSA.</li>
-      <li>A demonstration: the bank (Ubuntu Trust Bank), its branches and earlier reports are fictional, synthetic data.</li>
+      <li>A demonstration: stations, the bank (Ubuntu Trust Bank) and earlier reports are fictional, synthetic data.</li>
     </ul>
   </section>
 
@@ -67,7 +67,7 @@
   <div class="grid3">
     <section class="panel reveal"><h3>Thabang Manyama</h3><p class="muted">Team lead · backend, Telegram bot and evidence pipeline</p></section>
     <section class="panel reveal"><h3>Amani Tondi</h3><p class="muted">AI extraction and analysis</p></section>
-    <section class="panel reveal"><h3>Shaun Matlou</h3><p class="muted">Database, fraud desk dashboard and case packs</p></section>
+    <section class="panel reveal"><h3>Shaun Matlou</h3><p class="muted">Database, investigator dashboard and case packs</p></section>
   </div>
   <p class="foot-note">Built for HackSecure 2026 · <a href="https://github.com/Don4chnge/ubufakazi" target="_blank" rel="noopener">source code on GitHub</a> · <a href="/mvp">original offline MVP</a></p>
 </main>

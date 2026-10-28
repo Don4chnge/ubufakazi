@@ -12,7 +12,7 @@
   async function boot() {
     me = await UBF.session();
     if (!me || !["admin", "bank_reviewer"].includes(me.role)) {
-      if (me) { root.replaceChildren(el("div", { class: "public" }, el("div", { class: "notice" }, "This account cannot open the bank console. ", el("a", { href: "/fraud-desk" }, "Open the branch fraud desk")))); return; }
+      if (me) { root.replaceChildren(el("div", { class: "public" }, el("div", { class: "notice" }, "This account cannot open the bank console. ", el("a", { href: "/police" }, "Open the police console")))); return; }
       UBF.loginForm(root, { title: "Ubuntu Trust Bank · Fraud operations", subtitle: "Fictional bank. Fraud analysts see alerts about accounts held at this bank, never victims' details.",
         onDone: (m) => { me = m; start(); } });
       return;
@@ -56,13 +56,13 @@
     if (view === "pay") { root.replaceChildren(el("main", { class: "main" }, tabs, payView())); return; }
     root.replaceChildren(el("main", { class: "main" }, tabs,
       el("div", { class: "page-head" }, el("div", null, el("div", { class: "kicker" }, data.bank + " · fraud operations"), el("h1", null, "Fraud alerts from Ubufakazi"),
-        el("p", null, "Scam victims report to Ubufakazi, which routes each report to the fraud desk of the branch for their area and links reports into syndicates. When their reports say they paid into an account held at this bank, Ubufakazi sends this alert so the fraud team can block the account before the money moves on. Each decision is reported back to the branch fraud desk and the victim.")),
+        el("p", null, "Scam victims report to SAPS through Ubufakazi. When their reports say they paid into an account held at this bank, Ubufakazi sends this alert so the fraud team can block the account before the money moves on. Each decision is reported back to the investigating officer and the victim.")),
         el("a", { class: "plan-pill", href: "/banks#plans", title: "Ubufakazi subscription plans for banks" }, el("span", null, "Subscription"), el("b", null, "Bank plan · demo"))),
       el("ol", { class: "how-strip" },
-        el("li", null, el("b", null, "1"), "Victims report scams via Ubufakazi"),
+        el("li", null, el("b", null, "1"), "Victims report scams to SAPS via Ubufakazi"),
         el("li", null, el("b", null, "2"), "Reports naming the same account are linked"),
         el("li", null, el("b", null, "3"), "Signed alert arrives here (no victim names)"),
-        el("li", null, el("b", null, "4"), "You block the account and escalate to SAPS")),
+        el("li", null, el("b", null, "4"), "You block the account; SAPS sees your decision")),
       el("div", { class: "notice warn" }, el("b", null, "Fictional bank. "), data.notice),
       el("div", { class: "tiles" }, tile(items.length, "Alerts received"), tile(open, "Open (new or investigating)", true), tile(frozen, "Accounts frozen"), tile(money(total), "Reported paid into our accounts")),
       el("div", { class: "bank-grid" },
@@ -107,7 +107,7 @@
         r.risk !== "clear" ? el("ul", { class: "pr-facts" },
           el("li", null, el("b", null, String(r.reports)), " scam report" + (r.reports === 1 ? "" : "s")),
           el("li", null, el("b", null, String(r.provinces)), " province" + (r.provinces === 1 ? "" : "s")),
-          el("li", null, el("b", null, String(r.jurisdictions)), " branch region" + (r.jurisdictions === 1 ? "" : "s")),
+          el("li", null, el("b", null, String(r.jurisdictions)), " police jurisdiction" + (r.jurisdictions === 1 ? "" : "s")),
           r.frozen_by_its_bank ? el("li", null, el("b", null, "Frozen"), " by its bank") : null) : null,
         el("div", { class: "pr-btns" },
           r.risk === "clear" ? el("button", { class: "btn btn-primary", onclick: () => { toast(`Demo: payment of ${amount || "the amount"} to ${name} would continue.`); reset(); } }, "Pay now")
@@ -127,14 +127,14 @@
         el("h3", null, "How the check is protected"),
         el("ul", { class: "checks" },
           el("li", null, el("b", null, "Subscribed banks only: "), "every request is signed with this bank's own key; requests older than 5 minutes, or reused, are refused."),
-          el("li", null, el("b", null, "Cannot frame an innocent account: "), "“Stop” needs several victims in at least two branch regions, or the account frozen by its own bank. One report only ever says “check before you pay”."),
-          el("li", null, el("b", null, "Nothing to mine: "), "the answer is a risk level and counts. No victims, references, branches, amounts or chats."),
+          el("li", null, el("b", null, "Cannot frame an innocent account: "), "“Stop” needs several victims in at least two police jurisdictions, or the account frozen by its own bank. One report only ever says “check before you pay”."),
+          el("li", null, el("b", null, "Nothing to mine: "), "the answer is a risk level and counts. No victims, references, stations, amounts or chats."),
           el("li", null, el("b", null, "Abuse is visible: "), "hourly quota per bank, unusual lookup volumes raise a security alert, and every check is written to the tamper-evident audit log (without the account number).")),
         el("p", { class: "hint" }, "Fictional bank and synthetic data. A real bank would run this check inside its own app.")));
   }
 
   function recommend(a) {
-    if (a.status === "frozen") return el("div", { class: "notice ok-note" }, el("b", null, "Account blocked. "), "Ubufakazi, the branch fraud desk and the victim have been told.");
+    if (a.status === "frozen") return el("div", { class: "notice ok-note" }, el("b", null, "Account blocked. "), "Ubufakazi, the investigating officer and the victim have been told.");
     if (!a.account_detail || !a.actions.length) return null;
     const many = a.reports >= 3;
     return el("div", { class: "notice " + (many ? "" : "warn") }, el("b", null, many ? "Recommendation: block this account. " : "Recommendation: investigate. "),
@@ -177,7 +177,7 @@
       })),
       el("p", { class: "hint" }, "Ubufakazi never sends victims' names, phone numbers, statements or report references."),
       a.actions.length ? [el("h3", null, "Decision"), el("div", { class: "sim-actions" }, a.actions.map(btn)),
-        el("p", { class: "hint" }, "Each decision is applied in this fictional bank's records and sent back to Ubufakazi over the signed API, where the branch fraud desk and the victim can see it.")] : null,
+        el("p", { class: "hint" }, "Each decision is applied in this fictional bank's records and sent back to Ubufakazi over the signed API, where the investigating officer and the victim can see it.")] : null,
       el("h3", null, "Case history"),
       el("ol", { class: "steps-v" }, a.events.map((e) => el("li", { class: "done" }, el("b", null, e.action.replace(/[._]/g, " ")), el("div", { class: "muted small" }, `${dateTime(e.at)} · ${e.by}${e.note ? " · " + e.note : ""}`))))));
   }

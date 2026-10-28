@@ -303,7 +303,7 @@ async def _send_pack(to: str, report_id: int, reference: str) -> None:
         r = db.get(Report, report_id)
         if r.processing_status != "ready":
             await send(to, {"type": "text", "text": {"body": "Your report is saved, but the case pack could not be prepared "
-                                                             "automatically. An investigator can re-run processing."}})
+                                                             "automatically. An officer can re-run processing."}})
             return
         pdf = await asyncio.to_thread(build_case_pack, db, r, "complainant")
     finally:
@@ -315,7 +315,7 @@ async def _send_pack(to: str, report_id: int, reference: str) -> None:
         return
     await send(to, {"type": "document", "document": {
         "id": media_id, "filename": f"Ubufakazi-{reference}.pdf",
-        "caption": "Your draft statement and case pack. Check it. Your bank's fraud desk has your report and escalates the case to SAPS."}})
+        "caption": "Your draft statement and case pack. Check it, then take it to a police station to register the case."}})
 
 
 async def _reply(to: str, chat: _Chat, outs: list[Out]) -> None:

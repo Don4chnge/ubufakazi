@@ -14,7 +14,7 @@
     row("WhatsApp", i.whatsapp.running, i.whatsapp.note),
     row("AI reading of images, voice notes and scans", i.ai_media_reading.configured, i.ai_media_reading.note),
     row("Trusted timestamps (RFC 3161)", i.trusted_timestamps.configured, i.trusted_timestamps.note),
-    row("Branch handover (QR) + SAPS escalation (CAS number)", i.station_handover.working, i.station_handover.note),
+    row("Police station handover (QR + CAS number)", i.station_handover.working, i.station_handover.note),
     row("Bank link: Ubuntu Trust Bank (fictional)", i.bank_link.connected, i.bank_link.note),
     row("SAPS systems", i.saps.connected, i.saps.note),
     row("Real banks", i.banks.connected, i.banks.note)),

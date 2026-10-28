@@ -77,7 +77,7 @@ class TestA_Chatbot:
         assert len(r.evidence) == 4 and r.processing_status == "ready" and r.status == "awaiting_review"
         text = "\n".join(o.text for o in lerato["outs"])
         assert "NOT the police" in text and "10111" in text
-        assert act["receipt_key"] in text and "fraud desk (a fictional bank)" in text
+        assert act["receipt_key"] in text and "fictional demo station" in text
 
     def test_consent_recorded_before_storage(self, lerato):
         from ubufakazi_server.models import Consent
@@ -207,7 +207,7 @@ class TestB_Evidence:
         from ubufakazi_server.casepack import build_case_pack
         r, db = lerato["report"], lerato["db"]
         text = "".join(p.get_text() for p in pymupdf.open(stream=build_case_pack(db, r, "complainant"), filetype="pdf"))
-        for must in ("NOT AN OFFICIAL BANK OR SAPS DOCUMENT", r.reference, "Draft statement", "Evidence register", "SHA-256",
+        for must in ("NOT AN OFFICIAL SAPS DOCUMENT", r.reference, "Draft statement", "Evidence register", "SHA-256",
                      r.evidence[0].sha256[:32], "Timeline", "unverified", "10111", "not tamper-proof"):
             assert must in text, must
         assert "UBF-26-SEED" not in text and "Possible connections" not in text   # no other victims' data
@@ -215,7 +215,7 @@ class TestB_Evidence:
         res = c.get(f"/api/police/reports/{r.reference}/pack")
         assert res.status_code == 200 and res.headers["content-type"] == "application/pdf"
         ptext = "".join(p.get_text() for p in pymupdf.open(stream=res.content, filetype="pdf"))
-        assert "Possible connections" in ptext and "Chain of custody" in ptext and "BANK FRAUD DESK COPY" in ptext
+        assert "Possible connections" in ptext and "Chain of custody" in ptext and "POLICE COPY" in ptext
 
 
 # ====================================================================== C
@@ -272,7 +272,7 @@ class TestC_PoliceSecurity:
         jhb, _ = login("officer.joburg")
         ref = lerato["report"].reference
         mine = mth.get("/api/police/evidence?page_size=100").json()["items"]
-        assert ref in {e["reference"] for e in mine} and all(e["station"].endswith("Mthatha branch") for e in mine)
+        assert ref in {e["reference"] for e in mine} and all(e["station"].endswith("Mthatha") for e in mine)
         theirs = jhb.get("/api/police/evidence?page_size=100").json()["items"]
         assert ref not in {e["reference"] for e in theirs}
         assert all("content" not in e for e in mine)
@@ -488,7 +488,7 @@ class TestG_WebsiteAndPublic:
 
     def test_home_is_the_platform_and_mvp_is_separate(self, client):
         home = client.get("/").text
-        assert "One syndicate. Many branches." in home and 'id="globe"' in home and "Build a case file" not in home
+        assert "One syndicate. Many dockets." in home and 'id="globe"' in home and "Build a case file" not in home
         assert "Build a case file" in client.get("/mvp").text
 
     def test_public_stats_are_aggregates_only(self, client):

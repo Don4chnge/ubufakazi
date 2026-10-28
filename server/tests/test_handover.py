@@ -43,14 +43,14 @@ def test_accept_at_other_station_moves_case(login, mth_report):
     jhb = login("officer.joburg")[0]
     assert jhb.get(f"/api/police/reports/{ref}").status_code == 404                 # not Johannesburg's case yet
     pv = jhb.get(f"/api/police/handover/{ref}/{tok}").json()
-    assert pv["routed_station"].endswith("Mthatha branch") and pv["can_open"] is False and pv["complainant_name"] == "Test Complainant"
+    assert pv["routed_station"].endswith("Mthatha") and pv["can_open"] is False and pv["complainant_name"] == "Test Complainant"
     mth_id = _station_id("MTH")
     assert jhb.post(f"/api/police/handover/{ref}/{tok}/accept", json={"station_id": mth_id}).status_code == 403
     r = jhb.post(f"/api/police/handover/{ref}/{tok}/accept", json={"station_id": _station_id("JHB")})
     assert r.status_code == 200
     detail = jhb.get(f"/api/police/reports/{ref}").json()
-    assert detail["station"].endswith("Johannesburg Central branch")
-    assert detail["handover"]["moved"] is True and detail["handover"]["from_station"].endswith("Mthatha branch")
+    assert detail["station"].endswith("Johannesburg Central")
+    assert detail["handover"]["moved"] is True and detail["handover"]["from_station"].endswith("Mthatha")
     mth = login("officer.mthatha")[0]
     assert mth.get(f"/api/police/reports/{ref}").status_code == 404                 # moved away from Mthatha
     from ubufakazi_server.db import SessionLocal

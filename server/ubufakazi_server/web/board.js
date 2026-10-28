@@ -1,4 +1,4 @@
-/* Syndicate board: a schematic map of South Africa's nine provinces (NOT to scale). Dots are the fictional bank's branch fraud desks.
+/* Syndicate jurisdiction board: a schematic map of South Africa's nine provinces (NOT to scale, NOT SAPS boundaries).
    Each province tile shows its demo stations as dots; for a selected syndicate, tiles heat up by victims, involved
    stations light up, the suggested lead station gets a ring, and flows run from each province to the mule accounts. */
 "use strict";
@@ -26,7 +26,7 @@ const UBFBoard = (() => {
 
   function map(data, syn) {
     const svg = el("svg:svg", { viewBox: `0 0 ${W} ${H}`, class: "jmap", role: "img",
-      "aria-label": syn ? `Schematic map of the provinces and branches involved in ${syn.code}` : "Schematic map of reports by province" });
+      "aria-label": syn ? `Schematic map of the provinces and stations involved in ${syn.code}` : "Schematic map of reports by province" });
     const gFlow = el("svg:g"), gTile = el("svg:g"), gAcc = el("svg:g");
     svg.append(gFlow, gTile, gAcc);
     const perProv = {};
@@ -85,7 +85,7 @@ const UBFBoard = (() => {
         gAcc.append(chip);
       });
     }
-    svg.append(el("svg:text", { x: 14, y: H - 4, class: "jfoot" }, "Schematic, not to scale. Fictional bank branches and regions."));
+    svg.append(el("svg:text", { x: 14, y: H - 4, class: "jfoot" }, "Schematic, not to scale. Fictional demo stations; not SAPS precinct boundaries."));
     return svg;
   }
 

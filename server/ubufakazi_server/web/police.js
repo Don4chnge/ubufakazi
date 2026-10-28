@@ -1,4 +1,4 @@
-/* Ubufakazi 2.0 bank fraud desk console (code and API keep the old "police"/"station" names). Every request is checked on the server (session, two-factor, CSRF, branch). */
+/* Ubufakazi 2.0 police console. Every request is checked on the server (session, two-factor, CSRF, station). */
 "use strict";
 
 (() => {
@@ -31,11 +31,11 @@
   async function boot() {
     me = await UBF.session();
     if (!me || !["admin", "officer"].includes(me.role)) {
-      if (me) { root.replaceChildren(el("div", { class: "public" }, el("div", { class: "notice" }, "This account cannot use the fraud desk console. ", el("a", { href: "/bank" }, "Open Ubuntu Trust Bank")))); showWho(); return; }
-      UBF.loginForm(root, { title: "Bank fraud desk", subtitle: "Ubuntu Trust Bank (fictional). Signed-in investigators see reports for their own branch only. Two-factor code required.",
+      if (me) { root.replaceChildren(el("div", { class: "public" }, el("div", { class: "notice" }, "This account cannot use the police console. ", el("a", { href: "/bank" }, "Open Ubuntu Trust Bank")))); showWho(); return; }
+      UBF.loginForm(root, { title: "Police console", subtitle: "Signed-in officers see reports for their own station only. Two-factor code required.",
         onDone: (m) => { me = m; start(); } });
       const panel = root.querySelector(".login");
-      if (panel) panel.appendChild(el("p", { class: "hint" }, "Demo team: ", el("a", { href: "/demo-logins?next=" + encodeURIComponent(location.pathname + location.hash) }, "sign in with the demo-logins helper"),
+      if (panel) panel.appendChild(el("p", { class: "hint" }, "Demo team: ", el("a", { href: "/demo-logins?next=" + encodeURIComponent("/police" + location.hash) }, "sign in with the demo-logins helper"),
         location.hash.startsWith("#/handover/") ? " (you will come straight back to this handover)." : "."));
       return;
     }
@@ -44,7 +44,7 @@
 
   function showWho() {
     const who = document.getElementById("who");
-    who.replaceChildren(el("b", null, me.display_name), el("span", null, me.role === "admin" ? "All branches · head office" : me.stations.map((s) => s.name.replace("UTB · ", "")).join(", ")));
+    who.replaceChildren(el("b", null, me.display_name), el("span", null, me.role === "admin" ? "All stations (admin)" : me.stations.map((s) => s.name.replace("Demo Station · ", "")).join(", ")));
     who.hidden = false;
     const lo = document.getElementById("logout");
     lo.hidden = false; lo.onclick = UBF.logout;
@@ -75,7 +75,7 @@
           collapsed = !collapsed; shellEl.classList.toggle("collapsed", collapsed);
           try { localStorage.setItem(COLLAPSE_KEY, collapsed ? "1" : "0"); } catch (_) { /* ignore */ }
         } }, icon(I.side), el("span", { class: "label-txt" }, "Collapse")),
-        el("div", { class: "foot" }, "Fictional bank and branches. Leads are investigative, not findings of guilt.")),
+        el("div", { class: "foot" }, "Fictional demo stations. Leads are investigative, not findings of guilt.")),
       el("main", { class: "main", id: "main" }, content));
     root.replaceChildren(shellEl);
     window.scrollTo(0, 0);
@@ -113,11 +113,11 @@
       const fill = el("div", { class: "fill" }); fill.style.width = (v.count / max * 100) + "%";
       return el("div", { class: "bar-h" }, el("span", null, v.label), el("div", { class: "track" }, fill), el("b", null, String(v.count)));
     }));
-    const stationTxt = me.role === "admin" ? "UTB head office · all branches" : me.stations.map((x) => x.name).join(" · ");
+    const stationTxt = me.role === "admin" ? "All demo stations" : me.stations.map((x) => x.name).join(" · ");
     shell("overview", [
       el("div", { class: "page-head" }, el("div", null, el("div", { class: "kicker" }, stationTxt),
         el("h1", null, `Good ${new Date().getHours() < 12 ? "morning" : new Date().getHours() < 18 ? "afternoon" : "evening"}, ${me.display_name.replace(/^Demo /, "")}`),
-        el("p", null, "Your fraud desk overview. Counts include only reports your branch may see. All data in this demo is synthetic.")),
+        el("p", null, "Your case overview. Counts include only reports your station may see. All data in this demo is synthetic.")),
         el("div", { class: "row-btns" }, el("a", { class: "btn btn-primary", href: "#/board" }, "Syndicate board"), el("a", { class: "btn btn-ghost", href: "#/queue" }, "Open case queue"))),
       el("div", { class: "tiles" },
         tile(s.total, "Total cases", false), tile(s.awaiting, "Awaiting review", true),
@@ -134,7 +134,7 @@
             : el("p", { class: "muted" }, "No cases yet.")),
         el("section", { class: "panel" }, el("div", { class: "lead-top" }, el("h3", null, "Possible scam networks"), el("a", { href: "#/network", class: "small" }, "Explore →")),
           cl.length ? el("ul", { class: "list-plain" }, cl.slice(0, 5).map((c) => el("li", null,
-            el("span", null, el("a", { href: "#/network/" + c.anchor }, `${c.size} linked reports`), el("span", { class: "sub" }, `${c.scam_type || "Mixed"} · ${c.stations} branch${c.stations > 1 ? "es" : ""} · ${c.restricted} restricted`)),
+            el("span", null, el("a", { href: "#/network/" + c.anchor }, `${c.size} linked reports`), el("span", { class: "sub" }, `${c.scam_type || "Mixed"} · ${c.stations} station${c.stations > 1 ? "s" : ""} · ${c.restricted} restricted`)),
             el("span", { class: "lead-badge" }, money(c.visible_amount)))))
             : el("p", { class: "muted" }, "No linked reports yet."))),
     ]);
@@ -171,7 +171,7 @@
         el("li", null, "5+ failed sign-ins or two-factor codes for one user from one address within 10 minutes (password guessing); locked accounts"),
         el("li", null, "Bank API calls with an unknown bank, a bad or reused signature; beneficiary-check quota reached; unusual lookup volumes"),
         el("li", null, "Possible prompt injection found in submitted evidence (OWASP LLM01)"),
-        el("li", null, "25+ evidence files or case packs opened by one user within 10 minutes (bulk access)"),
+        el("li", null, "25+ evidence files or police packs opened by one user within 10 minutes (bulk access)"),
         el("li", null, "Any break in the audit log's hash chain (history changed): critical"))),
     ]);
   }
@@ -180,8 +180,8 @@
   function leadWhy(syn) {
     const rest = Math.max(0, ...syn.jurisdictions.filter((j) => j.code !== syn.lead.code).map((j) => j.victims));
     return syn.lead.victims > rest
-      ? `This branch holds the most victims (${syn.lead.victims}); first report there ${date(syn.lead.first)}.`
-      : `Victims are spread evenly (${syn.lead.victims} per branch at most), so the branch with the earliest report (${date(syn.lead.first)}) leads.`;
+      ? `Its jurisdiction holds the most victims (${syn.lead.victims}); first report there ${date(syn.lead.first)}.`
+      : `Victims are spread evenly (${syn.lead.victims} per jurisdiction at most), so the station with the earliest report (${date(syn.lead.first)}) leads.`;
   }
 
   async function showBoard(code) {
@@ -190,31 +190,31 @@
     try { d = await api("GET", "/api/police/intel/board"); } catch (e) { shell("board", el("div", { class: "notice" }, e.message)); return; }
     const syn = d.syndicates.find((x) => x.code === code) || d.syndicates[0] || null;
     const t = d.totals, plural = (n, w) => `${n} ${w}${n === 1 ? "" : "s"}`;
-    const who = me.role === "admin" ? "UTB head office · national fraud view (demo)" : me.stations.map((x) => x.name).join(" · ");
+    const who = me.role === "admin" ? "SAPS · national command view (demo)" : me.stations.map((x) => x.name).join(" · ");
     const list = el("div", { class: "syn-list", role: "list" }, d.syndicates.map((x) => el("button", {
       class: "syn-item" + (syn && x.code === syn.code ? " active" : ""), role: "listitem", onclick: () => { location.hash = "#/board/" + x.code; } },
       el("span", { class: "syn-code" }, x.code), el("b", null, x.label),
-      el("span", { class: "sub" }, `${plural(x.victims, "victim")} · ${x.stations} branch${x.stations === 1 ? "" : "es"} · ${plural(x.provinces.length, "province")}`),
-      x.total_amount !== null ? el("span", { class: "syn-amt" }, money(x.total_amount)) : el("span", { class: "syn-amt" }, `${x.your_victims} at your branch`))));
+      el("span", { class: "sub" }, `${plural(x.victims, "victim")} · ${plural(x.stations, "station")} · ${plural(x.provinces.length, "province")}`),
+      x.total_amount !== null ? el("span", { class: "syn-amt" }, money(x.total_amount)) : el("span", { class: "syn-amt" }, `${x.your_victims} at your station`))));
     const content = [
-      el("div", { class: "page-head" }, el("div", null, el("div", { class: "kicker" }, who), el("h1", null, "Syndicate board"),
-        el("p", null, "One syndicate, many branches. When reports at different branches share a mule account, phone number, website or message script, Ubufakazi joins them into one syndicate, so the bank can freeze the accounts while the money is still there and escalate one strong case to SAPS instead of many small ones."))),
+      el("div", { class: "page-head" }, el("div", null, el("div", { class: "kicker" }, who), el("h1", null, "Syndicate jurisdiction board"),
+        el("p", null, "One syndicate, many dockets. When reports at different stations share a mule account, phone number, website or message script, Ubufakazi joins them so SAPS can run one investigation instead of many small ones, and the bank can freeze the account while the money is still there."))),
       el("div", { class: "tiles tiles-5" },
         tile(t.syndicates, "Syndicates detected", true), tile(t.victims, "Victims linked"),
-        tile(t.stations, "Branch regions involved"), tile(`${t.provinces}/9`, "Provinces affected"),
-        t.amount !== null ? tile(money(t.amount), "Linked losses", true) : tile(d.syndicates.reduce((a, x) => a + x.your_victims, 0), "Linked victims at your branch", true)),
+        tile(t.stations, "Station jurisdictions involved"), tile(`${t.provinces}/9`, "Provinces affected"),
+        t.amount !== null ? tile(money(t.amount), "Linked losses", true) : tile(d.syndicates.reduce((a, x) => a + x.your_victims, 0), "Linked victims at your station", true)),
     ];
     if (!syn) {
       content.push(el("section", { class: "panel" }, el("p", { class: "muted" }, "No syndicates detected yet: no group of three or more linked reports.")));
     } else {
-      const docketsTxt = `${plural(syn.stations, "separate fraud case")} at ${syn.stations} branch${syn.stations === 1 ? "" : "es"} in ${plural(syn.provinces.length, "province")}`;
+      const docketsTxt = `${plural(syn.stations, "separate docket")} at ${plural(syn.stations, "station")} in ${plural(syn.provinces.length, "province")}`;
       const others = syn.jurisdictions.filter((j) => j.code !== syn.lead.code).map((j) => j.code);
       const mulesTxt = syn.mules.map((m) => m.account).join(", ");
-      const jt = el("table", { class: "data jtable" }, el("thead", null, el("tr", null, ["Province", "Branch (region)", "Where victims were scammed", "Victims", "Reported loss"].map((h, i) => el("th", { scope: "col", class: i > 2 ? "num" : null }, h)))),
+      const jt = el("table", { class: "data jtable" }, el("thead", null, el("tr", null, ["Province", "Station (jurisdiction)", "Where victims were scammed", "Victims", "Reported loss"].map((h, i) => el("th", { scope: "col", class: i > 2 ? "num" : null }, h)))),
         el("tbody", null, syn.jurisdictions.map((j) => el("tr", { class: (j.code === syn.lead.code ? "lead-row" : "") + (j.visible ? "" : " restricted"), tabindex: j.references.length ? "0" : null,
           onclick: j.references.length ? () => { location.hash = "#/report/" + j.references[j.references.length - 1]; } : null },
-          el("td", null, j.province), el("td", null, el("b", null, j.station.replace("UTB · ", "")), el("span", { class: "sub" }, j.code + (j.code === syn.lead.code ? " · suggested lead" : "") + (j.own ? " · your branch" : ""))),
-          el("td", null, j.visible ? j.towns.join(", ") : el("span", { class: "muted" }, "Restricted: another branch's region")),
+          el("td", null, j.province), el("td", null, el("b", null, j.station.replace("Demo Station · ", "")), el("span", { class: "sub" }, j.code + (j.code === syn.lead.code ? " · suggested lead" : "") + (j.own ? " · your station" : ""))),
+          el("td", null, j.visible ? j.towns.join(", ") : el("span", { class: "muted" }, "Restricted: another station's jurisdiction")),
           el("td", { class: "num" }, String(j.victims)), el("td", { class: "num" }, j.amount !== null ? money(j.amount) : "–")))));
       const mt = el("table", { class: "data" }, el("thead", null, el("tr", null, ["Mule account", "Bank", "Reports", "Payers warned", "Bank decision"].map((h, i) => el("th", { scope: "col", class: i === 2 || i === 3 ? "num" : null }, h)))),
         el("tbody", null, syn.mules.map((m) => el("tr", null, el("td", { class: "mono" }, m.account), el("td", null, m.bank || "Not stated", el("span", { class: "sub" }, plural(m.provinces.length, "province"))),
@@ -233,25 +233,25 @@
             el("div", { class: "versus" },
               el("div", { class: "vs-a" }, el("span", null, "Without Ubufakazi"), el("b", null, docketsTxt), el("small", null, "Each looks like a small, separate case.")),
               el("div", { class: "vs-b" }, el("span", null, "With Ubufakazi"), el("b", null, `1 linked investigation · ${plural(syn.victims, "victim")}`),
-                el("small", null, syn.total_amount !== null ? `${money(syn.total_amount)} reported lost in total` : `${money(syn.your_amount)} reported at your branch`))),
+                el("small", null, syn.total_amount !== null ? `${money(syn.total_amount)} reported lost in total` : `${money(syn.your_amount)} reported at your station`))),
             el("div", { class: "jmap-wrap" }, UBFBoard.map(d, syn))),
-          el("section", { class: "panel" }, el("h3", null, "Branches holding pieces of this syndicate"), el("div", { class: "table-wrap" }, jt)),
+          el("section", { class: "panel" }, el("h3", null, "Jurisdictions holding pieces of this syndicate"), el("div", { class: "table-wrap" }, jt)),
           el("div", { class: "grid-2" },
             el("section", { class: "panel" }, el("h3", null, "Recommended actions"), el("ol", { class: "actions" },
-              el("li", null, el("b", null, `${syn.lead.station.replace("UTB · ", "")} (${syn.lead.code}) leads. `), leadWhy(syn)),
-              others.length ? el("li", null, el("b", null, "Merge the other branches' cases into one investigation: "), others.join(", ") + ".") : null,
-              el("li", null, el("b", null, "Freeze the money trail: "), `block ${mulesTxt || "the receiving accounts"} (or alert the bank that holds them) while funds can still be stopped.`),
+              el("li", null, el("b", null, `${syn.lead.station.replace("Demo Station · ", "")} (${syn.lead.code}) leads. `), leadWhy(syn)),
+              others.length ? el("li", null, el("b", null, "Link the other dockets to one investigation: "), others.join(", ") + ".") : null,
+              el("li", null, el("b", null, "Freeze the money trail: "), `ask the bank to act on ${mulesTxt || "the receiving accounts"} while funds can still be stopped.`),
               syn.warned ? el("li", null, el("b", null, "Next victims already protected: "), `${syn.warned} customer${syn.warned === 1 ? " was" : "s were"} warned before paying into these accounts.`) : null,
-              el("li", null, el("b", null, "Use the evidence as is: "), "every file is SHA-256 fingerprinted and independently timestamped; the sealed case pack goes with the bank's escalation to SAPS."))),
+              el("li", null, el("b", null, "Use the evidence as is: "), "every file is SHA-256 fingerprinted and independently timestamped; case packs carry a QR code for the station handover."))),
             el("section", { class: "panel" }, el("h3", null, "Mule accounts and bank decisions"), el("div", { class: "table-wrap" }, mt))))));
     }
-    const nat = el("table", { class: "data" }, el("thead", null, el("tr", null, ["Province", "Branches", "Towns covered", "Reports", "Linked to a syndicate"].map((h, i) => el("th", { scope: "col", class: i > 0 ? "num" : null }, h)))),
+    const nat = el("table", { class: "data" }, el("thead", null, el("tr", null, ["Province", "Demo stations", "Towns covered", "Reports", "Linked to a syndicate"].map((h, i) => el("th", { scope: "col", class: i > 0 ? "num" : null }, h)))),
       el("tbody", null, d.provinces.map((p) => el("tr", { class: "nat-row" },
         el("td", null, el("b", null, p.province), el("span", { class: "sub" }, p.stations.map((s) => `${s.code}: ${s.towns.join(", ")}`).join(" · "))),
         el("td", { class: "num" }, String(p.station_count)), el("td", { class: "num" }, String(p.towns)),
         el("td", { class: "num" }, String(p.reports)), el("td", { class: "num" }, String(p.linked))))));
-    content.push(el("section", { class: "panel" }, el("h3", null, "Branches and regions in every province"),
-      el("p", { class: "muted" }, "Each report goes to the fraud desk of the branch whose region covers the town where the victim was scammed. Counts include every report, so a branch can see how busy each region is."),
+    content.push(el("section", { class: "panel" }, el("h3", null, "Stations and jurisdictions in every province"),
+      el("p", { class: "muted" }, "Each report goes to the demo station whose jurisdiction covers the town where the victim was scammed. Counts include every report, so a station can see how busy each jurisdiction is."),
       el("div", { class: "table-wrap" }, nat)),
       el("p", { class: "foot-note" }, d.note));
     shell("board", content);
@@ -272,7 +272,7 @@
       list.replaceChildren(el("div", { class: "table-wrap" }, el("table", { class: "data" },
         el("thead", null, el("tr", null, ["File", "Case", "Type / size", "Received (server clock)", "SHA-256", "Processing"].map((h) => el("th", null, h)))),
         el("tbody", null, d.items.map((e) => el("tr", { tabindex: "0", onclick: () => { location.hash = `#/report/${e.reference}/evidence`; } },
-          el("td", null, e.name, el("span", { class: "sub" }, "via " + e.channel)), el("td", null, el("span", { class: "ref" }, e.reference), el("span", { class: "sub" }, e.station.replace("UTB · ", ""))),
+          el("td", null, e.name, el("span", { class: "sub" }, "via " + e.channel)), el("td", null, el("span", { class: "ref" }, e.reference), el("span", { class: "sub" }, e.station.replace("Demo Station · ", ""))),
           el("td", null, e.type.toUpperCase(), el("span", { class: "sub" }, size(e.size))), el("td", null, dateTime(e.received_at)),
           el("td", { class: "hash" }, e.sha256.slice(0, 20) + "…"), el("td", null, e.processed.map((k) => el("span", { class: "tag" + (k === "not-processed" ? "" : " ok") }, k)))))))),
         el("div", { class: "pager" }, el("span", null, `${d.total} file${d.total === 1 ? "" : "s"} · page ${d.page} of ${pages}`),
@@ -283,7 +283,7 @@
     type.addEventListener("change", () => { page = 1; load(); });
     shell("evidence", [
       el("div", { class: "page-head" }, el("div", null, el("div", { class: "kicker" }, "Evidence inventory"), el("h1", null, "Evidence & chain of custody"),
-        el("p", null, "Every original file your branch holds, with the fingerprint recorded when it arrived. Open a file's case to verify it, preview it or download the original (each action is audited)."))),
+        el("p", null, "Every original file your station holds, with the fingerprint recorded when it arrived. Open a file's case to verify it, preview it or download the original (each action is audited)."))),
       el("div", { class: "filters" }, el("div", { class: "field q" }, el("label", { for: "ev-q" }, "Search"), q), el("div", { class: "field" }, el("label", { for: "ev-type" }, "Type"), type)),
       list]);
     load();
@@ -301,13 +301,13 @@
       el("select", { id }, opts.map(([v, t]) => el("option", { value: v, selected: v === val ? true : null }, t))));
     const stOpts = [["", "All statuses"], ["open", "All open"], ...Object.entries(meta.statuses)];
     const catOpts = [["", "All categories"], ...Object.entries(meta.categories)];
-    const stnOpts = [["", meta.stations.length > 1 ? "All my branches" : meta.stations[0]?.name || "Branch"], ...meta.stations.map((x) => [x.code, x.name.replace("UTB · ", "")])];
+    const stnOpts = [["", meta.stations.length > 1 ? "All my stations" : meta.stations[0]?.name || "Station"], ...meta.stations.map((x) => [x.code, x.name.replace("Demo Station · ", "")])];
     const sortOpts = [["newest", "Newest first"], ["oldest", "Oldest first"], ["amount", "Largest loss"]];
     const linked = el("input", { type: "checkbox", id: "f-linked", checked: f.linked ? true : null });
     const filters = el("form", { class: "filters", role: "search" },
       el("div", { class: "field q" }, el("label", { for: "f-q" }, "Search"), q),
       sel("f-status", "Status", stOpts, f.status), sel("f-cat", "Category", catOpts, f.category),
-      sel("f-stn", "Branch", stnOpts, f.station), sel("f-sort", "Sort", sortOpts, f.sort),
+      sel("f-stn", "Station", stnOpts, f.station), sel("f-sort", "Sort", sortOpts, f.sort),
       el("label", { class: "check" }, linked, "Only linked"));
     const list = el("div", null, el("div", { class: "empty" }, "Loading…"));
     const read = () => {
@@ -320,7 +320,7 @@
     let t; q.addEventListener("input", () => { clearTimeout(t); t = setTimeout(read, 350); });
 
     shell("queue", [
-      el("div", { class: "page-head" }, el("div", null, el("div", { class: "kicker" }, me.role === "admin" ? "UTB head office · all branches" : me.stations.map((x) => x.name).join(" · ")),
+      el("div", { class: "page-head" }, el("div", null, el("div", { class: "kicker" }, me.role === "admin" ? "All demo stations" : me.stations.map((x) => x.name).join(" · ")),
         el("h1", null, "Report queue"), el("p", null, "Reports submitted through Telegram, WhatsApp and the web, prepared for your review."))),
       tiles, filters, list]);
 
@@ -335,7 +335,7 @@
           el("td", null, el("span", { class: "ref" }, r.reference), r.is_seed ? el("span", { class: "tag" }, "synthetic") : null,
             r.sensitive ? el("span", { class: "tag sens" }, "sensitive") : null, el("span", { class: "sub" }, dateTime(r.created_at) + " · " + r.source)),
           el("td", null, r.scam_type_label || r.category_label, el("span", { class: "sub" }, r.complainant_name || "Name not given")),
-          el("td", null, r.town || "-", el("span", { class: "sub" }, r.station.replace("UTB · ", ""))),
+          el("td", null, r.town || "-", el("span", { class: "sub" }, r.station.replace("Demo Station · ", ""))),
           el("td", { class: "num" }, r.amount_paid ? money(r.amount_paid) : "-"),
           el("td", null, r.leads ? el("span", { class: "lead-badge" + (r.corroborated ? "" : " single") }, `${r.leads} lead${r.leads > 1 ? "s" : ""}`) : el("span", { class: "muted small" }, "none")),
           el("td", null, el("span", { class: "st st-" + r.status }, r.status_label), r.processing_status !== "ready" ? el("span", { class: "sub" }, "processing: " + r.processing_status) : null),
@@ -345,7 +345,7 @@
       const pages = Math.max(1, Math.ceil(data.total / data.page_size));
       list.replaceChildren(
         el("div", { class: "table-wrap" }, el("table", { class: "data" },
-          el("thead", null, el("tr", null, ["Reference", "Type / complainant", "Area / branch", "Paid", "Leads", "Status", "Files"].map((h) => el("th", { scope: "col" }, h)))),
+          el("thead", null, el("tr", null, ["Reference", "Type / complainant", "Area / station", "Paid", "Leads", "Status", "Files"].map((h) => el("th", { scope: "col" }, h)))),
           el("tbody", null, rows))),
         el("div", { class: "pager" }, el("span", null, `${data.total} report${data.total === 1 ? "" : "s"} · page ${data.page} of ${pages}`),
           el("span", null,
@@ -373,7 +373,7 @@
     shell("queue", el("div", { class: "empty" }, "Loading report…"));
     let r;
     try { r = await api("GET", "/api/police/reports/" + encodeURIComponent(ref)); }
-    catch (e) { shell("queue", [backBtn(), el("div", { class: "empty" }, e.status === 404 ? "Report not found, or it belongs to another branch." : e.message)]); return; }
+    catch (e) { shell("queue", [backBtn(), el("div", { class: "empty" }, e.status === 404 ? "Report not found, or it belongs to another station." : e.message)]); return; }
 
     const statusSel = el("select", { id: "st-sel", "aria-label": "New status" }, Object.entries(meta.statuses).filter(([k]) => k !== "registered_at_station" || k === r.status).map(([k, v]) => el("option", { value: k, selected: k === r.status ? true : null }, v)));
     const statusNote = el("input", { type: "text", id: "st-note", placeholder: "Note for the record (optional)", maxlength: "1000" });
@@ -383,8 +383,8 @@
 
     const packBtn = el("button", { class: "btn btn-ghost btn-small", onclick: async () => {
       packBtn.disabled = true;
-      try { download(await api("GET", `/api/police/reports/${r.reference}/pack`, undefined, { blob: true }), `Ubufakazi-${r.reference}-FRAUD-DESK.pdf`); toast("Fraud desk case pack downloaded (recorded in the audit log)."); }
-      catch (e) { toast(e.message, true); } finally { packBtn.disabled = false; } } }, icon(I.pdf), "Fraud desk case pack");
+      try { download(await api("GET", `/api/police/reports/${r.reference}/pack`, undefined, { blob: true }), `Ubufakazi-${r.reference}-POLICE.pdf`); toast("Police case pack downloaded (recorded in the audit log)."); }
+      catch (e) { toast(e.message, true); } finally { packBtn.disabled = false; } } }, icon(I.pdf), "Police case pack");
     const reBtn = r.is_seed ? null : el("button", { class: "btn btn-ghost btn-small", onclick: async () => {
       try { await api("POST", `/api/police/reports/${r.reference}/reprocess`, {}); toast("Re-processing started. Originals are not changed."); setTimeout(() => showReport(ref, tab), 1500); }
       catch (e) { toast(e.message, true); } } }, icon(I.redo), "Re-run processing");
@@ -441,7 +441,7 @@
       : sec.untrusted_identifiers ? el("div", { class: "notice info" }, el("b", null, "AI-read details: "), `${sec.untrusted_identifiers} detail${sec.untrusted_identifiers === 1 ? " was" : "s were"} read only by the AI. They are shown as unverified and need confirmation before a bank is alerted.`) : null;
     const editPanel = (sec.edit_signs || []).length ? el("div", { class: "notice warn" }, el("b", null, "Payment slip may be edited: "),
       `${sec.edit_signs.join("; ")} show${sec.edit_signs.length === 1 ? "s" : ""} signs of editing in the file's metadata. Not proof: confirm the payment with the bank. Details are under Evidence → integrity-signals.`) : null;
-    body.replaceChildren(...[aiPanel, editPanel].filter(Boolean), el("div", { class: "cols" },
+    body.replaceChildren(aiPanel, editPanel, el("div", { class: "cols" },
       el("div", null,
         el("section", { class: "panel" }, el("h3", null, "The complainant's account"), el("div", { class: "quote" }, r.description),
           answers.length ? el("dl", { class: "facts" }, answers.map(([k, v]) => [el("dt", null, k.replace(/_/g, " ")), el("dd", null, String(v))])) : null,
@@ -460,7 +460,7 @@
           r.processing_note ? el("div", { class: "notice warn" }, r.processing_note) : el("p", { class: "muted small" }, "All evidence processed with the documented rules."),
           r.consent ? el("p", { class: "hint" }, `Consent ${r.consent.version} given ${dateTime(r.consent.given_at)}.`) : null),
         el("section", { class: "panel" }, el("h3", null, "Possible connections"),
-          r.leads.length ? [el("p", null, el("b", { class: "mono" }, String(r.leads.length)), ` other report${r.leads.length > 1 ? "s" : ""} share signals with this one (${r.leads.filter((l) => l.strength === "corroborated").length} corroborated, ${r.leads.filter((l) => !l.visible).length} at other branches).`),
+          r.leads.length ? [el("p", null, el("b", { class: "mono" }, String(r.leads.length)), ` other report${r.leads.length > 1 ? "s" : ""} share signals with this one (${r.leads.filter((l) => l.strength === "corroborated").length} corroborated, ${r.leads.filter((l) => !l.visible).length} at other stations).`),
             el("button", { class: "btn btn-ghost btn-small", onclick: () => { location.hash = `#/report/${r.reference}/leads`; } }, "Open leads & graph")]
             : el("p", { class: "muted" }, "No possible connections found.")),
         el("section", { class: "panel" }, el("h3", null, "Status history"),
@@ -475,18 +475,18 @@
       err.textContent = ""; save.disabled = true;
       try { const v = await api("POST", `/api/police/reports/${r.reference}/cas`, { cas_number: input.value });
             toast(v.cas_number + " recorded. Status: " + v.status_label + "."); refreshMeta(); showReport(r.reference, "overview"); }
-      catch (e) { err.textContent = e.message; } finally { save.disabled = false; } } }, "Record SAPS escalation");
+      catch (e) { err.textContent = e.message; } finally { save.disabled = false; } } }, "Record CAS number");
     const form = el("div", { class: "stack" },
-      el("div", { class: "field" }, el("label", { for: "cas-in" }, h && h.cas_number ? "Correct the CAS number" : "CAS number SAPS issued when the bank escalated"), input),
+      el("div", { class: "field" }, el("label", { for: "cas-in" }, h && h.cas_number ? "Correct the CAS number" : "CAS number issued by your station"), input),
       err, el("div", { class: "row-btns" }, save),
-      el("p", { class: "hint" }, "When the bank escalates this case to SAPS, type the CAS number exactly as SAPS issued it. Ubufakazi never creates CAS numbers and cannot check them with SAPS; it is shown as “entered by the bank”. The bank and branches are fictional."));
-    return el("section", { class: "panel" }, el("h3", null, "Escalation to SAPS"),
+      el("p", { class: "hint" }, "Type it exactly as your station's system issued it. Ubufakazi never creates CAS numbers and cannot check them with SAPS; it is shown as “entered by officer”. In this demo the stations are fictional."));
+    return el("section", { class: "panel" }, el("h3", null, "Station registration"),
       h ? el("dl", { class: "facts" },
-        el("dt", null, "Handled by"), el("dd", null, h.station + (h.moved ? ` (moved from ${h.from_station})` : "")),
+        el("dt", null, "Presented at"), el("dd", null, h.station + (h.moved ? ` (moved from ${h.from_station})` : "")),
         el("dt", null, "Accepted by"), el("dd", null, `${h.accepted_by} · ${dateTime(h.accepted_at)}`),
-        h.cas_number ? [el("dt", null, "CAS number"), el("dd", null, el("b", { class: "mono" }, h.cas_number), el("span", { class: "tag" }, "entered by the bank"),
+        h.cas_number ? [el("dt", null, "CAS number"), el("dd", null, el("b", { class: "mono" }, h.cas_number), el("span", { class: "tag" }, "entered by officer"),
           el("div", { class: "muted small" }, `${h.cas_recorded_by} · ${dateTime(h.cas_recorded_at)} · not verified with SAPS`))] : null)
-        : el("p", { class: "muted" }, "Not yet escalated to SAPS. If the complainant visits a branch, scanning the QR code on their case pack opens the handover screen."),
+        : el("p", { class: "muted" }, "Not yet presented at a station. The complainant's case pack has a QR code: scanning it opens the handover screen."),
       form);
   }
 
@@ -496,17 +496,17 @@
     let h;
     try { h = await api("GET", `/api/police/handover/${ref}/${token}`); }
     catch (e) { shell("queue", [backBtn(), el("div", { class: "empty" }, e.message)]); return; }
-    const sel = el("select", { id: "ho-st", "aria-label": "Accept at branch" }, h.my_stations.map((st) =>
+    const sel = el("select", { id: "ho-st", "aria-label": "Accept at station" }, h.my_stations.map((st) =>
       el("option", { value: String(st.id), selected: st.id === h.routed_station_id ? true : null }, st.name)));
     const btn = el("button", { class: "btn btn-primary", onclick: async () => {
       btn.disabled = true;
       try { await api("POST", `/api/police/handover/${ref}/${token}/accept`, { station_id: Number(sel.value) });
-            toast("Case accepted at your branch. Recorded in the audit log."); refreshMeta(); location.hash = `#/report/${ref}/overview`; }
-      catch (e) { toast(e.message, true); btn.disabled = false; } } }, "Accept case at this branch");
+            toast("Case accepted at your station. Recorded in the audit log."); refreshMeta(); location.hash = `#/report/${ref}/overview`; }
+      catch (e) { toast(e.message, true); btn.disabled = false; } } }, "Accept case at this station");
     shell("queue", [
-      el("div", { class: "page-head" }, el("div", null, el("div", { class: "kicker" }, "Branch handover"),
+      el("div", { class: "page-head" }, el("div", null, el("div", { class: "kicker" }, "Station handover"),
         el("h1", null, h.reference),
-        el("p", null, "The customer is showing you their Ubufakazi case pack. Check that this is their report, then accept it at your branch's fraud desk."))),
+        el("p", null, "The complainant is showing you their Ubufakazi case pack. Check that this is their report, then accept it at your station."))),
       el("div", { class: "cols" },
         el("section", { class: "panel" }, el("h3", null, "Check with the complainant"),
           el("dl", { class: "facts" },
@@ -518,9 +518,9 @@
             el("dt", null, "Routed to"), el("dd", null, h.routed_station)),
           h.handover ? el("div", { class: "notice info" }, `Already accepted at ${h.handover.station} by ${h.handover.accepted_by} (${dateTime(h.handover.accepted_at)}).`) : null),
         el("section", { class: "panel" }, el("h3", null, "Accept the case"),
-          el("div", { class: "field" }, el("label", { for: "ho-st" }, "Your branch"), sel),
+          el("div", { class: "field" }, el("label", { for: "ho-st" }, "Your station"), sel),
           el("div", { class: "row-btns" }, btn),
-          el("p", { class: "hint" }, "If the customer came to a different branch than the one Ubufakazi suggested, the case moves to yours and the move is written to the audit log. When the bank escalates the case to SAPS, record the CAS number on the report."),
+          el("p", { class: "hint" }, "If the complainant came to a different station than the one Ubufakazi suggested, the case moves to yours and the move is written to the audit log. After your station registers the case, record the CAS number on the report."),
           h.can_open ? el("a", { class: "btn btn-ghost btn-small", href: `#/report/${h.reference}/overview` }, "Open the report") : null))]);
   }
 
@@ -536,7 +536,7 @@
     };
     paint();
     body.replaceChildren(el("div", { class: "cols" },
-      el("section", { class: "panel" }, el("h3", null, "Draft statement"), el("p", { class: "hint" }, "Prepared automatically from the report. The complainant must read, correct and sign it in front of a SAPS officer when the bank escalates."), sw, box,
+      el("section", { class: "panel" }, el("h3", null, "Draft statement"), el("p", { class: "hint" }, "Prepared automatically from the report. The complainant must read, correct and sign it at the station."), sw, box,
         el("div", { class: "row-btns" }, el("button", { class: "btn btn-ghost btn-small", onclick: () => { navigator.clipboard.writeText(box.textContent).then(() => toast("Copied.")); } }, "Copy text"))),
       r.bank_report ? el("section", { class: "panel" }, el("h3", null, "Draft bank fraud report"), el("p", { class: "hint" }, "For the complainant to send to their own bank. Ubufakazi does not contact banks."),
         el("div", { class: "quote mono small" }, r.bank_report)) : el("section", { class: "panel" }, el("h3", null, "Bank report"), el("p", { class: "muted" }, "Not applicable to this report."))));
@@ -598,7 +598,7 @@
     const list = r.leads.length ? r.leads.map((L) => el("article", { class: `lead ${L.strength}${L.visible ? "" : " restricted"}` },
       el("div", { class: "lead-top" },
         L.visible ? el("a", { class: "ref", href: "#/report/" + L.reference + "/leads" }, L.reference)
-                  : el("span", null, el("b", null, "Restricted report"), " ", el("span", { class: "muted small" }, "· request access through your branch fraud manager")),
+                  : el("span", null, el("b", null, "Restricted report"), " ", el("span", { class: "muted small" }, "· request access through your station commander")),
         el("span", { class: "lead-badge" + (L.strength === "corroborated" ? "" : " single") }, L.strength === "corroborated" ? "Corroborated lead" : "Single-signal lead")),
       el("div", { class: "muted small" }, L.station + (L.visible ? ` · ${date(L.date)} · ${money(L.amount_paid)} · ${L.status_label}` : "")),
       el("ul", null, L.signals.map((s) => el("li", null, s.reason, ...(s.conflicts || []).map((c) => el("div", { class: "conflict" }, "Conflict: " + c)))))))
@@ -612,7 +612,7 @@
   }
 
   function notes(r, body) {
-    const ta = el("textarea", { id: "note-body", rows: "3", maxlength: "4000", placeholder: "Add a case note (visible to investigators at this branch)" });
+    const ta = el("textarea", { id: "note-body", rows: "3", maxlength: "4000", placeholder: "Add a case note (visible to officers at this station)" });
     const add = el("button", { class: "btn btn-primary btn-small", onclick: async () => {
       if (!ta.value.trim()) return;
       try { await api("POST", `/api/police/reports/${r.reference}/notes`, { body: ta.value }); toast("Note added."); showReport(r.reference, "notes"); }
@@ -638,16 +638,16 @@
   // ------------------------------------------------------------------ scam network
   function nodePanel(panel, n, nbrs, edges) {
     const put = (...k) => panel.replaceChildren(...k.filter((x) => x !== null && x !== undefined && x !== false));
-    if (!n) { put(el("div", { class: "kicker" }, "Details"), el("p", { class: "muted" }, "Select a node to see what it is and why it is connected. Double-click a report from your branch to open it."),
+    if (!n) { put(el("div", { class: "kicker" }, "Details"), el("p", { class: "muted" }, "Select a node to see what it is and why it is connected. Double-click a report from your station to open it."),
       el("p", { class: "hint" }, "A connection means a shared signal, not proof. Accounts can belong to money mules and numbers can be spoofed.")); return; }
     if (n.type === "report") {
       const sigs = nbrs.filter((x) => x.type !== "report").map((x) => `${UBFGraph.KIND[x.type]}: ${x.label}`);
       const scripts = edges.filter((e) => e.kind === "script").length;
       put(el("div", { class: "kicker" }, n.visible ? "Report" : "Restricted report"),
         el("h4", null, n.visible ? n.label : "Held by " + n.station),
-        n.visible ? el("dl", { class: "facts" }, el("dt", null, "Branch"), el("dd", null, n.station), el("dt", null, "Type"), el("dd", null, n.scam_type || "-"),
+        n.visible ? el("dl", { class: "facts" }, el("dt", null, "Station"), el("dd", null, n.station), el("dt", null, "Type"), el("dd", null, n.scam_type || "-"),
           el("dt", null, "Paid"), el("dd", null, money(n.amount)), el("dt", null, "Date"), el("dd", null, date(n.date)), el("dt", null, "Status"), el("dd", null, n.status))
-          : el("p", { class: "muted small" }, "You can see that this report exists and how it connects, but not its details. Request access through your branch fraud manager."),
+          : el("p", { class: "muted small" }, "You can see that this report exists and how it connects, but not its details. Request access through your station commander."),
         el("h4", null, "Connected by"),
         sigs.length || scripts ? el("ul", null, sigs.map((x) => el("li", null, x)), scripts ? el("li", null, `Similar message template (${scripts} report${scripts > 1 ? "s" : ""})`) : null) : el("p", { class: "muted small" }, "No visible signals."),
         n.visible && !n.focus ? el("a", { class: "btn btn-primary btn-small", href: "#/report/" + n.label }, "Open case") : null,
@@ -656,7 +656,7 @@
       const reps = nbrs.filter((x) => x.type === "report");
       const vis = reps.filter((x) => x.visible), res = reps.length - vis.length;
       put(el("div", { class: "kicker" }, UBFGraph.KIND[n.type] || n.type), el("h4", { class: "mono" }, n.label),
-        el("p", { class: "muted small" }, `Appears in ${reps.length} reports${res ? ` (${res} at other branches)` : ""}. Compared by a keyed hash: the raw value is shown only because a report you may see contains it.`),
+        el("p", { class: "muted small" }, `Appears in ${reps.length} reports${res ? ` (${res} at other stations)` : ""}. Compared by a keyed hash: the raw value is shown only because a report you may see contains it.`),
         el("ul", null, vis.map((r) => el("li", null, el("a", { href: "#/report/" + r.label }, r.label), ` · ${money(r.amount)}`)), res ? el("li", { class: "muted" }, `${res} restricted report${res > 1 ? "s" : ""}`) : null),
         n.type === "account" ? el("p", { class: "hint" }, "A shared receiving account is the strongest signal, but the holder may be a money mule rather than the organiser.") : null);
     }
@@ -668,13 +668,13 @@
     const summary = el("div", { class: "graph-summary" });
     const filters = el("div");
     container.replaceChildren(summary, filters, el("div", { class: "graph-layout" }, gbox, panel),
-      el("p", { class: "hint" }, "Drag nodes, scroll to zoom, click to see details. Reports at other branches stay restricted."));
+      el("p", { class: "hint" }, "Drag nodes, scroll to zoom, click to see details. Reports at other stations stay restricted."));
     nodePanel(panel, null);
     try {
       const g = await api("GET", `/api/police/reports/${reference}/graph`);
       const s = g.summary;
       summary.replaceChildren(el("span", null, el("b", null, String(s.reports)), " reports linked"), el("span", null, el("b", null, String(s.visible)), " visible to you"),
-        el("span", null, el("b", null, String(s.restricted)), " restricted"), el("span", null, el("b", null, String(s.stations)), " branches"),
+        el("span", null, el("b", null, String(s.restricted)), " restricted"), el("span", null, el("b", null, String(s.stations)), " stations"),
         el("span", null, el("b", null, money(s.visible_amount)), " reported loss (visible)"), ...(g.truncated ? [el("span", null, "(showing the closest 60)")] : []));
       if (s.reports < 2) { gbox.replaceChildren(el("div", { class: "empty" }, "This report has no possible connections yet.")); return; }
       requestAnimationFrame(() => {
@@ -693,11 +693,11 @@
     const work = el("section", { class: "panel" });
     shell("network", [
       el("div", { class: "page-head" }, el("div", null, el("div", { class: "kicker" }, "Scam fingerprint network"), el("h1", null, "Possible scam networks"),
-        el("p", null, "Groups of reports linked by shared bank accounts, phone numbers, websites or message templates. Each group includes at least one report from your branch."))),
-      el("div", { class: "notice info" }, el("b", null, "Investigative leads only. "), "Solid red lines: shared bank account. Amber: shared phone. Violet: website or other identifier. Dashed violet: similar message template. A grey dashed ring is a report at another branch (restricted)."),
+        el("p", null, "Groups of reports linked by shared bank accounts, phone numbers, websites or message templates. Each group includes at least one report from your station."))),
+      el("div", { class: "notice info" }, el("b", null, "Investigative leads only. "), "Solid red lines: shared bank account. Amber: shared phone. Violet: website or other identifier. Dashed violet: similar message template. A grey dashed ring is a report at another station (restricted)."),
       el("div", { class: "spacer-16" }),
       cl.length ? el("div", { class: "clusters" }, cl.map((c) => el("button", { class: "cluster" + (c.anchor === current ? " active" : ""), onclick: () => { location.hash = "#/network/" + c.anchor; } },
-        el("div", { class: "lead-top" }, el("span", { class: "big" }, String(c.size)), el("span", { class: "muted small" }, `${c.stations} branch${c.stations > 1 ? "es" : ""} · ${c.provinces.length} province${c.provinces.length > 1 ? "s" : ""}`)),
+        el("div", { class: "lead-top" }, el("span", { class: "big" }, String(c.size)), el("span", { class: "muted small" }, `${c.stations} station${c.stations > 1 ? "s" : ""} · ${c.provinces.length} province${c.provinces.length > 1 ? "s" : ""}`)),
         el("div", null, el("b", null, c.scam_type || "Mixed"), el("span", { class: "muted" }, ` · ${date(c.first)} → ${date(c.last)}`)),
         el("div", { class: "muted small" }, `${c.visible} visible to you · ${c.restricted} restricted · ${money(c.visible_amount)} reported loss (visible)`),
         el("div", { class: "chips" }, c.shared.map((s) => el("span", { class: "chip" }, `${kindLabel[s.kind] || s.kind} ${s.display}`, el("span", { class: "src" }, `×${s.reports}`)))))))
@@ -743,7 +743,7 @@
       row("WhatsApp", i.whatsapp.running, i.whatsapp.note),
       row("AI reading of images, voice notes and scans", i.ai_media_reading.configured, i.ai_media_reading.note),
       row("Trusted timestamps (RFC 3161)", i.trusted_timestamps.configured, i.trusted_timestamps.note),
-      row("Branch handover (QR) + SAPS escalation (CAS number)", i.station_handover.working, i.station_handover.note),
+      row("Police station handover (QR + CAS number)", i.station_handover.working, i.station_handover.note),
       row("Bank link: Ubuntu Trust Bank (fictional)", i.bank_link.connected, i.bank_link.note),
       row("SAPS systems", i.saps.connected, i.saps.note),
       row("Real banks", i.banks.connected, i.banks.note),

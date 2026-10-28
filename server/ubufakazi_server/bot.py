@@ -72,14 +72,14 @@ def build_application(token: str):
             r = db.get(Report, report_id)
             if r.processing_status != "ready":
                 await update.effective_chat.send_message("Your report is saved, but the case pack could not be prepared "
-                                                         "automatically. An investigator can re-run processing.")
+                                                         "automatically. An officer can re-run processing.")
                 return
             pdf = await asyncio.to_thread(build_case_pack, db, r, "complainant")
         finally:
             db.close()
         m = await update.effective_chat.send_document(
             document=io.BytesIO(pdf), filename=f"Ubufakazi-{reference}.pdf",
-            caption="Your draft statement and case pack. Check it. Your bank's fraud desk has your report and escalates the case to SAPS.")
+            caption="Your draft statement and case pack. Check it, then take it to a police station to register the case.")
         _sent.setdefault(update.effective_chat.id, []).append(m.message_id)
 
     async def reply(update: Update, outs: list[Out]):

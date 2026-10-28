@@ -47,12 +47,12 @@ def _timestamp(seal_id: str, digest: str) -> None:
             db.query(DocumentSeal).filter_by(seal_id=seal_id).update({"trusted_timestamp": token})
 
 
-LABEL = {"case_pack_police": "Case pack · bank fraud desk copy", "case_pack_complainant": "Case pack · complainant copy"}
+LABEL = {"case_pack_police": "Case pack · police copy", "case_pack_complainant": "Case pack · complainant copy"}
 
 
 def public(s) -> dict:
     from . import timestamps
     return {"seal_id": s.seal_id, "document": LABEL.get(s.doc_type, s.doc_type), "reference": s.reference,
-            "issued_at": s.issued_at.isoformat() + "Z", "issued_to": "a bank fraud investigator" if s.issued_to.startswith("officer")
+            "issued_at": s.issued_at.isoformat() + "Z", "issued_to": "an officer" if s.issued_to.startswith("officer")
             or s.issued_to.startswith("admin") else "the complainant", "sha256": s.sha256, "size": s.size,
             "timestamp": timestamps.public_info(s.trusted_timestamp)}
