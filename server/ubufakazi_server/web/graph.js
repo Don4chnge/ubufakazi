@@ -63,7 +63,7 @@ const UBFGraph = (() => {
       tip.replaceChildren();
       if (n.type === "report") {
         if (n.visible) tip.append(el("b", null, n.label), el("div", null, n.station), el("div", null, `${n.scam_type || "-"} · ${UBF.money(n.amount)}`), el("div", { class: "muted" }, `${UBF.date(n.date)} · ${n.status}`));
-        else tip.append(el("b", null, "Restricted report"), el("div", null, `Held by ${n.station}`), el("div", { class: "muted small" }, "Details are visible only to that station."));
+        else tip.append(el("b", null, "Restricted report"), el("div", null, `Held by ${n.station}`), el("div", { class: "muted small" }, "Details are visible only to that branch."));
       } else tip.append(el("b", null, KIND[n.type] || n.type), el("div", { class: "mono" }, n.label), el("div", { class: "muted" }, `Appears in ${n.count} reports`));
       const r = box.getBoundingClientRect();
       tip.style.left = Math.min(e.clientX - r.left + 14, r.width - 270) + "px";
@@ -143,7 +143,7 @@ const UBFGraph = (() => {
     function legend() {
       const dot = (c) => { const i = el("i"); i.style.background = c; return i; };
       return el("div", { class: "graph-legend" },
-        el("span", null, dot("#2EE6D6"), "your station's report"), el("span", null, dot("#3A4756"), "restricted report"),
+        el("span", null, dot("#2EE6D6"), "your branch's report"), el("span", null, dot("#3A4756"), "restricted report"),
         el("span", null, dot("#FF5D6C"), "bank account"), el("span", null, dot("#FBBF24"), "phone"),
         el("span", null, dot("#A78BFA"), "website / other"), el("span", null, "- - - similar message template"));
     }

@@ -90,7 +90,7 @@ async def security_headers(request: Request, call_next):
     if get_settings().cookie_secure:
         h["Strict-Transport-Security"] = "max-age=31536000"
     p = request.url.path
-    if p.startswith("/api/") or p in ("/police", "/bank-demo", "/track"):
+    if p.startswith("/api/") or p in ("/police", "/fraud-desk", "/bank-demo", "/track"):
         h["Cache-Control"] = "no-store"
     return resp
 
@@ -123,11 +123,12 @@ def integrations(db: Session = Depends(get_db)):
         "whatsapp": whatsapp.status(),
         "ai_media_reading": ai.status(),
         "trusted_timestamps": timestamps.status(),
-        "station_handover": {"working": True, "note": "Working. The complainant shows the QR code on their case pack; "
-                                                      "an officer signs in, accepts the case at their station and records "
-                                                      "the CAS number the station issued (shown as 'entered by officer')."},
+        "station_handover": {"working": True, "note": "Working. Reports route to the bank branch fraud desk for the area; "
+                                                      "an investigator can accept a case at their branch by scanning the case "
+                                                      "pack QR, and records the CAS number SAPS issued when the bank escalates "
+                                                      "(shown as 'entered by the bank')."},
         "saps": {"connected": False, "note": "Deliberately not connected to SAPS's own systems, and never claimed to be. "
-                                             "Ubufakazi never creates or checks CAS numbers. Stations in this demo are fictional."},
+                                             "The bank escalates to SAPS; Ubufakazi never creates or checks CAS numbers."},
         "bank_link": banklink.status(db),
         "banks": {"connected": False, "note": "Deliberately not connected to any real bank. Ubuntu Trust Bank is fictional; "
                                               "a real bank would need a partnership and data-sharing agreement."},
@@ -738,10 +739,10 @@ def handover_accept(reference: str, token: str, body: HandoverIn, request: Reque
                     db: Session = Depends(get_db)):
     r = _handover_report(db, request, reference, token)
     if not p.is_admin and body.station_id not in p.station_ids:
-        _err(403, "You can only accept a case at your own station.")
+        _err(403, "You can only accept a case at your own branch.")
     st = db.get(Station, body.station_id)
     if not st:
-        _err(400, "Unknown station.")
+        _err(400, "Unknown branch.")
     with write_lock:
         h = db.query(StationHandover).filter_by(report_id=r.id).first()
         frm = r.station_id
@@ -786,7 +787,7 @@ def record_cas(reference: str, body: CasIn, request: Request, p: Principal = Dep
                      target_id=r.reference, station_id=r.station_id, ip=client_ip(request), detail={"cas_number": cas})
         db.flush()
     services.change_status(db, r, "registered_at_station", user_id=p.user.id, actor=_actor(p),
-                           note=f"{cas} recorded by the officer (issued by {r.station.name}; not verified with SAPS)",
+                           note=f"{cas}: SAPS case number recorded by the bank investigator at {r.station.name} (not verified with SAPS)",
                            ip=client_ip(request))
     db.commit()
     return {"cas_number": cas, "status": r.status, "status_label": STATUS_LABELS[r.status]}
@@ -802,7 +803,7 @@ def set_status(reference: str, body: StatusIn, request: Request, p: Principal = 
                db: Session = Depends(get_db)):
     r = police.get_report(db, p, reference)
     if body.status == "registered_at_station":
-        _err(400, "Record the CAS number the station issued to mark the case as registered.")
+        _err(400, "Record the CAS number SAPS issued to mark the case as escalated to SAPS.")
     try:
         services.change_status(db, r, body.status, user_id=p.user.id, actor=_actor(p), note=body.note, ip=client_ip(request))
     except services.ReportError as e:
@@ -844,7 +845,7 @@ def police_pack(reference: str, request: Request, p: Principal = Depends(officer
         audit.record(db, "pack.police", actor=_actor(p), actor_user_id=p.user.id, target_type="report",
                      target_id=r.reference, station_id=r.station_id, ip=client_ip(request))
     return Response(pdf, media_type="application/pdf",
-                    headers={"Content-Disposition": f'attachment; filename="Ubufakazi-{r.reference}-POLICE.pdf"'})
+                    headers={"Content-Disposition": f'attachment; filename="Ubufakazi-{r.reference}-FRAUD-DESK.pdf"'})
 
 
 @app.get("/api/police/reports/{reference}/graph")
@@ -1002,7 +1003,7 @@ def utb_action(case_id: int, body: UtbActionIn, request: Request, p: Principal =
 
 # ------------------------------------------------------------------ pages + website
 PAGES = {"/": "home.html", "/demo-logins": "demo-logins.html", "/share": "share.html", "/resources": "resources.html", "/about": "about.html",
-         "/police": "police.html", "/bank-demo": "bank.html", "/bank": "bank.html", "/report": "report.html", "/track": "track.html",
+         "/police": "police.html", "/fraud-desk": "police.html", "/bank-demo": "bank.html", "/bank": "bank.html", "/report": "report.html", "/track": "track.html",
          "/verify": "verify.html", "/integrations": "integrations.html", "/privacy": "privacy.html", "/banks": "banks.html", "/security": "security.html"}
 
 

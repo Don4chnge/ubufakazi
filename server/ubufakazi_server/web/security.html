@@ -13,12 +13,12 @@
 <body>
 <a class="skip" href="#main">Skip to content</a>
 <header class="topbar">
-  <a class="brand" href="/" aria-label="Ubufakazi home"><svg viewBox="0 0 32 32" aria-hidden="true"><path d="M16 3l10 4v8.2c0 6.6-4.3 11.3-10 13.8C10.3 26.5 6 21.8 6 15.2V7z"/><path d="M11 17.2c.5-3.2 2.5-5.4 5-5.4s4.5 2.2 5 5.4"/><path d="M13.2 20.6c0-2.6 1.2-4.4 2.8-4.4s2.8 1.8 2.8 4.4"/><path d="M16 19.4v4.2"/></svg><span class="brand-text"><b>Ubufakazi</b><small>Scam-syndicate forensics for SAPS &amp; banks</small></span></a>
-  <nav class="pubnav" id="pubnav" aria-label="Main"><a href="/">Home</a><a href="/police#/board">For SAPS</a><a href="/banks">For Banks</a><a href="/report">Report a Scam</a><a href="/track">Track a Case</a><a href="/security" aria-current="page">Security</a><a href="/about">About</a></nav>
+  <a class="brand" href="/" aria-label="Ubufakazi home"><svg viewBox="0 0 32 32" aria-hidden="true"><path d="M16 3l10 4v8.2c0 6.6-4.3 11.3-10 13.8C10.3 26.5 6 21.8 6 15.2V7z"/><path d="M11 17.2c.5-3.2 2.5-5.4 5-5.4s4.5 2.2 5 5.4"/><path d="M13.2 20.6c0-2.6 1.2-4.4 2.8-4.4s2.8 1.8 2.8 4.4"/><path d="M16 19.4v4.2"/></svg><span class="brand-text"><b>Ubufakazi</b><small>Digital forensics for scam victims &amp; banks</small></span></a>
+  <nav class="pubnav" id="pubnav" aria-label="Main"><a href="/">Home</a><a href="/banks">For Banks</a><a href="/fraud-desk#/board">Fraud Desk</a><a href="/report">Report a Scam</a><a href="/track">Track a Case</a><a href="/security" aria-current="page">Security</a><a href="/about">About</a></nav>
   <span class="spacer"></span>
   <div class="nav-actions">
     
-    <a class="btn btn-ghost btn-small" href="/police">Investigator login</a>
+    <a class="btn btn-ghost btn-small" href="/fraud-desk">Bank login</a>
     <a class="btn btn-primary btn-small" href="/report">Report a Scam</a>
     <button class="menu-btn" type="button" aria-label="Menu" aria-controls="pubnav" aria-expanded="false"><svg viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
   </div>
@@ -37,7 +37,7 @@
   <div class="table-wrap panel reveal"><table class="data sec-map">
     <thead><tr><th scope="col">Risk</th><th scope="col">How Ubufakazi handles it</th><th scope="col">Status</th></tr></thead>
     <tbody>
-      <tr><td><b>A01</b> Broken Access Control</td><td>Officers see only their station's jurisdiction; other stations' reports answer "not found" so references cannot be probed. Roles for police, admin and bank. Banks get account-level alerts only. Beneficiary check open to subscribed banks only.</td><td><span class="ok-pill">Implemented · tested</span></td></tr>
+      <tr><td><b>A01</b> Broken Access Control</td><td>Investigators see only their own branch; other branches' reports answer "not found" so references cannot be probed. Roles for branch investigators, head office and bank analysts. Banks get account-level alerts only. Beneficiary check open to subscribed banks only.</td><td><span class="ok-pill">Implemented · tested</span></td></tr>
       <tr><td><b>A02</b> Security Misconfiguration</td><td>Strict Content-Security-Policy (no inline or third-party scripts), HSTS, X-Frame-Options DENY, no-sniff, no-referrer, Permissions-Policy, no API docs exposed, secrets only in environment variables, the server refuses to start without strong secrets.</td><td><span class="ok-pill">Implemented · live check</span></td></tr>
       <tr><td><b>A03</b> Software Supply Chain Failures</td><td>Every dependency pinned to an exact version; scanned with pip-audit (our scan found 38 known vulnerabilities in an image library, fixed by upgrading); software bill of materials published (CycloneDX).</td><td><span class="ok-pill">Implemented · live check</span></td></tr>
       <tr><td><b>A04</b> Cryptographic Failures</td><td>Argon2id passwords; scammer identifiers compared by keyed HMAC-SHA256 (the key never leaves the server); signed bank API (HMAC, timestamp window); SHA-256 evidence fingerprints; TLS everywhere.</td><td><span class="ok-pill">Implemented</span></td></tr>
@@ -53,7 +53,7 @@
   <div class="table-wrap panel reveal"><table class="data sec-map">
     <thead><tr><th scope="col">Risk</th><th scope="col">How Ubufakazi handles it</th><th scope="col">Status</th></tr></thead>
     <tbody>
-      <tr><td><b>LLM01</b> Prompt Injection</td><td>Evidence and AI output are scanned for instructions aimed at the AI, forged output markers and hidden characters. The officer sees a red warning, and details from that file cannot alert a bank. A red-team sample is in the <a href="/demo-kit/samples/">sample kit</a>.</td><td><span class="ok-pill">Implemented · tested</span></td></tr>
+      <tr><td><b>LLM01</b> Prompt Injection</td><td>Evidence and AI output are scanned for instructions aimed at the AI, forged output markers and hidden characters. The investigator sees a red warning, and details from that file cannot alert a bank. A red-team sample is in the <a href="/demo-kit/samples/">sample kit</a>.</td><td><span class="ok-pill">Implemented · tested</span></td></tr>
       <tr><td><b>LLM02</b> Sensitive Information Disclosure</td><td>Location, camera and editing metadata are removed from photos before AI reading; the AI receives only the evidence file, never names, IDs or other reports. AI reading needs the complainant's consent.</td><td><span class="ok-pill">Implemented</span></td></tr>
       <tr><td><b>LLM03</b> Supply Chain</td><td>A hosted model over a pinned API client; no third-party models or plugins are downloaded.</td><td><span class="ok-pill">Implemented</span></td></tr>
       <tr><td><b>LLM04</b> Data &amp; Model Poisoning</td><td>We never train or fine-tune on reports. The scam network cannot be poisoned by the AI: AI-only details stay unverified and never trigger bank alerts alone.</td><td><span class="ok-pill">Implemented · tested</span></td></tr>
@@ -61,7 +61,7 @@
       <tr><td><b>LLM06</b> Excessive Agency</td><td>The AI has no tools and no permissions: it cannot change a case, contact a bank or send messages. Its readings alone cannot trigger anything.</td><td><span class="ok-pill">Implemented · tested</span></td></tr>
       <tr><td><b>LLM07</b> System Prompt Leakage</td><td>The reading prompt contains no secrets, keys or internal data; leaking it reveals nothing useful.</td><td><span class="ok-pill">By design</span></td></tr>
       <tr><td><b>LLM08</b> Vector &amp; Embedding Weaknesses</td><td>Not applicable: Ubufakazi uses no vector database or embeddings.</td><td><span class="na-pill">Not applicable</span></td></tr>
-      <tr><td><b>LLM09</b> Misinformation</td><td>Everything the AI reads is labelled "AI-generated, unverified", kept next to the untouched original, and checked by an officer. Rule-based readings are kept separately.</td><td><span class="ok-pill">Implemented</span></td></tr>
+      <tr><td><b>LLM09</b> Misinformation</td><td>Everything the AI reads is labelled "AI-generated, unverified", kept next to the untouched original, and checked by an investigator. Rule-based readings are kept separately.</td><td><span class="ok-pill">Implemented</span></td></tr>
       <tr><td><b>LLM10</b> Unbounded Consumption</td><td>Hourly and daily caps on AI calls, file size limits and upload rate limits.</td><td><span class="ok-pill">Implemented · live check</span></td></tr>
     </tbody></table></div>
 
@@ -69,7 +69,7 @@
   <ol class="bank-steps">
     <li class="panel reveal"><span class="n">1</span><h3>Identify &amp; collect</h3><p class="muted">The complainant submits chats, screenshots, slips and voice notes on the website or Telegram, with consent. Each file is identified by its bytes, not its name.</p></li>
     <li class="panel reveal"><span class="n">2</span><h3>Acquire &amp; preserve</h3><p class="muted">The original is stored read-only with its SHA-256 fingerprint and an RFC 3161 timestamp from an independent authority. Every access is in the hash-chained audit log (chain of custody).</p></li>
-    <li class="panel reveal"><span class="n">3</span><h3>Examine &amp; analyse</h3><p class="muted">Rules and AI read working copies, never the original. Accounts, numbers and scripts are linked across station jurisdictions; payment slips are checked for signs of editing.</p></li>
+    <li class="panel reveal"><span class="n">3</span><h3>Examine &amp; analyse</h3><p class="muted">Rules and AI read working copies, never the original. Accounts, numbers and scripts are linked across bank branches; payment slips are checked for signs of editing.</p></li>
     <li class="panel reveal"><span class="n">4</span><h3>Report</h3><p class="muted">A sealed case pack lists every file's fingerprint and timestamp. Anyone can verify the pack and each file on <a href="/verify">Verify</a>, without uploading anything.</p></li>
   </ol>
 
@@ -77,22 +77,22 @@
   <div class="table-wrap panel reveal"><table class="data sec-map">
     <thead><tr><th scope="col">Attacker wants to…</th><th scope="col">Our defence</th></tr></thead>
     <tbody>
-      <tr><td>Frame an innocent person's account</td><td>One report never blocks or warns "do not pay"; it needs several victims in two or more jurisdictions, or the account's own bank freezing it. AI-only or injection-flagged details never count.</td></tr>
+      <tr><td>Frame an innocent person's account</td><td>One report never blocks or warns "do not pay"; it needs several victims in two or more branch regions, or the account's own bank freezing it. AI-only or injection-flagged details never count.</td></tr>
       <tr><td>Check whether they have been reported (a scammer snooping)</td><td>No public search. The beneficiary check is for subscribed, signed banks only, answers counts not details, has quotas, and abuse raises alerts.</td></tr>
       <tr><td>Trick the AI with hidden instructions</td><td>Prompt-injection shield, hardened reading prompt, AI has no powers, AI-only details stay unverified.</td></tr>
-      <tr><td>Forge or edit a police case pack</td><td>Sealed PDFs: one changed character breaks the seal on Verify; unknown seals are reported as possibly forged.</td></tr>
-      <tr><td>Submit an edited proof of payment</td><td>Payment-slip checks flag editing software, edits after creation and appended updates, as warning signs for the officer.</td></tr>
+      <tr><td>Forge or edit a case pack</td><td>Sealed PDFs: one changed character breaks the seal on Verify; unknown seals are reported as possibly forged.</td></tr>
+      <tr><td>Submit an edited proof of payment</td><td>Payment-slip checks flag editing software, edits after creation and appended updates, as warning signs for the investigator.</td></tr>
       <tr><td>Spoof or replay a bank message</td><td>HMAC signatures over timestamp and body, a 5-minute window, single-use signatures for the beneficiary check, every rejection audited and alerted.</td></tr>
-      <tr><td>Steal victims' data</td><td>Banks never receive names, chats or statements; station isolation; two-factor sign-in; identifiers matched by keyed hashes; consent first, under POPIA.</td></tr>
+      <tr><td>Steal victims' data</td><td>Banks never receive names, chats or statements; branch isolation; two-factor sign-in; identifiers matched by keyed hashes; consent first, under POPIA.</td></tr>
       <tr><td>Misuse insider access</td><td>Every view and download audited in a hash-chained log; bulk access raises an alert; a broken chain is a critical alert.</td></tr>
     </tbody></table></div>
 
   <h2 class="section-title">Honest limits</h2>
   <section class="panel reveal"><ul class="checks">
     <li>AI reading is done by Google Gemini, outside South Africa, and only with the complainant's consent. A production system would use an in-region AI service.</li>
-    <li>The demo is hosted on Render and Neon (outside South Africa). Stations, jurisdictions and the bank are fictional, and all data is synthetic.</li>
+    <li>The demo is hosted on Render and Neon (outside South Africa). The bank, its branches and regions are fictional, and all data is synthetic.</li>
     <li>Not yet independently penetration-tested. Tamper-<i>evident</i>, not tamper-proof: changes are detected, not prevented.</li>
-    <li>Prompt-injection and editing checks are rules: they raise warning signs and can miss a careful attacker. Officers check every original.</li>
+    <li>Prompt-injection and editing checks are rules: they raise warning signs and can miss a careful attacker. Investigators check every original.</li>
   </ul></section>
 
   <h2 class="section-title">Report a vulnerability</h2>
@@ -102,15 +102,15 @@
 <footer class="site-foot">
   <div class="in">
     <div>
-      <a class="brand" href="/"><svg viewBox="0 0 32 32" aria-hidden="true"><path d="M16 3l10 4v8.2c0 6.6-4.3 11.3-10 13.8C10.3 26.5 6 21.8 6 15.2V7z"/><path d="M11 17.2c.5-3.2 2.5-5.4 5-5.4s4.5 2.2 5 5.4"/><path d="M13.2 20.6c0-2.6 1.2-4.4 2.8-4.4s2.8 1.8 2.8 4.4"/><path d="M16 19.4v4.2"/></svg><span class="brand-text"><b>Ubufakazi</b><small>Scam-syndicate forensics for SAPS &amp; banks</small></span></a>
-      <p class="muted small foot-blurb">Digital forensics for SAPS and banks: tamper-evident scam evidence, routed by station jurisdiction and linked into syndicates across provinces.</p>
+      <a class="brand" href="/"><svg viewBox="0 0 32 32" aria-hidden="true"><path d="M16 3l10 4v8.2c0 6.6-4.3 11.3-10 13.8C10.3 26.5 6 21.8 6 15.2V7z"/><path d="M11 17.2c.5-3.2 2.5-5.4 5-5.4s4.5 2.2 5 5.4"/><path d="M13.2 20.6c0-2.6 1.2-4.4 2.8-4.4s2.8 1.8 2.8 4.4"/><path d="M16 19.4v4.2"/></svg><span class="brand-text"><b>Ubufakazi</b><small>Digital forensics for scam victims &amp; banks</small></span></a>
+      <p class="muted small foot-blurb">Digital forensics for scam victims and banks: tamper-evident scam evidence, routed to the bank branch fraud desk for the area and linked into syndicates across provinces. The bank escalates to SAPS.</p>
       <div class="social"><a href="https://github.com/Don4chnge/ubufakazi" target="_blank" rel="noopener" aria-label="Source code on GitHub"><svg viewBox="0 0 24 24"><path d="M12 .5a11.5 11.5 0 0 0-3.64 22.41c.58.1.79-.25.79-.56v-2c-3.2.7-3.88-1.37-3.88-1.37-.52-1.33-1.28-1.69-1.28-1.69-1.05-.71.08-.7.08-.7 1.16.08 1.77 1.19 1.77 1.19 1.03 1.77 2.7 1.26 3.36.96.1-.75.4-1.26.73-1.55-2.55-.29-5.24-1.28-5.24-5.69 0-1.26.45-2.29 1.19-3.1-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.17 1.18a11 11 0 0 1 5.78 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.76.11 3.05.74.81 1.19 1.84 1.19 3.1 0 4.42-2.7 5.39-5.26 5.68.41.36.78 1.06.78 2.14v3.17c0 .31.21.67.8.56A11.5 11.5 0 0 0 12 .5z"/></svg></a></div>
     </div>
     <div><h4>For victims (free)</h4><ul><li><a href="/report">Report a scam</a></li><li><a href="/track">Track a case</a></li><li><a href="/verify">Verify a file</a></li><li><a href="/demo-kit/samples/">Sample evidence</a></li></ul></div>
-    <div><h4>For SAPS &amp; banks</h4><ul><li><a href="/police#/board">Syndicate jurisdiction board</a></li><li><a href="/banks">Bank plans &amp; pricing</a></li><li><a href="/police">Investigator dashboard</a></li><li><a href="/bank">Ubuntu Trust Bank (fictional)</a></li><li><a href="/integrations">System status</a></li></ul></div>
+    <div><h4>For banks</h4><ul><li><a href="/fraud-desk#/board">Syndicate board</a></li><li><a href="/banks">Bank plans &amp; pricing</a></li><li><a href="/fraud-desk">Branch fraud desk</a></li><li><a href="/bank">Ubuntu Trust Bank (fictional)</a></li><li><a href="/integrations">System status</a></li></ul></div>
     <div><h4>Project</h4><ul><li><a href="/about">About Ubufakazi</a></li><li><a href="https://github.com/Don4chnge/ubufakazi" target="_blank" rel="noopener">Source code</a></li><li><a href="/security">Security</a></li><li><a href="/privacy">Privacy &amp; data deletion</a></li><li><a href="/mvp">Original MVP (offline)</a></li></ul></div>
   </div>
-  <div class="legal"><span>Demonstration prototype by Team CyberThreat · HackSecure 2026. Fictional stations, fictional bank and synthetic data.</span><span>Not affiliated with SAPS or any bank. In danger now? Call 10111.</span></div>
+  <div class="legal"><span>Demonstration prototype by Team CyberThreat · HackSecure 2026. Fictional bank, fictional branches and synthetic data.</span><span>Not affiliated with SAPS or any real bank. In danger now? Call 10111.</span></div>
 </footer>
 <script src="/app/common.js"></script>
 <script src="/app/security.js"></script>

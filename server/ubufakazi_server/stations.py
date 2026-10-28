@@ -1,8 +1,8 @@
-"""Fictional demonstration stations, their jurisdictions, and report routing.
+"""Bank branch fraud desks of the fictional Ubuntu Trust Bank (UTB), their regions, and report routing.
 
-These are NOT SAPS stations and the jurisdictions are NOT official SAPS precinct boundaries. They exist to
-demonstrate jurisdiction-based routing: a report goes to the demo station whose area covers the town where the
-victim was scammed. A real deployment needs SAPS approval and the official precinct boundaries.
+Internally these are still called "stations" (the code and database tables keep that name). On screen they are bank
+branches: a report goes to the UTB branch fraud desk whose region covers the town where the victim was scammed. The
+bank investigates, links the syndicate across branches and escalates to SAPS. Branches and regions are fictional.
 """
 from __future__ import annotations
 
@@ -12,35 +12,35 @@ PROVINCES = ["Eastern Cape", "Free State", "Gauteng", "KwaZulu-Natal", "Limpopo"
 # code, name, province, jurisdiction (towns the station covers). The first station listed for a province is the
 # province default, used when the town is unknown. Codes of existing stations never change (accounts refer to them).
 DEMO_STATIONS = [
-    ("MTH", "Demo Station · Mthatha", "Eastern Cape", ["Mthatha", "Ngcobo", "Mqanduli", "Libode"]),
-    ("GQB", "Demo Station · Gqeberha", "Eastern Cape", ["Gqeberha", "Kariega", "Jeffreys Bay", "Makhanda"]),
-    ("ELN", "Demo Station · East London", "Eastern Cape", ["East London", "Mdantsane", "Qonce", "Komani"]),
-    ("BFN", "Demo Station · Bloemfontein", "Free State", ["Bloemfontein", "Botshabelo", "Thaba Nchu", "Ladybrand"]),
-    ("WLK", "Demo Station · Welkom", "Free State", ["Welkom", "Virginia", "Odendaalsrus", "Kroonstad"]),
-    ("BTH", "Demo Station · Bethlehem", "Free State", ["Bethlehem", "Harrismith", "Phuthaditjhaba", "Ficksburg"]),
-    ("JHB", "Demo Station · Johannesburg Central", "Gauteng", ["Johannesburg", "Soweto", "Sandton", "Randburg"]),
-    ("ALB", "Demo Station · Alberton", "Gauteng", ["Alberton", "Germiston", "Boksburg", "Kempton Park"]),
-    ("PTA", "Demo Station · Pretoria Central", "Gauteng", ["Pretoria", "Centurion", "Soshanguve", "Mamelodi"]),
-    ("VER", "Demo Station · Vereeniging", "Gauteng", ["Vereeniging", "Vanderbijlpark", "Sebokeng", "Meyerton"]),
-    ("DBN", "Demo Station · Durban Central", "KwaZulu-Natal", ["Durban", "Umlazi", "Pinetown", "Chatsworth"]),
-    ("PMB", "Demo Station · Pietermaritzburg", "KwaZulu-Natal", ["Pietermaritzburg", "Edendale", "Howick", "Mooi River"]),
-    ("RCB", "Demo Station · Richards Bay", "KwaZulu-Natal", ["Richards Bay", "Empangeni", "eShowe", "Mtubatuba"]),
-    ("NCS", "Demo Station · Newcastle", "KwaZulu-Natal", ["Newcastle", "Madadeni", "Dundee", "Ladysmith"]),
-    ("PLK", "Demo Station · Polokwane", "Limpopo", ["Polokwane", "Seshego", "Mokopane", "Lebowakgomo"]),
-    ("THY", "Demo Station · Thohoyandou", "Limpopo", ["Thohoyandou", "Makhado", "Musina", "Malamulele"]),
-    ("TZN", "Demo Station · Tzaneen", "Limpopo", ["Tzaneen", "Phalaborwa", "Giyani", "Nkowankowa"]),
-    ("MBB", "Demo Station · Mbombela", "Mpumalanga", ["Mbombela", "White River", "KaNyamazane", "Barberton"]),
-    ("EML", "Demo Station · eMalahleni", "Mpumalanga", ["eMalahleni", "Middelburg", "KwaMhlanga", "Delmas"]),
-    ("SEC", "Demo Station · Secunda", "Mpumalanga", ["Secunda", "Ermelo", "Standerton", "Bethal"]),
-    ("MHK", "Demo Station · Mahikeng", "North West", ["Mahikeng", "Mmabatho", "Lichtenburg", "Zeerust"]),
-    ("RTB", "Demo Station · Rustenburg", "North West", ["Rustenburg", "Brits", "Mogwase", "Phokeng"]),
-    ("KLK", "Demo Station · Klerksdorp", "North West", ["Klerksdorp", "Potchefstroom", "Jouberton", "Vryburg"]),
-    ("KIM", "Demo Station · Kimberley", "Northern Cape", ["Kimberley", "Galeshewe", "Barkly West", "De Aar"]),
-    ("UPT", "Demo Station · Upington", "Northern Cape", ["Upington", "Kuruman", "Kathu", "Postmasburg"]),
-    ("SPB", "Demo Station · Springbok", "Northern Cape", ["Springbok", "Port Nolloth", "Calvinia", "Okiep"]),
-    ("CPT", "Demo Station · Cape Town Central", "Western Cape", ["Cape Town", "Khayelitsha", "Bellville", "Mitchells Plain"]),
-    ("STB", "Demo Station · Stellenbosch", "Western Cape", ["Stellenbosch", "Paarl", "Worcester", "Somerset West"]),
-    ("GRG", "Demo Station · George", "Western Cape", ["George", "Mossel Bay", "Knysna", "Oudtshoorn"]),
+    ("MTH", "UTB · Mthatha branch", "Eastern Cape", ["Mthatha", "Ngcobo", "Mqanduli", "Libode"]),
+    ("GQB", "UTB · Gqeberha branch", "Eastern Cape", ["Gqeberha", "Kariega", "Jeffreys Bay", "Makhanda"]),
+    ("ELN", "UTB · East London branch", "Eastern Cape", ["East London", "Mdantsane", "Qonce", "Komani"]),
+    ("BFN", "UTB · Bloemfontein branch", "Free State", ["Bloemfontein", "Botshabelo", "Thaba Nchu", "Ladybrand"]),
+    ("WLK", "UTB · Welkom branch", "Free State", ["Welkom", "Virginia", "Odendaalsrus", "Kroonstad"]),
+    ("BTH", "UTB · Bethlehem branch", "Free State", ["Bethlehem", "Harrismith", "Phuthaditjhaba", "Ficksburg"]),
+    ("JHB", "UTB · Johannesburg Central branch", "Gauteng", ["Johannesburg", "Soweto", "Sandton", "Randburg"]),
+    ("ALB", "UTB · Alberton branch", "Gauteng", ["Alberton", "Germiston", "Boksburg", "Kempton Park"]),
+    ("PTA", "UTB · Pretoria Central branch", "Gauteng", ["Pretoria", "Centurion", "Soshanguve", "Mamelodi"]),
+    ("VER", "UTB · Vereeniging branch", "Gauteng", ["Vereeniging", "Vanderbijlpark", "Sebokeng", "Meyerton"]),
+    ("DBN", "UTB · Durban Central branch", "KwaZulu-Natal", ["Durban", "Umlazi", "Pinetown", "Chatsworth"]),
+    ("PMB", "UTB · Pietermaritzburg branch", "KwaZulu-Natal", ["Pietermaritzburg", "Edendale", "Howick", "Mooi River"]),
+    ("RCB", "UTB · Richards Bay branch", "KwaZulu-Natal", ["Richards Bay", "Empangeni", "eShowe", "Mtubatuba"]),
+    ("NCS", "UTB · Newcastle branch", "KwaZulu-Natal", ["Newcastle", "Madadeni", "Dundee", "Ladysmith"]),
+    ("PLK", "UTB · Polokwane branch", "Limpopo", ["Polokwane", "Seshego", "Mokopane", "Lebowakgomo"]),
+    ("THY", "UTB · Thohoyandou branch", "Limpopo", ["Thohoyandou", "Makhado", "Musina", "Malamulele"]),
+    ("TZN", "UTB · Tzaneen branch", "Limpopo", ["Tzaneen", "Phalaborwa", "Giyani", "Nkowankowa"]),
+    ("MBB", "UTB · Mbombela branch", "Mpumalanga", ["Mbombela", "White River", "KaNyamazane", "Barberton"]),
+    ("EML", "UTB · eMalahleni branch", "Mpumalanga", ["eMalahleni", "Middelburg", "KwaMhlanga", "Delmas"]),
+    ("SEC", "UTB · Secunda branch", "Mpumalanga", ["Secunda", "Ermelo", "Standerton", "Bethal"]),
+    ("MHK", "UTB · Mahikeng branch", "North West", ["Mahikeng", "Mmabatho", "Lichtenburg", "Zeerust"]),
+    ("RTB", "UTB · Rustenburg branch", "North West", ["Rustenburg", "Brits", "Mogwase", "Phokeng"]),
+    ("KLK", "UTB · Klerksdorp branch", "North West", ["Klerksdorp", "Potchefstroom", "Jouberton", "Vryburg"]),
+    ("KIM", "UTB · Kimberley branch", "Northern Cape", ["Kimberley", "Galeshewe", "Barkly West", "De Aar"]),
+    ("UPT", "UTB · Upington branch", "Northern Cape", ["Upington", "Kuruman", "Kathu", "Postmasburg"]),
+    ("SPB", "UTB · Springbok branch", "Northern Cape", ["Springbok", "Port Nolloth", "Calvinia", "Okiep"]),
+    ("CPT", "UTB · Cape Town Central branch", "Western Cape", ["Cape Town", "Khayelitsha", "Bellville", "Mitchells Plain"]),
+    ("STB", "UTB · Stellenbosch branch", "Western Cape", ["Stellenbosch", "Paarl", "Worcester", "Somerset West"]),
+    ("GRG", "UTB · George branch", "Western Cape", ["George", "Mossel Bay", "Knysna", "Oudtshoorn"]),
 ]
 
 STATION_BY_CODE = {code: (name, prov, towns) for code, name, prov, towns in DEMO_STATIONS}

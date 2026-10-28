@@ -7,8 +7,8 @@
   const { el, toast } = UBF;
   const WORDS = ["amandla", "ubuntu", "indlela", "isibane", "ilanga", "inkanyezi", "umthetho", "ubulungisa", "imvula", "intaba",
     "umfula", "isikhwama", "ithemba", "inqaba", "ukukhanya", "isiqhamo"];
-  const USERS = [["admin", "Administrator (all stations, audit log)"], ["officer.mthatha", "Officer · Demo Station Mthatha"],
-    ["officer.joburg", "Officer · Johannesburg Central + Alberton"], ["officer.durban", "Officer · Durban Central"],
+  const USERS = [["admin", "UTB head office (all branches, audit log)"], ["officer.mthatha", "Fraud investigator · UTB Mthatha branch"],
+    ["officer.joburg", "Fraud investigator · UTB Johannesburg Central + Alberton"], ["officer.durban", "Fraud investigator · UTB Durban Central"],
     ["bank.reviewer", "Ubuntu Trust Bank fraud analyst (fictional bank)"]];
   const enc = new TextEncoder();
 
@@ -39,9 +39,9 @@
 
   // One-click sign-in: the normal password + two-factor login, done by this browser with the derived values.
   // Nothing is bypassed; the server checks both exactly as on the login page.
-  const next = (() => { const n = new URLSearchParams(location.search).get("next") || ""; return /^\/(police|bank)(#\/[A-Za-z0-9/_-]*)?$/.test(n) ? n : ""; })();
+  const next = (() => { const n = new URLSearchParams(location.search).get("next") || ""; return /^\/(police|fraud-desk|bank)(#\/[A-Za-z0-9/_-]*)?$/.test(n) ? n : ""; })();
   function signInBtn(r) {
-    const dest = next || (r.u === "bank.reviewer" ? "/bank" : "/police");
+    const dest = next || (r.u === "bank.reviewer" ? "/bank" : "/fraud-desk");
     const b = el("button", { class: "btn btn-primary btn-small", type: "button", onclick: async () => {
       b.disabled = true;
       try { await UBF.api("POST", "/api/auth/logout", {}).catch(() => {}); await UBF.signIn(r.u, r.password, await totp(r.secretBytes)); location.href = dest; }

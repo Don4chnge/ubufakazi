@@ -36,9 +36,9 @@ def normalise_cas(value: str) -> str:
     """'cas 123/10/2026' -> 'CAS 123/10/2026'. Raises ValueError for anything else."""
     m = CAS_RE.match(value or "")
     if not m:
-        raise ValueError("Use the format CAS 123/10/2026 (number / month / year), exactly as the station issued it.")
+        raise ValueError("Use the format CAS 123/10/2026 (number / month / year), exactly as SAPS issued it.")
     num, month, year = int(m.group(1)), int(m.group(2)), int(m.group(3))
     this_year = dt.datetime.now(dt.timezone.utc).year
     if not 1 <= month <= 12 or not 2000 <= year <= this_year or num < 1:
-        raise ValueError("That CAS number has an impossible month or year. Check it against the station's register.")
+        raise ValueError("That CAS number has an impossible month or year. Check it against what SAPS issued.")
     return f"CAS {num}/{month}/{year}"

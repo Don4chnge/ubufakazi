@@ -1,7 +1,7 @@
 """PDF case pack (reportlab). Two audiences:
 
-- "complainant": what the victim takes to the station. Never contains other people's reports.
-- "police": adds possible connections (investigative leads), status history, notes and the custody log.
+- "complainant": the victim's own copy (bank branch / SAPS escalation). Never contains other people's reports.
+- "police" (the bank's branch fraud desk copy): adds possible connections (investigative leads), status history, notes and the custody log.
 
 Every automatically extracted or AI-generated item is labelled as unverified.
 """
@@ -87,7 +87,7 @@ def _fmt(d: dt.datetime | None) -> str:
 
 
 def _handover_box(r: Report, S):
-    """QR code the complainant shows at the station. It only helps an officer find the report after signing in."""
+    """QR code the complainant shows at the bank branch. It only helps a fraud investigator find the report after signing in."""
     from reportlab.graphics.barcode.qr import QrCodeWidget
     from reportlab.graphics.shapes import Drawing
     w = QrCodeWidget(handover.url_for(r.reference))
@@ -96,11 +96,11 @@ def _handover_box(r: Report, S):
     d = Drawing(size, size, transform=[size / (x1 - x0), 0, 0, size / (y1 - y0), 0, 0])
     d.add(w)
     text = Paragraph(
-        "<b>At the police station: show this code to the officer.</b><br/>"
-        "Scanning it lets the officer open your Ubufakazi report <i>after</i> signing in with their own password and "
-        "two-factor code, and accept the case at that station, even if it is not the station Ubufakazi suggested. "
-        "It does not register the case by itself: the station registers it in its own system and gives you a CAS "
-        f"number.<br/><font size='7'>Reference {escape(r.reference)}. Keep this pack private. On a computer, the officer can "
+        "<b>At the bank branch: show this code to the fraud investigator.</b><br/>"
+        "Scanning it lets the bank's fraud investigator open your Ubufakazi report <i>after</i> signing in with their own "
+        "password and two-factor code, and accept the case at that branch, even if it is not the branch Ubufakazi suggested. "
+        "The bank investigates and escalates the case to SAPS; SAPS registers it and issues the CAS "
+        f"number.<br/><font size='7'>Reference {escape(r.reference)}. Keep this pack private. On a computer, the investigator can "
         f"also open <a href='{escape(handover.url_for(r.reference))}' color='#0A7C74'>this handover link</a>.</font>", S["small"])
     tb = Table([[d, text]], colWidths=[38 * mm, 136 * mm])
     tb.setStyle(TableStyle([("VALIGN", (0, 0), (-1, -1), "MIDDLE"), ("BOX", (0, 0), (-1, -1), 0.6, LINE),
@@ -157,10 +157,10 @@ def _build_case_pack(db: Session, r: Report, audience: str, viewer, leads, seal_
         canvas.setFillColor(colors.white)
         canvas.setFont("Helvetica-Bold", 7.6)
         canvas.drawString(18 * mm, A4[1] - 6 * mm,
-                          "DEMONSTRATION - NOT AN OFFICIAL SAPS DOCUMENT - NO CASE NUMBER ISSUED - FICTIONAL STATIONS")
+                          "DEMONSTRATION - NOT AN OFFICIAL BANK OR SAPS DOCUMENT - NO CASE NUMBER ISSUED - FICTIONAL BANK BRANCHES")
         canvas.setFillColor(MUTED)
         canvas.setFont("Helvetica", 7.4)
-        canvas.drawString(18 * mm, 10 * mm, f"Ubufakazi case pack {r.reference} - {'POLICE COPY (restricted)' if police else 'Complainant copy'}"
+        canvas.drawString(18 * mm, 10 * mm, f"Ubufakazi case pack {r.reference} - {'BANK FRAUD DESK COPY (restricted)' if police else 'Complainant copy'}"
                                             f" - generated {generated}")
         canvas.drawRightString(A4[0] - 18 * mm, 10 * mm, f"Page {doc.page}")
         canvas.restoreState()
@@ -179,7 +179,7 @@ def _build_case_pack(db: Session, r: Report, audience: str, viewer, leads, seal_
     cover = [
         ["Category", CATEGORY_LABELS.get(r.category, r.category)],
         ["Type (detected)", facts.get("scam_type_label") or TYPE_LABEL.get(r.scam_type or "", "-")],
-        ["Demo station", f"{r.station.name} (fictional, for demonstration only)"],
+        ["Bank fraud desk", f"{r.station.name} (fictional bank, for demonstration only)"],
         ["Area", ", ".join(x for x in (r.town, r.province) if x) or "-"],
         ["When it happened (as stated)", r.incident_when or "-"],
         ["Submitted", _fmt(r.created_at) + f" via {r.source}"],
@@ -190,23 +190,23 @@ def _build_case_pack(db: Session, r: Report, audience: str, viewer, leads, seal_
     ]
     ho = db.query(StationHandover).filter_by(report_id=r.id).first()
     if ho and ho.cas_number:
-        cover.append(["Registered at station", f"{ho.cas_number} at {db.get(Station, ho.station_id).name} "
-                                               "(entered by the officer; not verified with SAPS)"])
+        cover.append(["Escalated to SAPS", f"{ho.cas_number} via {db.get(Station, ho.station_id).name} "
+                                           "(entered by the bank's investigator; not verified with SAPS)"])
     f.append(_kv(cover, S))
     f.append(Spacer(1, 6))
     f.append(_seal_box(seal_id, S))
     f.append(Spacer(1, 8))
     f.append(_box(P(
-        "<b>What this is.</b> A draft prepared automatically from what the complainant reported, so the station visit is "
-        "faster. It is <b>not</b> a sworn statement and <b>not</b> registered with SAPS: no CAS number exists until SAPS "
-        "registers the case. Items marked <i>extracted</i> or <i>AI-generated</i> are unverified until an officer checks "
+        "<b>What this is.</b> A draft prepared automatically from what the complainant reported, so the bank can act "
+        "fast and escalate to SAPS. It is <b>not</b> a sworn statement and <b>not</b> registered with SAPS: no CAS number "
+        "exists until SAPS registers the case. Items marked <i>extracted</i> or <i>AI-generated</i> are unverified until an investigator checks "
         "them against the original files.", "small"), WARN_TINT, ALERT))
     if not police:
         f.append(Spacer(1, 8))
         f.append(P("What to do next", "h2"))
         for i, line in enumerate([
-            "Read the draft statement below. Correct anything wrong. Sign only at the police station, in front of an officer.",
-            "Take this pack (printed or on your phone) and your ID to the police station. Ask for the case to be registered.",
+            "Read the draft statement below. Correct anything wrong. Sign it only in front of a SAPS officer when the case is registered.",
+            f"Your report went to the {r.station.name} fraud desk (fictional bank). The bank links it to other victims, can block the scammer's account and escalates the case to SAPS. Show this pack at the branch if asked.",
             "If you paid money: contact your bank's fraud line now. A draft bank report is included.",
             "Keep the original files (screenshots, chats, receipts). Their fingerprints (SHA-256) are listed in this pack, so anyone can check they were not changed.",
             "In danger right now? Call 10111. Gender-based violence: GBV Command Centre 0800 428 428.",
@@ -235,7 +235,7 @@ def _build_case_pack(db: Session, r: Report, audience: str, viewer, leads, seal_
     f.append(P(t(r.statement or "Not prepared yet.").replace("\n", "<br/>"), "stmt"))
     if police and r.language != "en" and (r.statements or {}).get("en"):
         f.append(Spacer(1, 8))
-        f.append(P("English version (for the officer)", "h2"))
+        f.append(P("English version (for the investigator)", "h2"))
         f.append(P(t(r.statements["en"]).replace("\n", "<br/>"), "stmt"))
 
     # ---------------------------------------------------------------- extracted facts
@@ -317,7 +317,7 @@ def _build_case_pack(db: Session, r: Report, audience: str, viewer, leads, seal_
                    "and numbers can be recycled or spoofed. Rule: one shared signal = single lead; two or more different "
                    "kinds = corroborated lead.", "small"))
         if leads:
-            rows = [["Other report", "Held by", "Signals and reasons", "Lead"]]
+            rows = [["Other report", "Held by branch", "Signals and reasons", "Lead"]]
             for L in leads:
                 reasons = "<br/>".join("- " + t(s["reason"]) + ("".join(f'<br/><font color="#B4442A">  Conflict: {t(c)}</font>'
                                                                          for c in s.get("conflicts", [])))
@@ -348,12 +348,12 @@ def _build_case_pack(db: Session, r: Report, audience: str, viewer, leads, seal_
         f.append(_grid(rows, [34, 50, 50, 40], S))
         if viewer is not None:
             f.append(Spacer(1, 4))
-            f.append(P(t(f"Police copy generated for {viewer.user.display_name} ({viewer.user.username}). "
+            f.append(P(t(f"Bank fraud desk copy generated for {viewer.user.display_name} ({viewer.user.username}). "
                          "This download is recorded in the audit log."), "small"))
 
     f.append(P("Limitations", "h2"))
-    f.append(P("Ubufakazi is a hackathon prototype using fictional stations and synthetic data. It is not connected to SAPS "
-               "or any bank, and it cannot confirm who owns an account or number. Automatic extraction uses documented "
+    f.append(P("Ubufakazi is a hackathon prototype using a fictional bank, fictional branches and synthetic data. It is not connected to SAPS "
+               "or any real bank, and it cannot confirm who owns an account or number. Automatic extraction uses documented "
                "rules and can miss or misread details. The platform reduces the risk of undetected changes; it is not "
                "tamper-proof.", "small"))
     doc.build(f, onFirstPage=on_page, onLaterPages=on_page)

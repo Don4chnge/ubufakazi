@@ -108,7 +108,7 @@ def assess(db, account_number: str) -> dict:
     return {"risk": risk, "headline": headline, "advice": advice, "reports": n, "provinces": len(provinces),
             "jurisdictions": len(stations), "frozen_by_its_bank": frozen,
             "last_report_month": last.strftime("%B %Y") if last else None, "account_hmac": hm,
-            "rule": "'High' needs several victims in at least two station jurisdictions, or the account frozen by its "
+            "rule": "'High' needs several victims in at least two bank branch regions, or the account frozen by its "
                     "own bank, so one false report can never block an innocent account."}
 
 

@@ -82,8 +82,9 @@ class Conversation:
         self.step = "language"
         return [Out("Sawubona · Molo · Dumela · Hallo · Hello\n\n"
                     "I'm Ubufakazi, a DEMO reporting assistant (a hackathon prototype by Team CyberThreat). I help you turn "
-                    "what happened into an organised report, a draft police statement and a case pack you can take to the "
-                    "police station.\n\n"
+                    "what happened into an organised report, a draft statement and a case pack. Your report goes to the "
+                    "fraud desk of the bank branch for your area: the bank links it to other victims, can block the "
+                    "scammer's account and escalates the case to SAPS.\n\n"
                     "I am NOT the police (SAPS) and I cannot open a case. In danger right now? Call 10111.\n"
                     "Type /stop at any time to stop and clear this draft."),
                 Out("Which language should your statement be written in?", list(LANG_NAMES.values()))]
@@ -283,7 +284,7 @@ class Conversation:
             "Please check your report:",
             f"- What happened: {CATEGORY_LABELS.get(d['category'], d['category'])}",
             f"- Where: {d['town']}, {d['province']}",
-            f"- Will be sent to: {d['station']} (fictional demo station)",
+            f"- Will be sent to: {d['station']} fraud desk (fictional bank)",
             f"- When: {d.get('when') or 'not sure'}",
             f"- Evidence: {ev}",
             f"- Statement language: {LANG_NAMES[d['language']]}",
@@ -326,8 +327,8 @@ class Conversation:
                    "Keep the receipt key private. With the reference it lets you check progress and download your case "
                    f"pack on the Ubufakazi Track page: {services.track_url()}\n"
                    "Send /pack at any time to get the case pack (PDF) in this chat.\n"
-                   f"Your report was sent to {res['station']} (a fictional demo station). No SAPS case number exists yet: "
-                   "take your case pack to a police station to register the case." + rejected,
+                   f"Your report was sent to the {res['station']} fraud desk (a fictional bank). The bank links it to other "
+                   "victims and escalates the case to SAPS. No SAPS case number exists yet; keep your case pack." + rejected,
                    action={"type": "submitted", "id": res["id"], "reference": res["reference"],
                            "receipt_key": res["receipt_key"], "sensitive": sensitive})]
         if sensitive:

@@ -19,10 +19,10 @@ from .config import SERVER_DIR, data_dir, get_settings, reset_settings
 
 USERS = [
     # username, display name, role, station codes
-    ("admin", "Demo Administrator", "admin", []),
-    ("officer.mthatha", "Demo Officer (Mthatha)", "officer", ["MTH"]),
-    ("officer.joburg", "Demo Officer (Johannesburg)", "officer", ["JHB", "ALB"]),
-    ("officer.durban", "Demo Officer (Durban)", "officer", ["DBN"]),
+    ("admin", "UTB head-office fraud lead (demo admin)", "admin", []),
+    ("officer.mthatha", "Fraud investigator · UTB Mthatha branch", "officer", ["MTH"]),
+    ("officer.joburg", "Fraud investigator · UTB Johannesburg + Alberton", "officer", ["JHB", "ALB"]),
+    ("officer.durban", "Fraud investigator · UTB Durban branch", "officer", ["DBN"]),
     ("bank.reviewer", "Ubuntu Trust Bank fraud analyst (fictional bank)", "bank_reviewer", []),
 ]
 # On a host with a persistent volume (UBF_DATA_DIR), generated secrets are kept on the volume so they survive restarts.
@@ -92,6 +92,7 @@ def main(argv=None) -> int:
         for username, display, role, codes in USERS:
             existing = db.query(User).filter_by(username=username).first()
             if existing:
+                existing.display_name = display          # names follow this list (branches replaced stations)
                 if s.demo_seed:      # demo accounts always follow the seed: changing UBF_DEMO_SEED rotates them
                     from .security import verify_password
                     pw = password_for(s.demo_seed, username)

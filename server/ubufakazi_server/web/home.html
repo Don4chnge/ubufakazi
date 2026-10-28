@@ -5,8 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="referrer" content="no-referrer">
 <meta name="theme-color" content="#030812">
-<title>Ubufakazi · Scam-syndicate forensics for SAPS and banks</title>
-<meta name="description" content="Ubufakazi turns scam evidence into tamper-evident case files, routes them by station jurisdiction and links syndicates across provinces for SAPS and banks.">
+<title>Ubufakazi · Digital forensics for scam victims and banks</title>
+<meta name="description" content="Ubufakazi turns scam evidence into tamper-evident case files, routes them to bank branch fraud desks and links syndicates across provinces, so banks can block mule accounts and escalate to SAPS.">
 <link rel="icon" href="/app/favicon.svg" type="image/svg+xml">
 <link rel="stylesheet" href="/app/console.css">
 <link rel="stylesheet" href="/app/home.css">
@@ -14,12 +14,12 @@
 <body>
 <a class="skip" href="#main">Skip to content</a>
 <header class="topbar">
-  <a class="brand" href="/" aria-label="Ubufakazi home"><svg viewBox="0 0 32 32" aria-hidden="true"><path d="M16 3l10 4v8.2c0 6.6-4.3 11.3-10 13.8C10.3 26.5 6 21.8 6 15.2V7z"/><path d="M11 17.2c.5-3.2 2.5-5.4 5-5.4s4.5 2.2 5 5.4"/><path d="M13.2 20.6c0-2.6 1.2-4.4 2.8-4.4s2.8 1.8 2.8 4.4"/><path d="M16 19.4v4.2"/></svg><span class="brand-text"><b>Ubufakazi</b><small>Scam-syndicate forensics for SAPS &amp; banks</small></span></a>
-  <nav class="pubnav" id="pubnav" aria-label="Main"><a href="/" aria-current="page">Home</a><a href="/police#/board">For SAPS</a><a href="/banks">For Banks</a><a href="/report">Report a Scam</a><a href="/track">Track a Case</a><a href="/security">Security</a><a href="/about">About</a></nav>
+  <a class="brand" href="/" aria-label="Ubufakazi home"><svg viewBox="0 0 32 32" aria-hidden="true"><path d="M16 3l10 4v8.2c0 6.6-4.3 11.3-10 13.8C10.3 26.5 6 21.8 6 15.2V7z"/><path d="M11 17.2c.5-3.2 2.5-5.4 5-5.4s4.5 2.2 5 5.4"/><path d="M13.2 20.6c0-2.6 1.2-4.4 2.8-4.4s2.8 1.8 2.8 4.4"/><path d="M16 19.4v4.2"/></svg><span class="brand-text"><b>Ubufakazi</b><small>Digital forensics for scam victims &amp; banks</small></span></a>
+  <nav class="pubnav" id="pubnav" aria-label="Main"><a href="/" aria-current="page">Home</a><a href="/banks">For Banks</a><a href="/fraud-desk#/board">Fraud Desk</a><a href="/report">Report a Scam</a><a href="/track">Track a Case</a><a href="/security">Security</a><a href="/about">About</a></nav>
   <span class="spacer"></span>
   <div class="nav-actions">
     
-    <a class="btn btn-ghost btn-small" href="/police">Investigator login</a>
+    <a class="btn btn-ghost btn-small" href="/fraud-desk">Bank login</a>
     <a class="btn btn-primary btn-small" href="/report">Report a Scam</a>
     <button class="menu-btn" type="button" aria-label="Menu" aria-controls="pubnav" aria-expanded="false"><svg viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
   </div>
@@ -28,16 +28,16 @@
   <!-- ============================================================ HERO -->
   <section class="hero" aria-labelledby="hero-title">
     <div class="hero-copy">
-      <div class="kicker">Scam-syndicate forensics for SAPS and banks</div>
-      <h1 id="hero-title">One syndicate. Many dockets. <span class="grad">One investigation.</span></h1>
-      <p class="hero-lead">Ubufakazi turns scam evidence into tamper-evident, police-ready case files, routes every report to the station whose jurisdiction covers where the victim was scammed, and links reports across provinces when they share a mule account, phone number, website or message script. SAPS sees the syndicate; the bank can freeze the account while the money is still there.</p>
+      <div class="kicker">Ubufakazi · digital forensics for scam victims</div>
+      <h1 id="hero-title">One syndicate. Many branches. <span class="grad">One investigation.</span></h1>
+      <p class="hero-lead">Ubufakazi turns scam evidence into tamper-evident case files, routes every report to the bank branch fraud desk whose region covers where the victim was scammed, and links reports across provinces when they share a mule account, phone number, website or message script. Our job is to find the syndicate and report it; the bank freezes the account while the money is still there and escalates to SAPS.</p>
       <div class="hero-ctas">
-        <a class="btn btn-primary btn-lg" href="/police#/board">Syndicate board <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+        <a class="btn btn-primary btn-lg" href="/fraud-desk#/board">Syndicate board <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
         <a class="btn btn-ghost btn-lg" href="/report">Report a Scam</a>
       </div>
       <ul class="hero-feats">
         <li><span class="fi"><svg viewBox="0 0 24 24"><path d="M12 3l8 3v6c0 5-3.5 8.3-8 9.8C7.5 20.3 4 17 4 12V6z"/><path d="M9 12l2 2 4-4"/></svg></span><span><b>Tamper-evident</b><small>SHA-256 + trusted timestamps</small></span></li>
-        <li><span class="fi"><svg viewBox="0 0 24 24"><circle cx="6" cy="7" r="2.2"/><circle cx="18" cy="6" r="2.2"/><circle cx="12" cy="18" r="2.2"/><path d="M8 8l3 8M16.4 7.6L13 16M8.2 7h7.6"/></svg></span><span><b>Across jurisdictions</b><small>9 provinces, explainable links</small></span></li>
+        <li><span class="fi"><svg viewBox="0 0 24 24"><circle cx="6" cy="7" r="2.2"/><circle cx="18" cy="6" r="2.2"/><circle cx="12" cy="18" r="2.2"/><path d="M8 8l3 8M16.4 7.6L13 16M8.2 7h7.6"/></svg></span><span><b>Across branches</b><small>9 provinces, explainable links</small></span></li>
         <li><span class="fi"><svg viewBox="0 0 24 24"><path d="M7 3h7l5 5v13H7z"/><path d="M14 3v5h5M10 13h6M10 17h4"/></svg></span><span><b>Mule accounts</b><small>Signed alerts to banks</small></span></li>
       </ul>
     </div>
@@ -68,36 +68,36 @@
         <div class="hud-foot">Live from the demo database · synthetic</div>
       </div>
       <div class="hud hud-br reveal">
-        <div class="hud-h">Routed by jurisdiction</div>
-        <div class="route"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s-6-5.4-6-11a6 6 0 0 1 12 0c0 5.6-6 11-6 11z"/><circle cx="12" cy="10" r="2.2"/></svg><div><b>Vanderbijlpark, Gauteng</b><small>→ Demo Station · Vereeniging</small></div></div>
-        <div class="hud-foot">Where the victim was scammed · fictional station</div>
+        <div class="hud-h">Routed to a branch fraud desk</div>
+        <div class="route"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s-6-5.4-6-11a6 6 0 0 1 12 0c0 5.6-6 11-6 11z"/><circle cx="12" cy="10" r="2.2"/></svg><div><b>Vanderbijlpark, Gauteng</b><small>→ UTB Vereeniging branch</small></div></div>
+        <div class="hud-foot">Where the victim was scammed · fictional bank branch</div>
       </div>
     </div>
   </section>
 
   <!-- ============================================================ TRUST STRIP -->
   <section class="trust reveal" aria-label="What makes Ubufakazi different">
-    <span><b>9</b> provinces · <b>29</b> demo station jurisdictions</span><span><b>SHA-256</b> + RFC 3161 timestamps</span><span><b>Signed</b> bank API</span><span><b>Station-isolated</b> police access</span><span><b>Hash-chained</b> audit log</span>
+    <span><b>9</b> provinces · <b>29</b> bank branch regions</span><span><b>SHA-256</b> + RFC 3161 timestamps</span><span><b>Signed</b> bank API</span><span><b>Branch-isolated</b> investigator access</span><span><b>Hash-chained</b> audit log</span>
   </section>
 
   <!-- ============================================================ BOARD -->
   <section class="split reveal" aria-labelledby="dash-title">
     <div class="split-copy">
-      <div class="kicker">For SAPS · syndicate jurisdiction board</div>
-      <h2 id="dash-title">See the syndicate, <span class="grad">not just the docket.</span></h2>
-      <p class="muted">Today ten victims of one syndicate open ten small dockets at ten stations. Ubufakazi shows which station jurisdictions hold pieces of the same network, the mule accounts behind it, and which station should lead.</p>
+      <div class="kicker">For banks · syndicate board</div>
+      <h2 id="dash-title">See the syndicate, <span class="grad">not just the case.</span></h2>
+      <p class="muted">Today ten victims of one syndicate become ten small fraud cases at ten branches. Ubufakazi shows which branches hold pieces of the same network, the mule accounts behind it, and which branch should lead the escalation to SAPS.</p>
       <ul class="checks">
-        <li>Map of every province and station jurisdiction involved, with victims and losses per jurisdiction</li>
-        <li>Suggested lead station and the dockets to link to one investigation</li>
+        <li>Map of every province and branch involved, with victims and losses per branch</li>
+        <li>Suggested lead branch and the cases to merge into one investigation</li>
         <li>Mule accounts with the bank's decision (investigating, frozen) flowing back in real time</li>
-        <li>Station isolation: officers see full detail for their own jurisdiction, counts for others</li>
+        <li>Branch isolation: investigators see full detail for their own branch, counts for others</li>
         <li>Evidence ready for court: SHA-256 fingerprints, independent timestamps, chain of custody, QR handover</li>
       </ul>
-      <a class="btn btn-ghost" href="/police#/board">Open the syndicate board <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+      <a class="btn btn-ghost" href="/fraud-desk#/board">Open the syndicate board <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
     </div>
     <figure class="shot">
-      <div class="shot-bar"><i></i><i></i><i></i><span>ubufakazi · syndicate jurisdiction board</span></div>
-      <img src="/app/img/board.png" alt="Screenshot of the syndicate jurisdiction board: a map of South Africa's provinces with the stations and mule accounts involved in one scam network" loading="lazy" width="1440" height="900">
+      <div class="shot-bar"><i></i><i></i><i></i><span>ubufakazi · syndicate board</span></div>
+      <img src="/app/img/board.png" alt="Screenshot of the syndicate board: a map of South Africa's provinces with the branches and mule accounts involved in one scam network" loading="lazy" width="1440" height="900">
       <figcaption>Real screenshot · synthetic demo data</figcaption>
     </figure>
   </section>
@@ -109,24 +109,24 @@
       <h2 id="sell-title">Built for the two institutions <span class="grad">that can stop a syndicate</span></h2>
     </div>
     <ol class="flow">
-      <li class="reveal"><span class="flow-n">SAPS</span><span class="flow-ic"><svg viewBox="0 0 24 24"><path d="M12 3l8 3v6c0 5-3.5 8.3-8 9.8C7.5 20.3 4 17 4 12V6z"/><path d="M9 12l2 2 4-4"/></svg></span><h3>Investigators</h3><p>Station console and syndicate board: structured, tamper-evident cases linked to the same scammer, even when phone numbers change.</p><a href="/police#/board">Syndicate board →</a></li>
+      <li class="reveal"><span class="flow-n">BRANCHES</span><span class="flow-ic"><svg viewBox="0 0 24 24"><path d="M12 3l8 3v6c0 5-3.5 8.3-8 9.8C7.5 20.3 4 17 4 12V6z"/><path d="M9 12l2 2 4-4"/></svg></span><h3>Branch fraud desks</h3><p>Fraud desk console and syndicate board: structured, tamper-evident cases linked to the same scammer, even when phone numbers change. The bank escalates to SAPS.</p><a href="/fraud-desk#/board">Syndicate board →</a></li>
       <li class="reveal"><span class="flow-n">BANKS</span><span class="flow-ic"><svg viewBox="0 0 24 24"><path d="M3 10l9-6 9 6M5 10v8M9 10v8M15 10v8M19 10v8M3 20h18"/></svg></span><h3>Fraud teams</h3><p>Signed alerts when many victims paid the same mule account, while it can still be frozen, and a beneficiary check that warns customers <b>before</b> they pay a flagged account.</p><a href="/banks">For banks →</a></li>
-      <li class="reveal"><span class="flow-n">WHO PAYS</span><span class="flow-ic"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/><path d="M14.5 9.5c-.5-1-1.4-1.5-2.5-1.5-1.5 0-2.5.8-2.5 2s1 1.6 2.5 2 2.5.8 2.5 2-1 2-2.5 2c-1.2 0-2.1-.6-2.6-1.6M12 6.5v1.5M12 16v1.5"/></svg></span><h3>Banks and fintechs</h3><p>A subscription for syndicate alerts on their own accounts and a fraud-report API. Insurers can licence data for scam claims. Grants, CSI and sponsors fund the service. <b>Free for victims and SAPS.</b></p><a href="/banks#plans">Plans &amp; pricing →</a></li>
-      <li class="reveal"><span class="flow-n">INTAKE</span><span class="flow-ic"><svg viewBox="0 0 24 24"><path d="M4 7h16M4 12h10M4 17h7"/><path d="M17 14v6M14 17h6"/></svg></span><h3>Victims report free</h3><p>Web or Telegram, in five languages. Every report becomes evidence for the station whose jurisdiction covers where it happened.</p><a href="/report">Report a scam →</a></li>
+      <li class="reveal"><span class="flow-n">WHO PAYS</span><span class="flow-ic"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/><path d="M14.5 9.5c-.5-1-1.4-1.5-2.5-1.5-1.5 0-2.5.8-2.5 2s1 1.6 2.5 2 2.5.8 2.5 2-1 2-2.5 2c-1.2 0-2.1-.6-2.6-1.6M12 6.5v1.5M12 16v1.5"/></svg></span><h3>Banks and fintechs</h3><p>A subscription for syndicate alerts on their own accounts and a fraud-report API. Insurers can licence data for scam claims. Grants, CSI and sponsors fund the service. <b>Free for victims.</b></p><a href="/banks#plans">Plans &amp; pricing →</a></li>
+      <li class="reveal"><span class="flow-n">INTAKE</span><span class="flow-ic"><svg viewBox="0 0 24 24"><path d="M4 7h16M4 12h10M4 17h7"/><path d="M17 14v6M14 17h6"/></svg></span><h3>Victims report free</h3><p>Web or Telegram, in five languages. Every report goes to the bank branch fraud desk for where it happened.</p><a href="/report">Report a scam →</a></li>
     </ol>
   </section>
 
   <!-- ============================================================ WORKFLOW -->
   <section class="workflow" aria-labelledby="flow-title">
     <div class="section-head reveal">
-      <div class="kicker">The forensic workflow</div>
+      <div class="kicker">The forensic workflow · NIST SP 800-86</div>
       <h2 id="flow-title">From one victim's phone to <span class="grad">a syndicate case</span></h2>
     </div>
     <ol class="flow">
-      <li class="reveal"><span class="flow-n">01</span><span class="flow-ic"><svg viewBox="0 0 24 24"><path d="M4 7h16M4 12h10M4 17h7"/><path d="M17 14v6M14 17h6"/></svg></span><h3>Collect</h3><p>Victims send chats, screenshots, proof of payment and voice notes on the web or Telegram. The town where they were scammed decides the station jurisdiction.</p><a href="/report">Report a scam →</a></li>
-      <li class="reveal"><span class="flow-n">02</span><span class="flow-ic"><svg viewBox="0 0 24 24"><path d="M12 3l8 3v6c0 5-3.5 8.3-8 9.8C7.5 20.3 4 17 4 12V6z"/><path d="M9 12l2 2 4-4"/></svg></span><h3>Preserve</h3><p>Each original is stored read-only with a SHA-256 fingerprint and a hash-chained custody log, so any change is detectable.</p><a href="/verify">Verify a file →</a></li>
-      <li class="reveal"><span class="flow-n">03</span><span class="flow-ic"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="6"/><path d="M20 20l-4.2-4.2M8.5 11h5M11 8.5v5"/></svg></span><h3>Link</h3><p>Accounts, numbers, links and scripts are extracted and compared by keyed hash across every jurisdiction. Shared signals become explainable leads, never verdicts.</p><a href="/about#how">How linking works →</a></li>
-      <li class="reveal"><span class="flow-n">04</span><span class="flow-ic"><svg viewBox="0 0 24 24"><path d="M7 3h7l5 5v13H7z"/><path d="M14 3v5h5M10 13h6M10 17h4"/></svg></span><h3>Act</h3><p>The lead station consolidates the dockets; the bank gets a signed mule-account alert and its decision flows back. Case packs carry a QR code for the station handover.</p><a href="/police#/board">Syndicate board →</a></li>
+      <li class="reveal"><span class="flow-n">01</span><span class="flow-ic"><svg viewBox="0 0 24 24"><path d="M4 7h16M4 12h10M4 17h7"/><path d="M17 14v6M14 17h6"/></svg></span><h3>1. Collection</h3><p>Victims send chats, screenshots, proof of payment and voice notes on the web or Telegram. The town where they were scammed decides the bank branch fraud desk.</p><a href="/report">Report a scam →</a></li>
+      <li class="reveal"><span class="flow-n">02</span><span class="flow-ic"><svg viewBox="0 0 24 24"><path d="M12 3l8 3v6c0 5-3.5 8.3-8 9.8C7.5 20.3 4 17 4 12V6z"/><path d="M9 12l2 2 4-4"/></svg></span><h3>2. Examination</h3><p>Each original is stored read-only with a SHA-256 fingerprint and a hash-chained custody log, so any change is detectable.</p><a href="/verify">Verify a file →</a></li>
+      <li class="reveal"><span class="flow-n">03</span><span class="flow-ic"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="6"/><path d="M20 20l-4.2-4.2M8.5 11h5M11 8.5v5"/></svg></span><h3>3. Analysis</h3><p>Accounts, numbers, links and scripts are extracted and compared by keyed hash across every branch. Shared signals become explainable leads, never verdicts.</p><a href="/about#how">How linking works →</a></li>
+      <li class="reveal"><span class="flow-n">04</span><span class="flow-ic"><svg viewBox="0 0 24 24"><path d="M7 3h7l5 5v13H7z"/><path d="M14 3v5h5M10 13h6M10 17h4"/></svg></span><h3>4. Reporting</h3><p>A sealed case pack and a syndicate report go to the bank. The lead branch merges the cases, blocks the mule account and escalates to SAPS.</p><a href="/fraud-desk#/board">Syndicate board →</a></li>
     </ol>
   </section>
 
@@ -141,24 +141,24 @@
       <div><dt id="sReports">–</dt><dd>Reports in the demo</dd></div>
       <div><dt id="sEvidence">–</dt><dd>Evidence files fingerprinted</dd></div>
       <div><dt id="sNetworks">–</dt><dd>Possible scam networks</dd></div>
-      <div><dt id="sStations">–</dt><dd>Demo station jurisdictions</dd></div>
+      <div><dt id="sStations">–</dt><dd>Bank branch regions</dd></div>
     </dl>
-    <a class="btn btn-primary btn-lg" href="/police#/board">Open the syndicate board</a>
+    <a class="btn btn-primary btn-lg" href="/fraud-desk#/board">Open the syndicate board</a>
   </section>
 </main>
 
 <footer class="site-foot">
   <div class="in">
     <div>
-      <a class="brand" href="/"><svg viewBox="0 0 32 32" aria-hidden="true"><path d="M16 3l10 4v8.2c0 6.6-4.3 11.3-10 13.8C10.3 26.5 6 21.8 6 15.2V7z"/><path d="M11 17.2c.5-3.2 2.5-5.4 5-5.4s4.5 2.2 5 5.4"/><path d="M13.2 20.6c0-2.6 1.2-4.4 2.8-4.4s2.8 1.8 2.8 4.4"/><path d="M16 19.4v4.2"/></svg><span class="brand-text"><b>Ubufakazi</b><small>Scam-syndicate forensics for SAPS &amp; banks</small></span></a>
-      <p class="muted small foot-blurb">Digital forensics for SAPS and banks: tamper-evident scam evidence, routed by station jurisdiction and linked into syndicates across provinces.</p>
+      <a class="brand" href="/"><svg viewBox="0 0 32 32" aria-hidden="true"><path d="M16 3l10 4v8.2c0 6.6-4.3 11.3-10 13.8C10.3 26.5 6 21.8 6 15.2V7z"/><path d="M11 17.2c.5-3.2 2.5-5.4 5-5.4s4.5 2.2 5 5.4"/><path d="M13.2 20.6c0-2.6 1.2-4.4 2.8-4.4s2.8 1.8 2.8 4.4"/><path d="M16 19.4v4.2"/></svg><span class="brand-text"><b>Ubufakazi</b><small>Digital forensics for scam victims &amp; banks</small></span></a>
+      <p class="muted small foot-blurb">Digital forensics for scam victims and banks: tamper-evident scam evidence, routed to the bank branch fraud desk for the area and linked into syndicates across provinces. The bank escalates to SAPS.</p>
       <div class="social"><a href="https://github.com/Don4chnge/ubufakazi" target="_blank" rel="noopener" aria-label="Source code on GitHub"><svg viewBox="0 0 24 24"><path d="M12 .5a11.5 11.5 0 0 0-3.64 22.41c.58.1.79-.25.79-.56v-2c-3.2.7-3.88-1.37-3.88-1.37-.52-1.33-1.28-1.69-1.28-1.69-1.05-.71.08-.7.08-.7 1.16.08 1.77 1.19 1.77 1.19 1.03 1.77 2.7 1.26 3.36.96.1-.75.4-1.26.73-1.55-2.55-.29-5.24-1.28-5.24-5.69 0-1.26.45-2.29 1.19-3.1-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.17 1.18a11 11 0 0 1 5.78 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.76.11 3.05.74.81 1.19 1.84 1.19 3.1 0 4.42-2.7 5.39-5.26 5.68.41.36.78 1.06.78 2.14v3.17c0 .31.21.67.8.56A11.5 11.5 0 0 0 12 .5z"/></svg></a></div>
     </div>
     <div><h4>For victims (free)</h4><ul><li><a href="/report">Report a scam</a></li><li><a href="/track">Track a case</a></li><li><a href="/verify">Verify a file</a></li><li><a href="/demo-kit/samples/">Sample evidence</a></li></ul></div>
-    <div><h4>For SAPS &amp; banks</h4><ul><li><a href="/police#/board">Syndicate jurisdiction board</a></li><li><a href="/banks">Bank plans &amp; pricing</a></li><li><a href="/police">Investigator dashboard</a></li><li><a href="/bank">Ubuntu Trust Bank (fictional)</a></li><li><a href="/integrations">System status</a></li></ul></div>
+    <div><h4>For banks</h4><ul><li><a href="/fraud-desk#/board">Syndicate board</a></li><li><a href="/banks">Bank plans &amp; pricing</a></li><li><a href="/fraud-desk">Branch fraud desk</a></li><li><a href="/bank">Ubuntu Trust Bank (fictional)</a></li><li><a href="/integrations">System status</a></li></ul></div>
     <div><h4>Project</h4><ul><li><a href="/about">About Ubufakazi</a></li><li><a href="https://github.com/Don4chnge/ubufakazi" target="_blank" rel="noopener">Source code</a></li><li><a href="/security">Security</a></li><li><a href="/privacy">Privacy &amp; data deletion</a></li><li><a href="/mvp">Original MVP (offline)</a></li></ul></div>
   </div>
-  <div class="legal"><span>Demonstration prototype by Team CyberThreat · HackSecure 2026. Fictional stations, fictional bank and synthetic data.</span><span>Not affiliated with SAPS or any bank. In danger now? Call 10111.</span></div>
+  <div class="legal"><span>Demonstration prototype by Team CyberThreat · HackSecure 2026. Fictional bank, fictional branches and synthetic data.</span><span>Not affiliated with SAPS or any real bank. In danger now? Call 10111.</span></div>
 </footer>
 <script src="/app/common.js"></script>
 <script src="/app/land.js"></script>

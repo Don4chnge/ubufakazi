@@ -26,11 +26,11 @@ from .writing import LANG_NAMES, bank_report, general_statement, scam_statement
 
 log = logging.getLogger("ubufakazi.services")
 
-CONSENT_VERSION = "2026-10-28"
+CONSENT_VERSION = "2026-10-28.2"
 CONSENT_TEXT = (
-    "Ubufakazi is a DEMONSTRATION prototype by Team CyberThreat. It is not SAPS and is not connected to SAPS or any bank. "
-    "Your report and files will be stored by Ubufakazi and shown only to the fictional demo station for the area you chose, "
-    "so that a draft statement and case pack can be prepared for you. Screenshots, scanned documents and voice notes "
+    "Ubufakazi is a DEMONSTRATION prototype by Team CyberThreat. It is not SAPS and is not connected to SAPS or any real bank. "
+    "Your report and files will be stored by Ubufakazi and shown only to the fraud desk of the fictional bank branch for the "
+    "area you chose, so that a draft statement and case pack can be prepared and the bank can escalate the case to SAPS. Screenshots, scanned documents and voice notes "
     "may be read by an AI service (Google Gemini, outside South Africa) after location and camera details are removed; "
     "what it reads is marked unverified. No case number is issued. "
     "Please use the demo evidence kit or your own test data. For a real crime, go to your nearest police station "
@@ -230,7 +230,7 @@ def _facts(analysis: dict, scam_type: str, extra_sources: dict) -> dict:
         "payments": [p["amounts"][0] for p in ex["paid"]],
         "messages_parsed": len(analysis["msgs"]),
         "extra_identifier_sources": extra_sources,
-        "method": "Documented rules (regular expressions and keyword lists). Unverified until checked by an officer.",
+        "method": "Documented rules (regular expressions and keyword lists). Unverified until checked by an investigator.",
     }
 
 
@@ -303,7 +303,7 @@ def _process_report(report_id: int) -> None:
         with write_lock, session_scope() as db:
             r = db.get(Report, report_id)
             r.processing_status = "error"
-            r.processing_note = f"Processing failed ({type(e).__name__}). Originals are safe; an officer can retry."
+            r.processing_note = f"Processing failed ({type(e).__name__}). Originals are safe; an investigator can retry."
             job = db.get(ProcessingJob, job_id)
             job.status, job.finished_at, job.error = "error", utcnow(), f"{type(e).__name__}: {e}"[:2000]
             audit.record(db, "report.processing_error", actor="system", target_type="report", target_id=r.reference,

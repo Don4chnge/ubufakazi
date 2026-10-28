@@ -12,7 +12,7 @@
   <div class="table-wrap panel reveal"><table class="data sec-map">
     <thead><tr><th scope="col">Risk</th><th scope="col">How Ubufakazi handles it</th><th scope="col">Status</th></tr></thead>
     <tbody>
-      <tr><td><b>A01</b> Broken Access Control</td><td>Officers see only their station's jurisdiction; other stations' reports answer "not found" so references cannot be probed. Roles for police, admin and bank. Banks get account-level alerts only. Beneficiary check open to subscribed banks only.</td><td><span class="ok-pill">Implemented · tested</span></td></tr>
+      <tr><td><b>A01</b> Broken Access Control</td><td>Investigators see only their own branch; other branches' reports answer "not found" so references cannot be probed. Roles for branch investigators, head office and bank analysts. Banks get account-level alerts only. Beneficiary check open to subscribed banks only.</td><td><span class="ok-pill">Implemented · tested</span></td></tr>
       <tr><td><b>A02</b> Security Misconfiguration</td><td>Strict Content-Security-Policy (no inline or third-party scripts), HSTS, X-Frame-Options DENY, no-sniff, no-referrer, Permissions-Policy, no API docs exposed, secrets only in environment variables, the server refuses to start without strong secrets.</td><td><span class="ok-pill">Implemented · live check</span></td></tr>
       <tr><td><b>A03</b> Software Supply Chain Failures</td><td>Every dependency pinned to an exact version; scanned with pip-audit (our scan found 38 known vulnerabilities in an image library, fixed by upgrading); software bill of materials published (CycloneDX).</td><td><span class="ok-pill">Implemented · live check</span></td></tr>
       <tr><td><b>A04</b> Cryptographic Failures</td><td>Argon2id passwords; scammer identifiers compared by keyed HMAC-SHA256 (the key never leaves the server); signed bank API (HMAC, timestamp window); SHA-256 evidence fingerprints; TLS everywhere.</td><td><span class="ok-pill">Implemented</span></td></tr>
@@ -28,7 +28,7 @@
   <div class="table-wrap panel reveal"><table class="data sec-map">
     <thead><tr><th scope="col">Risk</th><th scope="col">How Ubufakazi handles it</th><th scope="col">Status</th></tr></thead>
     <tbody>
-      <tr><td><b>LLM01</b> Prompt Injection</td><td>Evidence and AI output are scanned for instructions aimed at the AI, forged output markers and hidden characters. The officer sees a red warning, and details from that file cannot alert a bank. A red-team sample is in the <a href="/demo-kit/samples/">sample kit</a>.</td><td><span class="ok-pill">Implemented · tested</span></td></tr>
+      <tr><td><b>LLM01</b> Prompt Injection</td><td>Evidence and AI output are scanned for instructions aimed at the AI, forged output markers and hidden characters. The investigator sees a red warning, and details from that file cannot alert a bank. A red-team sample is in the <a href="/demo-kit/samples/">sample kit</a>.</td><td><span class="ok-pill">Implemented · tested</span></td></tr>
       <tr><td><b>LLM02</b> Sensitive Information Disclosure</td><td>Location, camera and editing metadata are removed from photos before AI reading; the AI receives only the evidence file, never names, IDs or other reports. AI reading needs the complainant's consent.</td><td><span class="ok-pill">Implemented</span></td></tr>
       <tr><td><b>LLM03</b> Supply Chain</td><td>A hosted model over a pinned API client; no third-party models or plugins are downloaded.</td><td><span class="ok-pill">Implemented</span></td></tr>
       <tr><td><b>LLM04</b> Data &amp; Model Poisoning</td><td>We never train or fine-tune on reports. The scam network cannot be poisoned by the AI: AI-only details stay unverified and never trigger bank alerts alone.</td><td><span class="ok-pill">Implemented · tested</span></td></tr>
@@ -36,7 +36,7 @@
       <tr><td><b>LLM06</b> Excessive Agency</td><td>The AI has no tools and no permissions: it cannot change a case, contact a bank or send messages. Its readings alone cannot trigger anything.</td><td><span class="ok-pill">Implemented · tested</span></td></tr>
       <tr><td><b>LLM07</b> System Prompt Leakage</td><td>The reading prompt contains no secrets, keys or internal data; leaking it reveals nothing useful.</td><td><span class="ok-pill">By design</span></td></tr>
       <tr><td><b>LLM08</b> Vector &amp; Embedding Weaknesses</td><td>Not applicable: Ubufakazi uses no vector database or embeddings.</td><td><span class="na-pill">Not applicable</span></td></tr>
-      <tr><td><b>LLM09</b> Misinformation</td><td>Everything the AI reads is labelled "AI-generated, unverified", kept next to the untouched original, and checked by an officer. Rule-based readings are kept separately.</td><td><span class="ok-pill">Implemented</span></td></tr>
+      <tr><td><b>LLM09</b> Misinformation</td><td>Everything the AI reads is labelled "AI-generated, unverified", kept next to the untouched original, and checked by an investigator. Rule-based readings are kept separately.</td><td><span class="ok-pill">Implemented</span></td></tr>
       <tr><td><b>LLM10</b> Unbounded Consumption</td><td>Hourly and daily caps on AI calls, file size limits and upload rate limits.</td><td><span class="ok-pill">Implemented · live check</span></td></tr>
     </tbody></table></div>
 
@@ -44,7 +44,7 @@
   <ol class="bank-steps">
     <li class="panel reveal"><span class="n">1</span><h3>Identify &amp; collect</h3><p class="muted">The complainant submits chats, screenshots, slips and voice notes on the website or Telegram, with consent. Each file is identified by its bytes, not its name.</p></li>
     <li class="panel reveal"><span class="n">2</span><h3>Acquire &amp; preserve</h3><p class="muted">The original is stored read-only with its SHA-256 fingerprint and an RFC 3161 timestamp from an independent authority. Every access is in the hash-chained audit log (chain of custody).</p></li>
-    <li class="panel reveal"><span class="n">3</span><h3>Examine &amp; analyse</h3><p class="muted">Rules and AI read working copies, never the original. Accounts, numbers and scripts are linked across station jurisdictions; payment slips are checked for signs of editing.</p></li>
+    <li class="panel reveal"><span class="n">3</span><h3>Examine &amp; analyse</h3><p class="muted">Rules and AI read working copies, never the original. Accounts, numbers and scripts are linked across bank branches; payment slips are checked for signs of editing.</p></li>
     <li class="panel reveal"><span class="n">4</span><h3>Report</h3><p class="muted">A sealed case pack lists every file's fingerprint and timestamp. Anyone can verify the pack and each file on <a href="/verify">Verify</a>, without uploading anything.</p></li>
   </ol>
 
@@ -52,22 +52,22 @@
   <div class="table-wrap panel reveal"><table class="data sec-map">
     <thead><tr><th scope="col">Attacker wants to…</th><th scope="col">Our defence</th></tr></thead>
     <tbody>
-      <tr><td>Frame an innocent person's account</td><td>One report never blocks or warns "do not pay"; it needs several victims in two or more jurisdictions, or the account's own bank freezing it. AI-only or injection-flagged details never count.</td></tr>
+      <tr><td>Frame an innocent person's account</td><td>One report never blocks or warns "do not pay"; it needs several victims in two or more branch regions, or the account's own bank freezing it. AI-only or injection-flagged details never count.</td></tr>
       <tr><td>Check whether they have been reported (a scammer snooping)</td><td>No public search. The beneficiary check is for subscribed, signed banks only, answers counts not details, has quotas, and abuse raises alerts.</td></tr>
       <tr><td>Trick the AI with hidden instructions</td><td>Prompt-injection shield, hardened reading prompt, AI has no powers, AI-only details stay unverified.</td></tr>
-      <tr><td>Forge or edit a police case pack</td><td>Sealed PDFs: one changed character breaks the seal on Verify; unknown seals are reported as possibly forged.</td></tr>
-      <tr><td>Submit an edited proof of payment</td><td>Payment-slip checks flag editing software, edits after creation and appended updates, as warning signs for the officer.</td></tr>
+      <tr><td>Forge or edit a case pack</td><td>Sealed PDFs: one changed character breaks the seal on Verify; unknown seals are reported as possibly forged.</td></tr>
+      <tr><td>Submit an edited proof of payment</td><td>Payment-slip checks flag editing software, edits after creation and appended updates, as warning signs for the investigator.</td></tr>
       <tr><td>Spoof or replay a bank message</td><td>HMAC signatures over timestamp and body, a 5-minute window, single-use signatures for the beneficiary check, every rejection audited and alerted.</td></tr>
-      <tr><td>Steal victims' data</td><td>Banks never receive names, chats or statements; station isolation; two-factor sign-in; identifiers matched by keyed hashes; consent first, under POPIA.</td></tr>
+      <tr><td>Steal victims' data</td><td>Banks never receive names, chats or statements; branch isolation; two-factor sign-in; identifiers matched by keyed hashes; consent first, under POPIA.</td></tr>
       <tr><td>Misuse insider access</td><td>Every view and download audited in a hash-chained log; bulk access raises an alert; a broken chain is a critical alert.</td></tr>
     </tbody></table></div>
 
   <h2 class="section-title">Honest limits</h2>
   <section class="panel reveal"><ul class="checks">
     <li>AI reading is done by Google Gemini, outside South Africa, and only with the complainant's consent. A production system would use an in-region AI service.</li>
-    <li>The demo is hosted on Render and Neon (outside South Africa). Stations, jurisdictions and the bank are fictional, and all data is synthetic.</li>
+    <li>The demo is hosted on Render and Neon (outside South Africa). The bank, its branches and regions are fictional, and all data is synthetic.</li>
     <li>Not yet independently penetration-tested. Tamper-<i>evident</i>, not tamper-proof: changes are detected, not prevented.</li>
-    <li>Prompt-injection and editing checks are rules: they raise warning signs and can miss a careful attacker. Officers check every original.</li>
+    <li>Prompt-injection and editing checks are rules: they raise warning signs and can miss a careful attacker. Investigators check every original.</li>
   </ul></section>
 
   <h2 class="section-title">Report a vulnerability</h2>

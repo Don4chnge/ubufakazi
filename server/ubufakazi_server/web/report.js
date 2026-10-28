@@ -27,7 +27,7 @@
     const cat = el("select", { id: "category", name: "category", required: true }, opt("", "Choose…", true), Object.entries(meta.categories).map(([k, v]) => opt(k, v)));
     const safety = el("div", { class: "notice warn", hidden: true },
       el("div", null, el("b", null, "Are you safe right now? "), "If not, please call 10111 or the GBV Command Centre on 0800 428 428 first. You can leave this page instantly with Quick exit (or Shift + Esc).",
-        el("label", { class: "check" }, el("input", { type: "checkbox", name: "unsafe", value: "yes", id: "unsafe" }), "I am not safe / not sure (officers will treat this report as sensitive)")));
+        el("label", { class: "check" }, el("input", { type: "checkbox", name: "unsafe", value: "yes", id: "unsafe" }), "I am not safe / not sure (investigators will treat this report as sensitive)")));
     const prov = el("select", { id: "province", name: "province", required: true }, opt("", "Choose…", true), meta.provinces.map((p) => opt(p, p)));
     const dl = el("datalist", { id: "towns" });
     const town = el("input", { type: "text", id: "town", name: "town", list: "towns", maxlength: "80", autocomplete: "address-level2" });
@@ -77,10 +77,10 @@
     const f = el("form", { class: "form-grid", novalidate: true },
       el("fieldset", null, el("legend", null, el("span", { class: "n" }, "1"), "What happened"), field("category", "Type of incident", cat), safety),
       el("fieldset", null, el("legend", null, el("span", { class: "n" }, "2"), "Where and when"),
-        el("div", { class: "grid3" }, field("province", "Province", prov), field("town", "Town or area", town, "Decides which demo station receives it."), field("when", "When did it happen?", when)), dl,
+        el("div", { class: "grid3" }, field("province", "Province", prov), field("town", "Town or area", town, "Decides which bank branch fraud desk receives it."), field("when", "When did it happen?", when)), dl,
         el("p", { class: "hint" }, "We never ask for your GPS location or ID number.")),
       el("fieldset", null, el("legend", null, el("span", { class: "n" }, "3"), "In your own words"), field("desc", "Describe what happened", desc),
-        el("div", { class: "grid3" }, field("lang", "Statement language", lang), field("cname", "Name for the statement (optional)", name, "You can also add it at the station."), amountField)),
+        el("div", { class: "grid3" }, field("lang", "Statement language", lang), field("cname", "Name for the statement (optional)", name, "You can also add it later."), amountField)),
       el("fieldset", null, el("legend", null, el("span", { class: "n" }, "4"), "Evidence"), fileInput, drop, list, field("paste", "Pasted messages (optional)", paste),
         el("p", { class: "hint" }, "Each file gets a SHA-256 fingerprint in your browser now and again on the server when it arrives, so you can see they match.")),
       el("fieldset", null, el("legend", null, el("span", { class: "n" }, "5"), "Consent"), el("p", { class: "small" }, meta.consent.text),
@@ -136,10 +136,10 @@
           el("button", { class: "btn btn-ghost btn-small", onclick: () => download(new Blob([keyText + "\n\nTrack at: " + location.origin + "/track\n"], { type: "text/plain" }), `Ubufakazi-${out.reference}-receipt.txt`) }, "Save as file"))),
       el("section", { class: "panel" }, el("h3", null, "What happens next"),
         el("ol", { class: "steps-v" },
-          el("li", { class: "done" }, `Sent to ${out.station} (a fictional demo station).`),
+          el("li", { class: "done" }, `Sent to the ${out.station} fraud desk (fictional bank).`),
           el("li", { class: "done" }, "Your files were fingerprinted (SHA-256) on arrival."),
           el("li", { id: "stepPack" }, "Ubufakazi prepares your draft statement and case pack (a few seconds)."),
-          el("li", null, "Take the case pack and your ID to a police station to register the case. No SAPS case number exists until then."),
+          el("li", null, "The bank links your report to other victims, can block the scammer's account and escalates the case to SAPS. Keep your case pack."),
           el("li", null, "If you paid money, contact your bank's fraud line now. A draft bank report is in your pack.")),
         packBtn),
       out.evidence.length || out.rejected.length ? el("section", { class: "panel" }, el("h3", null, "Evidence received"),
