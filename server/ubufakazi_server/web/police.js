@@ -439,7 +439,9 @@
         el("ul", { class: "inj-list" }, inj.map((x) => el("li", null, el("b", null, x.label), el("span", { class: "sub" }, `${x.file} · read by ${x.read_by}`), el("q", null, x.snippet)))),
         el("p", { class: "hint" }, "OWASP LLM01 (prompt injection) · LLM06 (excessive agency). Check the original file before relying on any detail."))
       : sec.untrusted_identifiers ? el("div", { class: "notice info" }, el("b", null, "AI-read details: "), `${sec.untrusted_identifiers} detail${sec.untrusted_identifiers === 1 ? " was" : "s were"} read only by the AI. They are shown as unverified and need confirmation before a bank is alerted.`) : null;
-    body.replaceChildren(aiPanel, el("div", { class: "cols" },
+    const editPanel = (sec.edit_signs || []).length ? el("div", { class: "notice warn" }, el("b", null, "Payment slip may be edited: "),
+      `${sec.edit_signs.join("; ")} show${sec.edit_signs.length === 1 ? "s" : ""} signs of editing in the file's metadata. Not proof: confirm the payment with the bank. Details are under Evidence → integrity-signals.`) : null;
+    body.replaceChildren(aiPanel, editPanel, el("div", { class: "cols" },
       el("div", null,
         el("section", { class: "panel" }, el("h3", null, "The complainant's account"), el("div", { class: "quote" }, r.description),
           answers.length ? el("dl", { class: "facts" }, answers.map(([k, v]) => [el("dt", null, k.replace(/_/g, " ")), el("dd", null, String(v))])) : null,

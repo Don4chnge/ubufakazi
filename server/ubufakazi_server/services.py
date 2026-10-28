@@ -15,7 +15,7 @@ from concurrent.futures import ThreadPoolExecutor
 
 from sqlalchemy.orm import Session
 
-from . import ai, aiguard, audit, banklink, intel, storage, timestamps
+from . import ai, aiguard, audit, banklink, intel, slipcheck, storage, timestamps
 from .db import session_scope, write_lock
 from .extract import TYPE_LABEL, analyse_text, extract, parse_chat, show_phone
 from .models import (CATEGORIES, FINANCIAL_CATEGORIES, STATUSES, Consent, EvidenceDerivative, EvidenceFile,
@@ -203,6 +203,9 @@ def _derive_rows(uid: str, sha256: str, detected_type: str) -> list[dict]:
         r = ai.read_media(data, detected_type)
         rows.append({"kind": "ai-extract" if r["ok"] else "not-processed", "method": r["method"], "ai_generated": r["ok"],
                      "content": r["text"], "note": r["note"]})
+    sig = slipcheck.as_derivative(data, detected_type)          # forensic warning signs of editing (never a verdict)
+    if sig:
+        rows.append(sig)
     for d in rows:
         d["content_sha256"] = sha256_hex(d["content"]) if d["content"] else ""
     return rows
@@ -344,7 +347,9 @@ def _process(db: Session, r: Report) -> None:
 
     r.facts = _facts(analysis, scam_type, extra_sources)
     untrusted_n = sum(1 for i in r.identifiers if aiguard.untrusted(i.source))
-    r.facts["security"] = {"prompt_injection": findings[:20], "untrusted_identifiers": untrusted_n,
+    edited = [f"file #{n}: {ev.original_name}"[:120] for n, ev in enumerate(r.evidence, 1)
+              for d in ev.derivatives if d.kind == "integrity-signals" and d.note.startswith("Signs of editing")]
+    r.facts["security"] = {"prompt_injection": findings[:20], "untrusted_identifiers": untrusted_n, "edit_signs": edited,
                            "rule": "Details read only by the AI, or from a file with an injection attempt, are leads "
                                    "for investigators but never send a bank alert or count in the beneficiary check "
                                    "on their own."}
