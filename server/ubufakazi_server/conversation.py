@@ -326,8 +326,10 @@ class Conversation:
                    "Keep the receipt key private. With the reference it lets you check progress and download your case "
                    f"pack on the Ubufakazi Track page: {services.track_url()}\n"
                    "Send /pack at any time to get the case pack (PDF) in this chat.\n"
-                   f"Your report was sent to {res['station']} (a fictional demo station). No SAPS case number exists yet: "
-                   "take your case pack to a police station to register the case." + rejected,
+                   "Next: call your bank's fraud line and send them the fraud dispute statement in your case pack. "
+                   "If the account you paid is at a bank connected to Ubufakazi, that bank receives a fraud alert "
+                   "automatically (in this demo: Ubuntu Trust Bank, a fictional bank). "
+                   f"A police-ready copy is also kept for {res['station']} (a fictional demo station)." + rejected,
                    action={"type": "submitted", "id": res["id"], "reference": res["reference"],
                            "receipt_key": res["receipt_key"], "sensitive": sensitive})]
         if sensitive:

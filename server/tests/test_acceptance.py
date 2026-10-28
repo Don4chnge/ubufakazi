@@ -77,7 +77,7 @@ class TestA_Chatbot:
         assert len(r.evidence) == 4 and r.processing_status == "ready" and r.status == "awaiting_review"
         text = "\n".join(o.text for o in lerato["outs"])
         assert "NOT the police" in text and "10111" in text
-        assert act["receipt_key"] in text and "fictional demo station" in text
+        assert act["receipt_key"] in text and "fictional demo station" in text and "fraud line" in text
 
     def test_consent_recorded_before_storage(self, lerato):
         from ubufakazi_server.models import Consent
@@ -140,7 +140,7 @@ class TestB_Evidence:
         kinds = {(i.kind, i.display) for i in r.identifiers}
         assert ("account", "1047 2283 59") in kinds and ("phone", "071 482 0937") in kinds
         assert ("domain", "mzansi-careers-onboard.site") in kinds
-        assert "1047 2283 59" in r.statement and "SAPS case number: [add once SAPS" in r.bank_report
+        assert "1047 2283 59" in r.statement and "Police case number (optional)" in r.bank_report
         assert set(r.statements) == {"en", "zu", "xh", "af", "st"}
 
     @pytest.mark.parametrize("data,name", [
@@ -207,7 +207,7 @@ class TestB_Evidence:
         from ubufakazi_server.casepack import build_case_pack
         r, db = lerato["report"], lerato["db"]
         text = "".join(p.get_text() for p in pymupdf.open(stream=build_case_pack(db, r, "complainant"), filetype="pdf"))
-        for must in ("NOT AN OFFICIAL SAPS DOCUMENT", r.reference, "Draft statement", "Evidence register", "SHA-256",
+        for must in ("NOT AN OFFICIAL SAPS DOCUMENT", r.reference, "Fraud dispute statement to the bank", "Evidence register", "SHA-256",
                      r.evidence[0].sha256[:32], "Timeline", "unverified", "10111", "not tamper-proof"):
             assert must in text, must
         assert "UBF-26-SEED" not in text and "Possible connections" not in text   # no other victims' data

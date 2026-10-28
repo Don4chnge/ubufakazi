@@ -205,9 +205,10 @@ def _build_case_pack(db: Session, r: Report, audience: str, viewer, leads, seal_
         f.append(Spacer(1, 8))
         f.append(P("What to do next", "h2"))
         for i, line in enumerate([
-            "Read the draft statement below. Correct anything wrong. Sign only at the police station, in front of an officer.",
-            "Take this pack (printed or on your phone) and your ID to the police station. Ask for the case to be registered.",
-            "If you paid money: contact your bank's fraud line now. A draft bank report is included.",
+            "Call your bank's fraud line now. The faster the bank acts, the more likely the money can be frozen and recalled.",
+            "Read the fraud dispute statement below, correct anything wrong, sign it and send it with this pack to your bank. A draft bank fraud report is included too.",
+            "If the account you paid is at a bank connected to Ubufakazi, that bank has already received a fraud alert (in this demo: Ubuntu Trust Bank, a fictional bank).",
+            "You can also report at a police station: this pack includes everything they need, with a QR code for the officer.",
             "Keep the original files (screenshots, chats, receipts). Their fingerprints (SHA-256) are listed in this pack, so anyone can check they were not changed.",
             "In danger right now? Call 10111. Gender-based violence: GBV Command Centre 0800 428 428.",
         ], 1):
@@ -231,7 +232,7 @@ def _build_case_pack(db: Session, r: Report, audience: str, viewer, leads, seal_
 
     # ---------------------------------------------------------------- statement
     f.append(PageBreak())
-    f.append(P(f"2. Draft statement ({t(LANG_NAMES.get(r.language, r.language))})", "h2"))
+    f.append(P(f"2. Fraud dispute statement to the bank ({t(LANG_NAMES.get(r.language, r.language))})", "h2"))
     f.append(P(t(r.statement or "Not prepared yet.").replace("\n", "<br/>"), "stmt"))
     if police and r.language != "en" and (r.statements or {}).get("en"):
         f.append(Spacer(1, 8))
