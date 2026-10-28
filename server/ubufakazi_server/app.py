@@ -13,7 +13,7 @@ from contextlib import asynccontextmanager
 from typing import Optional
 
 from fastapi import Depends, FastAPI, File, Form, HTTPException, Request, UploadFile
-from fastapi.responses import FileResponse, JSONResponse, Response
+from fastapi.responses import PlainTextResponse, FileResponse, JSONResponse, Response
 from fastapi.concurrency import run_in_threadpool
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, Field
@@ -213,6 +213,51 @@ def public_seal_by_hash(sha256: str, request: Request, db: Session = Depends(get
     if not s:
         _err(404, "This exact file was not issued by Ubufakazi (or it was changed after it was issued).")
     return seals.public(s)
+
+
+_SEC_CACHE: dict = {}
+
+
+@app.get("/api/public/security")
+def public_security(request: Request, db: Session = Depends(get_db)):
+    """Live security self-checks for /security. Aggregates only; cached for 60 seconds."""
+    rate_limit(request, "security", 30, 60)
+    import json as _json
+    import time as _time
+    from . import payee
+    if _SEC_CACHE.get("at", 0) > _time.time() - 60:
+        return _SEC_CACHE["data"]
+    from .models import DocumentSeal, BeneficiaryCheck
+
+    def _load(name):
+        try:
+            return _json.loads((WEB_DIR / name).read_text(encoding="utf-8"))
+        except (OSError, ValueError):
+            return None
+    chain = audit.verify_chain(db)
+    data = {
+        "audit_chain": {"intact": chain["intact"], "events": chain["checked"]},
+        "timestamps": timestamps.status(),
+        "ai": {"configured": ai.available(), **{k: v for k, v in ai.usage().items()}},
+        "dependency_scan": _load("security-scan.json"),
+        "tests": _load("security-tests.json"),
+        "seals_issued": db.query(func.count(DocumentSeal.id)).scalar() or 0,
+        "beneficiary_checks": db.query(func.count(BeneficiaryCheck.id)).scalar() or 0,
+        "subscribed_banks": len(payee.SUBSCRIBERS),
+        "csp": CSP, "https_only": get_settings().cookie_secure,
+    }
+    _SEC_CACHE.update(at=_time.time(), data=data)
+    return data
+
+
+@app.get("/.well-known/security.txt", response_class=PlainTextResponse)
+def security_txt():
+    base = get_settings().public_base_url
+    return ("Contact: https://github.com/Don4chnge/ubufakazi/security/advisories/new\n"
+            "Expires: 2027-10-28T00:00:00.000Z\n"
+            f"Policy: {base}/security\n"
+            f"Canonical: {base}/.well-known/security.txt\n"
+            "Preferred-Languages: en\n")
 
 
 @app.get("/api/public/meta")
@@ -958,7 +1003,7 @@ def utb_action(case_id: int, body: UtbActionIn, request: Request, p: Principal =
 # ------------------------------------------------------------------ pages + website
 PAGES = {"/": "home.html", "/demo-logins": "demo-logins.html", "/share": "share.html", "/resources": "resources.html", "/about": "about.html",
          "/police": "police.html", "/bank-demo": "bank.html", "/bank": "bank.html", "/report": "report.html", "/track": "track.html",
-         "/verify": "verify.html", "/integrations": "integrations.html", "/privacy": "privacy.html", "/banks": "banks.html"}
+         "/verify": "verify.html", "/integrations": "integrations.html", "/privacy": "privacy.html", "/banks": "banks.html", "/security": "security.html"}
 
 
 def _page(name: str):

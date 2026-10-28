@@ -173,7 +173,9 @@ def warned_counts(db) -> dict[str, int]:
 def client_check(bank_id: str, account_number: str, amount: float | None) -> tuple[int, dict]:
     """How a subscribed bank calls the API (used by the fictional Ubuntu Trust Bank)."""
     from . import banklink
-    raw = json.dumps({"account_number": account_number, "amount": amount, "sent_at": int(time.time())},
+    import secrets
+    raw = json.dumps({"account_number": account_number, "amount": amount, "sent_at": int(time.time()),
+                      "nonce": secrets.token_hex(8)},          # identical checks in the same second stay distinct
                      separators=(",", ":"), sort_keys=True).encode()
     return banklink._post(f"{banklink._local_base()}/api/v1/beneficiary-check", raw,
                           {"Content-Type": "application/json", "X-UBF-Bank": bank_id,

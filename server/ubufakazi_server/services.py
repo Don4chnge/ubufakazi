@@ -26,11 +26,13 @@ from .writing import LANG_NAMES, bank_report, general_statement, scam_statement
 
 log = logging.getLogger("ubufakazi.services")
 
-CONSENT_VERSION = "2026-10-demo-1"
+CONSENT_VERSION = "2026-10-28"
 CONSENT_TEXT = (
     "Ubufakazi is a DEMONSTRATION prototype by Team CyberThreat. It is not SAPS and is not connected to SAPS or any bank. "
     "Your report and files will be stored by Ubufakazi and shown only to the fictional demo station for the area you chose, "
-    "so that a draft statement and case pack can be prepared for you. No case number is issued. "
+    "so that a draft statement and case pack can be prepared for you. Screenshots, scanned documents and voice notes "
+    "may be read by an AI service (Google Gemini, outside South Africa) after location and camera details are removed; "
+    "what it reads is marked unverified. No case number is issued. "
     "Please use the demo evidence kit or your own test data. For a real crime, go to your nearest police station "
     "or call 10111."
 )

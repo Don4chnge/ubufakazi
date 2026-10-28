@@ -14,7 +14,7 @@ BRAND_SVG = ('<svg viewBox="0 0 32 32" aria-hidden="true"><path d="M16 3l10 4v8.
              '<path d="M11 17.2c.5-3.2 2.5-5.4 5-5.4s4.5 2.2 5 5.4"/><path d="M13.2 20.6c0-2.6 1.2-4.4 2.8-4.4s2.8 1.8 2.8 4.4"/>'
              '<path d="M16 19.4v4.2"/></svg>')
 NAV = [("/", "Home"), ("/police#/board", "For SAPS"), ("/banks", "For Banks"), ("/report", "Report a Scam"),
-       ("/track", "Track a Case"), ("/about", "About")]
+       ("/track", "Track a Case"), ("/security", "Security"), ("/about", "About")]
 GITHUB = "https://github.com/Don4chnge/ubufakazi"
 
 
@@ -45,7 +45,7 @@ FOOTER = f'''<footer class="site-foot">
     </div>
     <div><h4>For victims (free)</h4><ul><li><a href="/report">Report a scam</a></li><li><a href="/track">Track a case</a></li><li><a href="/verify">Verify a file</a></li><li><a href="/demo-kit/samples/">Sample evidence</a></li></ul></div>
     <div><h4>For SAPS &amp; banks</h4><ul><li><a href="/police#/board">Syndicate jurisdiction board</a></li><li><a href="/banks">Bank plans &amp; pricing</a></li><li><a href="/police">Investigator dashboard</a></li><li><a href="/bank">Ubuntu Trust Bank (fictional)</a></li><li><a href="/integrations">System status</a></li></ul></div>
-    <div><h4>Project</h4><ul><li><a href="/about">About Ubufakazi</a></li><li><a href="{GITHUB}" target="_blank" rel="noopener">Source code</a></li><li><a href="/privacy">Privacy &amp; data deletion</a></li><li><a href="/mvp">Original MVP (offline)</a></li></ul></div>
+    <div><h4>Project</h4><ul><li><a href="/about">About Ubufakazi</a></li><li><a href="{GITHUB}" target="_blank" rel="noopener">Source code</a></li><li><a href="/security">Security</a></li><li><a href="/privacy">Privacy &amp; data deletion</a></li><li><a href="/mvp">Original MVP (offline)</a></li></ul></div>
   </div>
   <div class="legal"><span>Demonstration prototype by Team CyberThreat · HackSecure 2026. Fictional stations, fictional bank and synthetic data.</span><span>Not affiliated with SAPS or any bank. In danger now? Call 10111.</span></div>
 </footer>'''
@@ -114,6 +114,9 @@ PAGES = {
     "banks.html": dict(path="/banks", title="For banks · Ubufakazi", scripts=[],
         desc="Signed mule-account alerts for bank fraud teams, with subscription plans. Free for victims and SAPS.",
         body=open(pathlib.Path(__file__).with_name("banks_body.html"), encoding="utf-8").read()),
+    "security.html": dict(path="/security", title="Security · Ubufakazi", scripts=["security.js"],
+        desc="How Ubufakazi is protected: OWASP Top 10:2025, OWASP Top 10 for LLM Applications 2025, ISO/IEC 27037 and NIST SP 800-86, with live checks.",
+        body=open(pathlib.Path(__file__).with_name("security_body.html"), encoding="utf-8").read()),
     "privacy.html": dict(path="/privacy", title="Privacy policy · Ubufakazi", scripts=[],
         desc="How Ubufakazi handles reports and evidence sent through the website, Telegram and WhatsApp, and how to delete your data.",
         body=open(pathlib.Path(__file__).with_name("privacy_body.html"), encoding="utf-8").read()),
