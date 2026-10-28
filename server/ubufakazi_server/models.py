@@ -354,6 +354,21 @@ class UtbEvent(Base):
     note: Mapped[str] = mapped_column(String(300), default="")
 
 
+class DocumentSeal(Base):
+    """A document Ubufakazi issued (a case pack), sealed with its SHA-256 and optionally an RFC 3161 timestamp."""
+    __tablename__ = "document_seals"
+    id: Mapped[int] = mapped_column(primary_key=True)
+    seal_id: Mapped[str] = mapped_column(String(24), unique=True, index=True)
+    doc_type: Mapped[str] = mapped_column(String(30))
+    reference: Mapped[str] = mapped_column(String(24), index=True)
+    issued_to: Mapped[str] = mapped_column(String(60))
+    station_id: Mapped[Optional[int]] = mapped_column(Integer, nullable=True)
+    issued_at: Mapped[dt.datetime] = mapped_column(DateTime, default=utcnow)
+    sha256: Mapped[Optional[str]] = mapped_column(String(64), nullable=True, index=True)
+    size: Mapped[Optional[int]] = mapped_column(Integer, nullable=True)
+    trusted_timestamp: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
+
+
 class BeneficiaryCheck(Base):
     """A subscribed bank asked, before a customer paid a new beneficiary, whether the account is named in scam
     reports. No account number is stored: only its keyed hash, the risk given and the count."""

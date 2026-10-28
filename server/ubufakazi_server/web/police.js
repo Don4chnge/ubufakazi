@@ -19,6 +19,7 @@
     net: ["M12 5a2 2 0 1 0 0 .01M5 18a2 2 0 1 0 0 .01M19 18a2 2 0 1 0 0 .01M11 7l-5 9M13 7l5 9M7 18h10"],
     side: ["M4 5h16v14H4z", "M9 5v14"],
     board: ["M3 6l6-2 6 2 6-2v14l-6 2-6-2-6 2z", "M9 4v14M15 6v14"],
+    shield: ["M12 3l8 3v6c0 5-3.5 8.3-8 9.8C7.5 20.3 4 17 4 12V6z", "M12 8v5M12 16h.01"],
   };
   const COLLAPSE_KEY = "ubf-rail-collapsed";
   let collapsed = false;
@@ -67,6 +68,7 @@
         nav("evidence", "Evidence", I.files, "#/evidence"),
         nav("network", "Scam network", I.net, "#/network"),
         me.role === "admin" ? nav("audit", "Audit log", I.audit, "#/audit") : null,
+        me.role === "admin" ? nav("security", "Security alerts", I.shield, "#/security") : null,
         el("div", { class: "sep" }),
         nav("integ", "Integrations", I.plug, "#/integrations"),
         el("button", { class: "collapse-btn", title: "Collapse sidebar", "aria-label": "Collapse or expand the sidebar", onclick: () => {
@@ -93,6 +95,7 @@
     if (h.startsWith("#/queue")) return showQueue();
     if (h.startsWith("#/evidence")) return showEvidence();
     if (h.startsWith("#/audit") && me.role === "admin") return showAudit();
+    if (h.startsWith("#/security") && me.role === "admin") return showSecurity();
     if (h.startsWith("#/integrations")) return showIntegrations();
     return showOverview();
   }
@@ -137,6 +140,41 @@
     ]);
   }
 
+
+
+  // ------------------------------------------------------------------ security alert centre (admin)
+  async function showSecurity() {
+    shell("security", el("div", { class: "empty" }, "Loading…"));
+    let d;
+    try { d = await api("GET", "/api/admin/security"); } catch (e) { shell("security", el("div", { class: "notice" }, e.message)); return; }
+    const c = d.counts || {}, u = d.ai_usage || {};
+    const sevTag = (s) => el("span", { class: "sev sev-" + s }, s);
+    shell("security", [
+      el("div", { class: "page-head" }, el("div", null, el("div", { class: "kicker" }, "Admin · OWASP A09:2025 security logging & alerting"),
+        el("h1", null, "Security alerts"),
+        el("p", null, "Alerts are derived from the hash-chained audit log, so they cannot be quietly deleted. Last 7 days."))),
+      el("div", { class: "tiles tiles-5" },
+        tile(d.audit_chain.intact ? "Intact" : "BROKEN", `Audit chain · ${d.audit_chain.checked} events verified`, !d.audit_chain.intact),
+        tile((c.critical || 0) + (c.high || 0), "High / critical alerts", true),
+        tile(c.medium || 0, "Medium alerts"),
+        tile(`${u.last_hour || 0}/${u.max_per_hour || "-"}`, "AI reads this hour (cap)"),
+        tile(u.metadata_stripped || 0, "Photos stripped of metadata before AI")),
+      el("section", { class: "panel" }, el("h3", null, "Alerts"),
+        d.alerts.length ? el("div", { class: "table-wrap" }, el("table", { class: "data" },
+          el("thead", null, el("tr", null, ["Severity", "What happened", "Who / where", "When"].map((h) => el("th", { scope: "col" }, h)))),
+          el("tbody", null, d.alerts.map((a) => el("tr", { class: "audit-row", onclick: () => { if (a.target.startsWith("report:")) location.hash = "#/report/" + a.target.slice(7); } },
+            el("td", null, sevTag(a.severity)), el("td", null, el("b", null, a.title), el("span", { class: "sub" }, a.rule)),
+            el("td", null, el("span", { class: "mono" }, a.actor), a.target ? el("span", { class: "sub" }, a.target) : null),
+            el("td", null, dateTime(a.at)))))))
+          : el("p", { class: "muted" }, "No security alerts in the last 7 days.")),
+      el("section", { class: "panel" }, el("h3", null, "What raises an alert"), el("ul", { class: "checks" },
+        el("li", null, "5+ failed sign-ins or two-factor codes for one user from one address within 10 minutes (password guessing); locked accounts"),
+        el("li", null, "Bank API calls with an unknown bank, a bad or reused signature; beneficiary-check quota reached; unusual lookup volumes"),
+        el("li", null, "Possible prompt injection found in submitted evidence (OWASP LLM01)"),
+        el("li", null, "25+ evidence files or police packs opened by one user within 10 minutes (bulk access)"),
+        el("li", null, "Any break in the audit log's hash chain (history changed): critical"))),
+    ]);
+  }
 
   // ------------------------------------------------------------------ syndicate jurisdiction board
   function leadWhy(syn) {

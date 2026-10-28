@@ -188,6 +188,33 @@ class _AllSeeing:
         return True
 
 
+@app.get("/api/public/seal/{seal_id}")
+def public_seal(seal_id: str, request: Request, db: Session = Depends(get_db)):
+    """Seal details for /verify. The seal id is random and printed only on the PDF itself."""
+    rate_limit(request, "seal", 40, 300)
+    from .models import DocumentSeal
+    from . import seals
+    s = db.query(DocumentSeal).filter_by(seal_id=seal_id.strip().upper()[:24]).first()
+    if not s or not s.sha256:
+        _err(404, "No document with this seal was issued by Ubufakazi.")
+    return seals.public(s)
+
+
+@app.get("/api/public/seal-by-hash/{sha256}")
+def public_seal_by_hash(sha256: str, request: Request, db: Session = Depends(get_db)):
+    """Is this exact file a document Ubufakazi issued? Needs the file's full fingerprint (computed in the browser)."""
+    rate_limit(request, "seal", 40, 300)
+    from .models import DocumentSeal
+    from . import seals
+    h = sha256.strip().lower()
+    if len(h) != 64 or any(c not in "0123456789abcdef" for c in h):
+        _err(400, "Not a SHA-256 fingerprint.")
+    s = db.query(DocumentSeal).filter_by(sha256=h).first()
+    if not s:
+        _err(404, "This exact file was not issued by Ubufakazi (or it was changed after it was issued).")
+    return seals.public(s)
+
+
 @app.get("/api/public/meta")
 def meta():
     return {"categories": CATEGORIES, "languages": LANG_NAMES, "provinces": PROVINCES, "towns": towns_by_province(),
@@ -825,9 +852,22 @@ async def bank_callback(request: Request):
     try:
         return await run_in_threadpool(banklink.receive_callback, raw, request.headers.get("X-UBF-Signature"))
     except PermissionError:
+        _signature_rejected(request, "bank-link callback")
         _err(401, "Bad signature.")
     except (ValueError, KeyError):
         _err(400, "Bad request.")
+
+
+def _signature_rejected(request: Request, where: str) -> None:
+    from .db import session_scope
+    with write_lock, session_scope() as db:
+        audit.record(db, "bank.signature_rejected", actor="unknown", ip=client_ip(request), detail={"endpoint": where})
+
+
+@app.get("/api/admin/security")
+def admin_security(p: Principal = Depends(require_roles("admin")), db: Session = Depends(get_db)):
+    from . import secmon
+    return secmon.alerts(db)
 
 
 # ------------------------------------------------------------------ beneficiary check (subscribed banks only)
@@ -870,6 +910,7 @@ async def utb_receive(request: Request):
     try:
         return await run_in_threadpool(utb.receive_alert, raw, request.headers.get("X-UBF-Signature"))
     except PermissionError:
+        _signature_rejected(request, "fictional bank fraud-alert API")
         _err(401, "Bad signature.")
     except (ValueError, KeyError):
         _err(400, "Bad request.")

@@ -20,7 +20,7 @@ from reportlab.platypus import (PageBreak, Paragraph, SimpleDocTemplate, Spacer,
 from sqlalchemy.orm import Session
 
 from . import handover, timestamps
-from .extract import money
+from .extract import TYPE_LABEL, money
 from .models import CATEGORY_LABELS, STATUS_LABELS, AuditEvent, Note, Report, Station, StationHandover, StatusChange
 from .writing import LANG_NAMES
 
@@ -109,8 +109,42 @@ def _handover_box(r: Report, S):
     return tb
 
 
+def _seal_box(seal_id: str, S):
+    """QR code that lets anyone check this PDF is genuine and unchanged (see seals.py)."""
+    from reportlab.graphics.barcode.qr import QrCodeWidget
+    from reportlab.graphics.shapes import Drawing
+    from .services import track_url
+    url = track_url().rsplit("/track", 1)[0] + f"/verify?seal={seal_id}"
+    w = QrCodeWidget(url)
+    x0, y0, x1, y1 = w.getBounds()
+    size = 26 * mm
+    d = Drawing(size, size, transform=[size / (x1 - x0), 0, 0, size / (y1 - y0), 0, 0])
+    d.add(w)
+    text = Paragraph(
+        f"<b>DOCUMENT SEAL {escape(seal_id)}</b><br/>This PDF is sealed by Ubufakazi: its SHA-256 fingerprint was recorded "
+        "when it was issued, with an independent RFC 3161 timestamp. Scan the code, or open "
+        f"<a href='{escape(url)}' color='#0A7C74'>{escape(url)}</a>, and drop this PDF on the page: it shows "
+        "<b>Authentic</b> only if not a single character has changed.", S["small"])
+    tb = Table([[d, text]], colWidths=[30 * mm, 144 * mm])
+    tb.setStyle(TableStyle([("VALIGN", (0, 0), (-1, -1), "MIDDLE"), ("BOX", (0, 0), (-1, -1), 0.8, ACCENT),
+                            ("BACKGROUND", (0, 0), (-1, -1), TINT),
+                            ("LEFTPADDING", (0, 0), (-1, -1), 6), ("RIGHTPADDING", (0, 0), (-1, -1), 6),
+                            ("TOPPADDING", (0, 0), (-1, -1), 5), ("BOTTOMPADDING", (0, 0), (-1, -1), 5)]))
+    return tb
+
+
 def build_case_pack(db: Session, r: Report, audience: str = "complainant", viewer=None, leads: list[dict] | None = None) -> bytes:
-    """leads: pre-computed, already access-filtered possible connections (police audience only)."""
+    """Issues a SEALED case pack (see seals.py). leads: pre-computed, access-filtered connections (police only)."""
+    from . import seals
+    who = (f"officer:{viewer.user.username}" if viewer is not None and getattr(viewer, "user", None) else audience)
+    seal_id = seals.new_seal("case_pack_police" if audience == "police" else "case_pack_complainant", r.reference, who,
+                             r.station_id)
+    pdf = _build_case_pack(db, r, audience, viewer, leads, seal_id)
+    seals.finish(seal_id, pdf)
+    return pdf
+
+
+def _build_case_pack(db: Session, r: Report, audience: str, viewer, leads, seal_id: str) -> bytes:
     S = _styles()
     buf = io.BytesIO()
     police = audience == "police"
@@ -144,7 +178,7 @@ def build_case_pack(db: Session, r: Report, audience: str = "complainant", viewe
     facts = r.facts or {}
     cover = [
         ["Category", CATEGORY_LABELS.get(r.category, r.category)],
-        ["Type (detected)", facts.get("scam_type_label") or "-"],
+        ["Type (detected)", facts.get("scam_type_label") or TYPE_LABEL.get(r.scam_type or "", "-")],
         ["Demo station", f"{r.station.name} (fictional, for demonstration only)"],
         ["Area", ", ".join(x for x in (r.town, r.province) if x) or "-"],
         ["When it happened (as stated)", r.incident_when or "-"],
@@ -159,6 +193,8 @@ def build_case_pack(db: Session, r: Report, audience: str = "complainant", viewe
         cover.append(["Registered at station", f"{ho.cas_number} at {db.get(Station, ho.station_id).name} "
                                                "(entered by the officer; not verified with SAPS)"])
     f.append(_kv(cover, S))
+    f.append(Spacer(1, 6))
+    f.append(_seal_box(seal_id, S))
     f.append(Spacer(1, 8))
     f.append(_box(P(
         "<b>What this is.</b> A draft prepared automatically from what the complainant reported, so the station visit is "
