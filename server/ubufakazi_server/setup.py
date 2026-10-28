@@ -92,6 +92,7 @@ def main(argv=None) -> int:
         for username, display, role, codes in USERS:
             existing = db.query(User).filter_by(username=username).first()
             if existing:
+                existing.display_name = display          # restore names (they were briefly bank-branch names)
                 if s.demo_seed:      # demo accounts always follow the seed: changing UBF_DEMO_SEED rotates them
                     from .security import verify_password
                     pw = password_for(s.demo_seed, username)
